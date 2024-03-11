@@ -16,8 +16,8 @@ const ModelPage = (tbl, datas) => {
     data.map((d, i) => {
         if (i > 0) {
             i === (data.length - 1)
-                ? obj +=  `       ${d}: String`
-                : obj +=  `       ${d}: String,\n`
+                ? obj +=  `            ${d}: { type: String, required: true }`
+                : obj +=  `            ${d}: { type: String, required: true },\n`
         }
     });
 
@@ -39,7 +39,7 @@ const ModelPage = (tbl, datas) => {
 
     const ${titleCase(tbl)}Schema = new Schema(
         {
- ${obj}       
+${obj}       
         },
         {
             timestamps: true

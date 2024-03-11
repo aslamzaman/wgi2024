@@ -12,7 +12,7 @@ const Add = ({ message }) => {
     const [show, setShow] = useState(false);
 
     const [posts, setPosts] = useState([]);
-    
+  
 
     const resetVariables = () => {
         message("Ready to make new additions");

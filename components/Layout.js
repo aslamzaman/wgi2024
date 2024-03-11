@@ -48,6 +48,12 @@ const Layout = ({ children }) => {
         router.push('/');
     }
 
+    const menuBackClickHandler = (e) => {
+        const id = e.target.id;
+        if (id === 'menuBack') {
+            setMenu(false);
+        }
+    }
 
     return (
         <>
@@ -67,21 +73,24 @@ const Layout = ({ children }) => {
             </header>
 
             {menu && (
-                <nav className="fixed w-full top-[60px] overflow-auto z-10">
-                    <div className='w-full p-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3 bg-gray-400 shadow-lg transition duration-500'>
-                        {
-                            MenuData.map((m, i) => {
-                                const btn = m.group;
-                                return (
-                                    <MenuWraper Title={m.title} key={i}>
-                                        {btn.map((b, j) => <MenuItem Href={b.url} Title={b.label} Menu={(data) => setMenu(data)} key={j} />)}
-                                    </MenuWraper>
-                                )
-                            })
-                        }
-                        <MenuWraper Title="Log">
-                            <button onClick={logOutHandler} className="px-1 mb-2 hover:border-l-2 border-indigo-400 underline-offset-4 decoration-4 decoration-indigo-300 hover:text-indigo-400">Log Out</button>
-                        </MenuWraper>
+                <nav className="fixed w-full top-[60px] z-10">
+
+                    <div id="menuBack" onClick={menuBackClickHandler} className='w-full h-[calc(100vh-60px)] p-4 bg-gray-400 shadow-lg transition duration-500 overflow-auto'>
+                        <div className='w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3'>
+                            {
+                                MenuData.map((m, i) => {
+                                    const btn = m.group;
+                                    return (
+                                        <MenuWraper Title={m.title} key={i}>
+                                            {btn.map((b, j) => <MenuItem Href={b.url} Title={b.label} Menu={(data) => setMenu(data)} key={j} />)}
+                                        </MenuWraper>
+                                    )
+                                })
+                            }
+                            <MenuWraper Title="Log">
+                                <button onClick={logOutHandler} className="px-1 mb-2 hover:border-l-2 border-indigo-400 underline-offset-4 decoration-4 decoration-indigo-300 hover:text-indigo-400">Log Out</button>
+                            </MenuWraper>
+                        </div>
                     </div>
                 </nav>)}
 

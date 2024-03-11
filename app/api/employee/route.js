@@ -6,7 +6,6 @@ import { EmployeeModel } from '@/lib/Models';
 export const GET = async () => {
   try {
     await Connect();
-    //const employees = await EmployeeModel.find({}).populate("post_id").sort({_id:'desc'});
     const employees = await EmployeeModel.find({}).populate("post_id").sort({_id:'desc'});
     console.log(employees)
     return NextResponse.json( employees );
@@ -14,8 +13,6 @@ export const GET = async () => {
     console.error('GET Error:', error);
     return NextResponse.json({ message: 'Failed to fetch employees' }, { status: 500 });
   }
-
-  
 }
 
 

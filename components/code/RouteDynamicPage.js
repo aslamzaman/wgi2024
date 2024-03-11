@@ -23,7 +23,7 @@ const RouteDynamicPage = (tbl, datas) => {
 
     let str = `    import { NextResponse } from 'next/server';
     import { Connect } from '@/lib/utils/Db';
-    import { ${titleCase(tbl)}Model } from '@/lib/models/${titleCase(tbl)}Model';
+    import { ${titleCase(tbl)}Model } from '@/lib/Models';
     
     
     export const GET = async (Request, { params }) => {

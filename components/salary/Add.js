@@ -1,57 +1,53 @@
 import React, { useState } from "react";
-import { TextEn, BtnSubmit, DropdownEn, TextDt, TextNum } from "@/components/Form";
-import { fetchData } from "@/lib/utils/FetchData";
+import { TextEn, BtnSubmit, DropdownEn } from "@/components/Form";
+import { monthArray } from "@/lib/SalaryMonths";
 
-const date_format = (dt) => {
-    return new Date(dt).toISOString().split('T')[0];
-}
 
 
 const Add = ({ message }) => {
-    const [customerid, setCustomerid] = useState('');
-    const [dt, setDt] = useState('');
-    const [cashtypeid, setCashtypeid] = useState('');
-    const [bank, setBank] = useState('');
+    const [employee, setEmployee] = useState('');
+    const [month, setMonth] = useState('');
     const [taka, setTaka] = useState('');
+    const [deduct, setDeduct] = useState('');
+    const [arear, setArear] = useState('');
+    const [note, setNote] = useState('');
     const [show, setShow] = useState(false);
 
+    const [employees, setEmployees] = useState([]);
 
-    const [customers, setCustomers] = useState([]);
-    const [cashtypes, setCashtypes] = useState([]);
-
-    const [isCheque, setIsCheque] = useState(false);
 
     const resetVariables = () => {
         message("Ready to make new additions");
-        setCustomerid('');
-        setDt(date_format(new Date()));
-        setCashtypeid('');
-        setBank('');
+        setEmployee('');
+        setMonth('');
         setTaka('');
+        setDeduct('');
+        setArear('');
+        setNote('');
     }
+
 
     const showAddForm = async () => {
         setShow(true);
         resetVariables();
+       
         try {
-            const [responseCustomer, responseCashtype] = await Promise.all([
-                fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/customer`),
-                fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/cashtype`)
-            ]);
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/employee`, {
+                method: "GET",
+                headers: { "Content-Type": "application/json" }
+            });
 
+            if (!response.ok) {
+                throw new Error("Failed to fetch data");
+            }
 
-            console.log(responseCustomer, responseCashtype);
-            setCustomers(responseCustomer);
-            setCashtypes(responseCashtype);
-
+            const data = await response.json();
+            console.log(data);
+            setEmployees(data);
         } catch (error) {
             console.error("Error fetching data:", error);
             setMsg("Failed to fetch data");
         }
-
-
-
-
     }
 
 
@@ -63,11 +59,12 @@ const Add = ({ message }) => {
 
     const createObject = () => {
         return {
-            customerid: customerid,
-            dt: dt,
-            cashtypeid: cashtypeid,
-            bank: bank,
-            taka: taka
+            employee: employee,
+            month: month,
+            taka: taka,
+            deduct: deduct,
+            arear: arear,
+            note: note
         }
     }
 
@@ -76,7 +73,7 @@ const Add = ({ message }) => {
         e.preventDefault();
         try {
             const newObject = createObject();
-            const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/payment`;
+            const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/salary`;
             const requestOptions = {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -84,31 +81,17 @@ const Add = ({ message }) => {
             };
             const response = await fetch(apiUrl, requestOptions);
             if (response.ok) {
-                message("Payment is created!");
+                message("Salary is created!");
             } else {
-                throw new Error("Failed to create payment");
+                throw new Error("Failed to create salary");
             }
         } catch (error) {
-            console.error("Error saving payment data:", error);
-            message("Error saving payment data.");
+            console.error("Error saving salary data:", error);
+            message("Error saving salary data.");
         } finally {
             setShow(false);
         }
     }
-
-
-    const cashtypeChangeHandler = (e) => {
-        const changeValue = e.target.value;
-        setCashtypeid(changeValue);
-        if (changeValue === "65ede63629c4f0b23474c123") {
-            setIsCheque(true);
-            setBank("");
-        } else {
-            setIsCheque(false);
-            setBank(" ");
-        }
-    }
-
 
 
     return (
@@ -127,21 +110,17 @@ const Add = ({ message }) => {
                         <div className="px-6 pb-6 text-black">
                             <form onSubmit={saveHandler}>
                                 <div className="grid grid-cols-1 gap-4 my-4">
-
-                                    <DropdownEn Title="Customerid" Id="customerid" Change={e => setCustomerid(e.target.value)} Value={customerid}>
-                                        {customers.length ? customers.map(customer => <option value={customer._id} key={customer._id}>{customer.name}</option>) : null}
+                                    <DropdownEn Title="Employee" Id="employee" Change={e => setEmployee(e.target.value)} Value={employee}>
+                                        {employees.length ? employees.map(employee => <option value={employee._id} key={employee._id}>{employee.name}</option>) : null}
+                                    </DropdownEn>
+                                    <DropdownEn Title="Month" Id="month" Change={e => setMonth(e.target.value)} Value={month}>
+                                        {monthArray.map(m => <option value={m.opt} key={m.opt}>{m.nm}</option>)}
                                     </DropdownEn>
 
-
-                                    <TextDt Title="Date" Id="dt" Change={e => setDt(e.target.value)} Value={dt} />
-
-
-                                    <DropdownEn Title="Cash Type" Id="cashtypeid" Change={cashtypeChangeHandler} Value={cashtypeid}>
-                                        {cashtypes.length ? cashtypes.map(cashtype => <option value={cashtype._id} key={cashtype._id}>{cashtype.name}</option>) : null}
-                                    </DropdownEn>
-
-                                    {isCheque ? <TextEn Title="Bank" Id="bank" Change={e => setBank(e.target.value)} Value={bank} Chr={150} /> : null}
-                                    <TextNum Title="Taka" Id="taka" Change={e => setTaka(e.target.value)} Value={taka} />
+                                    <TextEn Title="Taka" Id="taka" Change={e => setTaka(e.target.value)} Value={taka} Chr={50} />
+                                    <TextEn Title="Deduct" Id="deduct" Change={e => setDeduct(e.target.value)} Value={deduct} Chr={50} />
+                                    <TextEn Title="Arear" Id="arear" Change={e => setArear(e.target.value)} Value={arear} Chr={50} />
+                                    <TextEn Title="Note" Id="note" Change={e => setNote(e.target.value)} Value={note} Chr={50} />
                                 </div>
                                 <div className="w-full flex justify-start">
                                     <input type="button" onClick={closeAddForm} value="Close" className="bg-pink-600 hover:bg-pink-800 text-white text-center mt-3 mx-0.5 px-4 py-2 font-semibold rounded-md focus:ring-1 ring-blue-200 ring-offset-2 duration-300 cursor-pointer" />
