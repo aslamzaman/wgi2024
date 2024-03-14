@@ -4,9 +4,8 @@ import Add from "@/components/employee/Add";
 import Edit from "@/components/employee/Edit";    
 import Delete from "@/components/employee/Delete";
 
-const date_format = (dt)=>{
-   return new Date(dt).toISOString().split('T')[0];
-}
+const date_format = dt=>new Date(dt).toISOString().split('T')[0];
+
 
 const Employee = () => {
     const [employees, setEmployees] = useState([]);
