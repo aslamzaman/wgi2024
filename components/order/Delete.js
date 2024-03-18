@@ -3,13 +3,13 @@ import { BtnEn } from "@/components/Form";
 
 
 const Delete = ({ message, id, data }) => {
-    const [orderno, setOrderno] = useState("");   
+    const [orderno, setOrderno] = useState('');
     const [show, setShow] = useState(false);
 
     const showDeleteForm = () => {
         setShow(true);
         try {
-           const { orderno } = data.find(order => order._id === id) || { dt: "" };
+           const { orderno } = data.find(order => order._id === id) || { orderno: "" };
            setOrderno(orderno);
            message("Ready to delete"); 
         }

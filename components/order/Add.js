@@ -1,23 +1,24 @@
 import React, { useState } from "react";
-import { BtnSubmit, DropdownEn, TextDt, TextNum, TextEnDisabled } from "@/components/Form";
+import { BtnSubmit, TextDt, TextBnDisabled, DropdownEn, TextNum } from "@/components/Form";
 import { fetchData } from "@/lib/utils/FetchData";
-const date_format = (dt) => new Date(dt).toISOString().split('T')[0];
+const date_format = dt => new Date(dt).toISOString().split('T')[0];
 
 
 const Add = ({ message }) => {
     const [dt, setDt] = useState('');
     const [orderno, setOrderno] = useState('');
-    const [customerid, setCustomerid] = useState('');
-    const [itemid, setItemid] = useState('');
-    const [unitid, setUnitid] = useState('');
+    const [customerId, setCustomerid] = useState('');
+    const [itemId, setItemid] = useState('');
+    const [unitId, setUnitid] = useState('');
     const [qty, setQty] = useState('');
     const [taka, setTaka] = useState('');
+    const [delivery, setDelivery] = useState('');
     const [show, setShow] = useState(false);
-
 
     const [customers, setCustomers] = useState([]);
     const [items, setItems] = useState([]);
     const [unittypes, setUnittypes] = useState([]);
+
 
     const resetVariables = () => {
         message("Ready to make new additions");
@@ -28,6 +29,7 @@ const Add = ({ message }) => {
         setUnitid('');
         setQty('');
         setTaka('');
+        setDelivery([]);
     }
 
 
@@ -61,11 +63,12 @@ const Add = ({ message }) => {
         return {
             dt: dt,
             orderno: orderno,
-            customerid: customerid,
-            itemid: itemid,
-            unitid: unitid,
+            customerId: customerId,
+            itemId: itemId,
+            unitId: unitId,
             qty: qty,
-            taka: taka
+            taka: taka,
+            delivery: delivery
         }
     }
 
@@ -112,20 +115,19 @@ const Add = ({ message }) => {
                             <form onSubmit={saveHandler}>
                                 <div className="grid grid-cols-1 gap-4 my-4">
                                     <TextDt Title="Date" Id="dt" Change={e => setDt(e.target.value)} Value={dt} />
-                                    <TextEnDisabled Title="Order No(Auto generated)" Id="orderno" Change={e => setOrderno(e.target.value)} Value={orderno} Chr="50" />
-
-                                    <DropdownEn Title="Customer" Id="customerid" Change={e => setCustomerid(e.target.value)} Value={customerid} >
-                                        {customers.map(customer => <option value={customer._id} key={customer._id}>{customer.name}</option>)}
+                                    <TextBnDisabled Title="Order No (Auto Generated)" Id="orderno" Change={e => setOrderno(e.target.value)} Value={orderno} Chr={50} />
+                                    <DropdownEn Title="Customer" Id="customerId" Change={e => setCustomerid(e.target.value)} Value={customerId}>
+                                        {customers.length ? customers.map(customer => <option value={customer._id} key={customer._id}>{customer.name}</option>) : null}
                                     </DropdownEn>
 
-                                    <DropdownEn Title="Item" Id="itemid" Change={e => setItemid(e.target.value)} Value={itemid} >
-                                        {items.map(item => <option value={item._id} key={item._id}>{item.name}</option>)}
+
+                                    <DropdownEn Title="Item" Id="itemId" Change={e => setItemid(e.target.value)} Value={itemId}>
+                                        {items.length ? items.map(item => <option value={item._id} key={item._id}>{item.name}</option>) : null}
                                     </DropdownEn>
 
-                                    <DropdownEn Title="Unit" Id="unitid" Change={e => setUnitid(e.target.value)} Value={unitid} >
-                                        {unittypes.map(unittype => <option value={unittype._id} key={unittype._id}>{unittype.name}</option>)}
+                                    <DropdownEn Title="Unit" Id="unitId" Change={e => setUnitid(e.target.value)} Value={unitId}>
+                                        {unittypes.length ? unittypes.map(unittype => <option value={unittype._id} key={unittype._id}>{unittype.name}</option>) : null}
                                     </DropdownEn>
-
 
                                     <TextNum Title="Quantity" Id="qty" Change={e => setQty(e.target.value)} Value={qty} />
                                     <TextNum Title="Taka" Id="taka" Change={e => setTaka(e.target.value)} Value={taka} />

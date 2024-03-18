@@ -3,7 +3,9 @@ import React, { useState, useEffect } from "react";
 import Add from "@/components/order/Add";
 import Edit from "@/components/order/Edit";    
 import Delete from "@/components/order/Delete";
-const date_format = dt=>new Date(dt).toISOString().split('T')[0];
+import Delivery from "@/components/order/Delivery";
+const date_format = dt => new Date(dt).toISOString().split('T')[0];
+
 
 const Order = () => {
     const [orders, setOrders] = useState([]);
@@ -54,8 +56,9 @@ const Order = () => {
                                   <th className="text-center border-b border-gray-200 px-4 py-2">Customer</th>
                                   <th className="text-center border-b border-gray-200 px-4 py-2">Item</th>
                                   <th className="text-center border-b border-gray-200 px-4 py-2">Unit</th>
-                                  <th className="text-center border-b border-gray-200 px-4 py-2">Qty</th>
-                                  <th className="text-center border-b border-gray-200 px-4 py-2">Taka</th>                                
+                                  <th className="text-center border-b border-gray-200 px-4 py-2">Quantity</th>
+                                  <th className="text-center border-b border-gray-200 px-4 py-2">Taka</th>
+                                  <th className="text-center border-b border-gray-200 px-4 py-2">Delivery</th>                                
                             <th className="w-[100px] font-normal">
                                 <div className="w-full flex justify-end py-0.5 pr-4">
                                     <Add message={messageHandler} />
@@ -69,20 +72,22 @@ const Order = () => {
                                 <tr className="border-b border-gray-200 hover:bg-gray-100" key={order._id}>                                           
                                           <td className="text-center py-2 px-4">{date_format(order.dt)}</td>
                                           <td className="text-center py-2 px-4">{order.orderno}</td>
-                                          <td className="text-center py-2 px-4">{order.customerid.name}</td>
-                                          <td className="text-center py-2 px-4">{order.itemid.name}</td>
-                                          <td className="text-center py-2 px-4">{order.unitid.name}</td>
+                                          <td className="text-center py-2 px-4">{order.customerId.name}</td>
+                                          <td className="text-center py-2 px-4">{order.itemId.name}</td>
+                                          <td className="text-center py-2 px-4">{order.unitId.name}</td>
                                           <td className="text-center py-2 px-4">{order.qty}</td>
-                                          <td className="text-center py-2 px-4">{order.taka}</td>                                            
+                                          <td className="text-center py-2 px-4">{order.taka}</td>
+                                          <td className="text-center py-2 px-4">{order.delivery}</td>                                            
                                     <td className="flex justify-end items-center space-x-1 mt-1">
                                         <Edit message={messageHandler} id={order._id} data={orders} />
                                         <Delete message={messageHandler} id={order._id} data={orders} />
+                                        <Delivery message={messageHandler} id={order._id} data={orders} />
                                     </td>
                                 </tr>
                             ))
                         ): (
                             <tr>
-                                <td colSpan={8} className="text-center py-10 px-4">
+                                <td colSpan={9} className="text-center py-10 px-4">
                                     Data not available.
                                 </td>
                             </tr>
