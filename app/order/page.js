@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import Add from "@/components/order/Add";
 import Edit from "@/components/order/Edit";    
 import Delete from "@/components/order/Delete";
-import Delivery from "@/components/order/Delivery";
 const date_format = dt => new Date(dt).toISOString().split('T')[0];
 
 
@@ -58,7 +57,7 @@ const Order = () => {
                                   <th className="text-center border-b border-gray-200 px-4 py-2">Unit</th>
                                   <th className="text-center border-b border-gray-200 px-4 py-2">Quantity</th>
                                   <th className="text-center border-b border-gray-200 px-4 py-2">Taka</th>
-                                  <th className="text-center border-b border-gray-200 px-4 py-2">Delivery</th>                                
+                                                                 
                             <th className="w-[100px] font-normal">
                                 <div className="w-full flex justify-end py-0.5 pr-4">
                                     <Add message={messageHandler} />
@@ -77,11 +76,9 @@ const Order = () => {
                                           <td className="text-center py-2 px-4">{order.unitId.name}</td>
                                           <td className="text-center py-2 px-4">{order.qty}</td>
                                           <td className="text-center py-2 px-4">{order.taka}</td>
-                                          <td className="text-center py-2 px-4">{order.delivery}</td>                                            
                                     <td className="flex justify-end items-center space-x-1 mt-1">
                                         <Edit message={messageHandler} id={order._id} data={orders} />
                                         <Delete message={messageHandler} id={order._id} data={orders} />
-                                        <Delivery message={messageHandler} id={order._id} data={orders} />
                                     </td>
                                 </tr>
                             ))

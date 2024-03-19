@@ -19,8 +19,8 @@ export const GET = async () => {
 export const POST = async (Request) => {
   try {
     await Connect();
-    const { dt, orderno, customerId, itemId, unitId, qty, taka, delivery } = await Request.json();
-    const orders = await OrderModel.create({ dt, orderno, customerId, itemId, unitId, qty, taka, delivery });
+    const { dt, orderno, customerId, itemId, unitId, qty, taka } = await Request.json();
+    const orders = await OrderModel.create({ dt, orderno, customerId, itemId, unitId, qty, taka });
     return NextResponse.json(orders);
   } catch (err) {
     console.error(err);
