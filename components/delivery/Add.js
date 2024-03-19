@@ -90,7 +90,7 @@ const Add = ({ message }) => {
                             <form onSubmit={saveHandler}>
                                 <div className="grid grid-cols-1 gap-4 my-4">
                                     <DropdownEn Title="Order No" Id="orderId" Change={e => setOrderid(e.target.value)} Value={orderId}>
-                                        {orders.length ? orders.map(order => <option value={order._id} key={order._id}>{order.orderno}</option>) : null}
+                                        {orders.length ? orders.map(order => <option value={order._id} key={order._id}>{order.orderno}-{order.customerId.name}-{order.itemId.name}</option>) : null}
                                     </DropdownEn>
                                     <TextDt Title="Date" Id="dt" Change={e => setDt(e.target.value)} Value={dt} />
                                     <TextNum Title="Quantity" Id="qty" Change={e => setQty(e.target.value)} Value={qty} />

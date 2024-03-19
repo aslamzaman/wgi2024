@@ -76,7 +76,7 @@ const Order = () => {
                                           <td className="text-center py-2 px-4">{order.unitId.name}</td>
                                           <td className="text-center py-2 px-4">{order.qty}</td>
                                           <td className="text-center py-2 px-4">{order.taka}</td>
-                                    <td className="flex justify-end items-center space-x-1 mt-1">
+                                    <td className="flex justify-end items-center space-x-1 mt-1 mr-2">
                                         <Edit message={messageHandler} id={order._id} data={orders} />
                                         <Delete message={messageHandler} id={order._id} data={orders} />
                                     </td>

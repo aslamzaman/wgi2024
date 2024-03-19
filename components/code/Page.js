@@ -103,7 +103,7 @@ ${thead_string}
                                 ${tbl}s.map(${tbl} => (
                                     <tr className="border-b border-gray-200 hover:bg-gray-100" key={${tbl}._id}>                                           
 ${td_string}                                            
-                                        <td className="flex justify-end items-center space-x-1 mt-1">
+                                        <td className="flex justify-end items-center space-x-1 mt-1 mr-2">
                                             <Edit message={messageHandler} id={${tbl}._id} data={${tbl}s} />
                                             <Delete message={messageHandler} id={${tbl}._id} data={${tbl}s} />
                                         </td>
