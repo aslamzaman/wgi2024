@@ -1,5 +1,8 @@
-import React, { useState } from "react";
-import { TextEn, BtnSubmit, TextDt, TextEnDisabled } from "@/components/Form";
+import React, { useEffect, useState } from "react";
+import { TextEn, BtnSubmit, BtnSubmitSm, TextDt, TextEnDisabled, DropdownEn } from "@/components/Form";
+import { addItem, getItems, deleteItem } from "@/lib/utils/LocalDatabase";
+import { Close } from "../Icons";
+import { fetchData } from "@/lib/utils/FetchData";
 const date_format = dt => new Date(dt).toISOString().split('T')[0];
 
 
@@ -13,7 +16,12 @@ const Add = ({ message }) => {
     const [payment, setPayment] = useState('');
     const [show, setShow] = useState(false);
 
+    //--------------------------------------------------
+    const [customers, setCustomers] = useState([]);
     const [items, setItems] = useState([]);
+    const [unittypes, setUnittypes] = useState([]);
+
+    const [locals, setLocals] = useState([]);
 
     const [newItem, setNewItem] = useState('');
     const [newUnit, setNewUnit] = useState('');
@@ -34,9 +42,26 @@ const Add = ({ message }) => {
     }
 
 
-    const showAddForm = () => {
+    const showAddForm = async () => {
         setShow(true);
         resetVariables();
+
+        try {
+            const [responseCustomer, responseItem, responseUnittype] = await Promise.all([
+                fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/customer`),
+                fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/item`),
+                fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/unittype`)
+            ]);
+console.log(responseCustomer, responseItem, responseUnittype)
+            setCustomers(responseCustomer);
+            setItems(responseItem);
+            setUnittypes(responseUnittype);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+            setMsg("Failed to fetch data");
+        }
+
+
     }
 
 
@@ -83,21 +108,50 @@ const Add = ({ message }) => {
         }
     }
 
-
-    const itemAddHandler = () => {
-        const id = Date.now();
-        let obj = {
-            id: id,
-            name: newItem,
-            rate: newRate,
-            unit: newUnit,
-            qty: newQty
+    //------------------------------------------------------------------
+    useEffect(() => {
+        const getLocalData = () => {
+            try {
+                const response = getItems('invoice');
+                setLocals(response.data);
+            } catch (error) {
+                console.log(error);
+            }
         }
+        getLocalData();
+    }, [msg]);
 
-        items.push(obj);
-        setMsg(id);
-        console.log(obj)
+
+    const itemAddHandler = (e) => {
+        e.preventDefault();
+        try {
+            const id = Date.now();
+            let obj = {
+                id: id,
+                name: newItem,
+                rate: newRate,
+                unit: newUnit,
+                qty: newQty
+            }
+
+            const response = addItem("invoice", obj);
+            setMsg("Added Id: " + id);
+        } catch (error) {
+            console.log(error);
+            setMsg("Error saving post data.");
+        }
     }
+
+    const deleteHookHandler = (id) => {
+        try {
+            const response = deleteItem("invoice", id);
+            setMsg("Deleted Id: " + id);
+        } catch (error) {
+            console.log(error);
+            setMsg("Data deleting error");
+        }
+    }
+
 
 
     return (
@@ -127,28 +181,62 @@ const Add = ({ message }) => {
                                 </div>
 
                                 <div className="col-span-2">
-                                    <div className="flex justify-end">
-                                        <button onClick={itemAddHandler} className="bg-blue-600 hover:bg-blue-800 text-white text-center mt-3 mx-0.5 px-4 py-2 font-semibold rounded-md focus:ring-1 ring-blue-200 ring-offset-2 duration-300 cursor-pointer">Add Item</button>
+                                    <p className="w-full text-start text-xs text-blue-400 mt-1">{msg}</p>
+                                    <form onSubmit={itemAddHandler}>
+                                        <div className="grid grid-cols-6 gap-4 mb-4">
+                                            <div className="col-span-2">
+                                                <DropdownEn Title="Item" Id="newItem" Change={e => setNewItem(e.target.value)} Value={newItem}>
+                                                    {items.length ? items.map(item => <option value={item.name} key={item._id}>{item.name}</option>) : null}
+                                                </DropdownEn>
+                                            </div>
+                                            <TextEn Title="Qty" Id="newQty" Change={e => setNewQty(e.target.value)} Value={newQty} Chr={50} />
+                                            <DropdownEn Title="Unit" Id="newUnit" Change={e => setNewUnit(e.target.value)} Value={newUnit}>
+                                                {unittypes.length ? unittypes.map(unittype => <option value={unittype.name} key={unittype._id}>{unittype.name}</option>) : null}
+                                            </DropdownEn>
 
-                                    </div>
-                                    <p>{msg}</p>
-                                    <div className="grid grid-cols-5 gap-4 mb-4">
-                                        <div className="col-span-2">
-                                            <TextEn Title="Item" Id="newItem" Change={e => setNewItem(e.target.value)} Value={newItem} Chr={50} />
+                                            <TextEn Title="Rate" Id="newRate" Change={e => setNewRate(e.target.value)} Value={newRate} Chr={50} />
+                                            <BtnSubmitSm Title="Save" Class="h-8 mt-5 bg-blue-600 hover:bg-blue-800 text-white" />
                                         </div>
-                                        <TextEn Title="Qty" Id="newQty" Change={e => setNewQty(e.target.value)} Value={newQty} Chr={50} />
-                                        <TextEn Title="Unit" Id="newUnit" Change={e => setNewUnit(e.target.value)} Value={newUnit} Chr={50} />
-                                        <TextEn Title="Rate" Id="newRate" Change={e => setNewRate(e.target.value)} Value={newRate} Chr={50} />
-                                    </div>
-                                    {items.length ? items.map(itm => (
-                                        <div className="grid grid-cols-5" key={itm.id}>
-                                            <p className="w-fit">{itm.name}</p>
-                                            <p>{itm.rate}</p>
-                                            <p>{itm.unit}</p>
-                                            <p>{itm.qty}</p>
-                                            <p>Delete</p>
-                                        </div>
-                                    )) : null}
+                                    </form>
+
+                                    <table className="w-full border border-gray-200 mt-10">
+                                        <thead>
+                                            <tr className="w-full bg-gray-200">
+                                                <th className="text-start border-b border-gray-200 px-4 py-2">Item</th>
+                                                <th className="text-center border-b border-gray-200 px-4 py-2">Rate</th>
+                                                <th className="text-center border-b border-gray-200 px-4 py-2">Unit</th>
+                                                <th className="text-center border-b border-gray-200 px-4 py-2">Qty</th>
+                                                <th className="w-[80px] text-end border-b border-gray-200 px-4 py-2">
+                                                    Action
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {locals.length ? (
+                                                locals.map(itm => (
+                                                    <tr className="border-b border-gray-200 hover:bg-gray-100" key={itm.id}>
+                                                        <td className="text-start py-2 px-4 line-clamp-4">{itm.name}</td>
+                                                        <td className="text-center py-2 px-4">{itm.rate}</td>
+                                                        <td className="text-center py-2 px-4 line-clamp-2">{itm.unit}</td>
+                                                        <td className="text-center py-2 px-4">{itm.qty}</td>
+
+                                                        <td className="flex justify-end items-center space-x-1 mt-1 mr-2">
+                                                            <Close Click={() => deleteHookHandler(itm.id)} Size="w-6 h-6" />
+                                                        </td>
+                                                    </tr>
+                                                ))
+                                            ) : (
+                                                <tr>
+                                                    <td colSpan={8} className="text-center py-10 px-4">
+                                                        Data not available.
+                                                    </td>
+                                                </tr>
+                                            )}
+                                        </tbody>
+                                    </table>
+
+
+
                                 </div>
 
                             </div>

@@ -20,6 +20,11 @@ export const BtnSubmit = ({ Title, Class }) => {
   )
 }
 
+export const BtnSubmitSm = ({ Title, Class }) => {
+  return (
+    <button type="submit" className={`text-xs text-center mx-0.5 px-2 py-0.5 font-semibold rounded-md focus:ring-1 ring-blue-200 ring-offset-2 duration-300 ${Class}`}>{Title}</button>
+  )
+}
 
 //---------------------------------------------------------------------
 
