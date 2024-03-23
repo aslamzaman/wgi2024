@@ -3,14 +3,14 @@ import { BtnEn } from "@/components/Form";
 
 
 const Delete = ({ message, id, data }) => {
-    const [invoiceno, setInvoiceno] = useState("");   
+    const [dt, setDt] = useState("");   
     const [show, setShow] = useState(false);
 
     const showDeleteForm = () => {
         setShow(true);
         try {
-           const { invoiceno } = data.find(invoice => invoice._id === id) || { invoiceno: "" };
-           setInvoiceno(invoiceno);
+           const { dt } = data.find(moneyreceipt => moneyreceipt._id === id) || { dt: "" };
+           setDt(dt);
            message("Ready to delete"); 
         }
         catch (err) {
@@ -27,13 +27,13 @@ const Delete = ({ message, id, data }) => {
 
     const deleteYesClick = async () => {
         try {
-            const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/invoice/${id}`;
+            const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/moneyreceipt/${id}`;
             const requestOptions = { method: "DELETE" };
             const response = await fetch(apiUrl, requestOptions);
             if (response.ok) {
                 message("Deleted successfully completed");
             } else {
-                throw new Error("Failed to delete invoice");
+                throw new Error("Failed to delete moneyreceipt");
             }         
         } catch (error) {
             console.log(error);
@@ -49,7 +49,7 @@ const Delete = ({ message, id, data }) => {
                 <div className="fixed inset-0 py-16 bg-black bg-opacity-30 backdrop-blur-sm z-10 overflow-auto">
                     <div className="w-11/12 md:w-1/2 mx-auto mb-10 bg-white border-2 border-gray-300 rounded-md shadow-md duration-300">
                         <div className="px-6 md:px-6 py-2 flex justify-between items-center border-b border-gray-300">
-                            <h1 className="text-xl font-bold text-blue-600">Delete Existing Invoice</h1>
+                            <h1 className="text-xl font-bold text-blue-600">Delete Existing Data</h1>
                             <button onClick={closeDeleteForm} className="w-8 h-8 p-0.5 bg-gray-50 hover:bg-gray-300 rounded-md transition duration-500">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-full h-full stroke-black">
                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -67,7 +67,7 @@ const Delete = ({ message, id, data }) => {
 
                                 <h1 className="text-sm text-center text-gray-600 mt-4">
                                     Are you sure to proceed with the deletion?</h1>
-                                <h1 className="text-center text-gray-600 font-bold">Invoice No: {invoiceno}</h1>
+                                <h1 className="text-center text-gray-600 font-bold">{dt}</h1>
                             </div>
                             <div className="w-full flex justify-start">
                                 <BtnEn Title="Close" Click={closeDeleteForm} Class="bg-pink-700 hover:bg-pink-900 text-white mr-1" />

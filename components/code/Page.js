@@ -86,38 +86,40 @@ ${loadMongo}
                     <h1 className="w-full text-xl lg:text-3xl font-bold text-center text-blue-700">${titleCase(tbl)}</h1>
                 </div>    
                 <div className="px-4 lg:px-6">
-                    <p className="w-full text-sm text-red-700">{msg}</p>    
-                    <table className="w-full border border-gray-200">
-                        <thead>
-                            <tr className="w-full bg-gray-200">                           
+                    <p className="w-full text-sm text-red-700">{msg}</p>  
+                    <div className="p-2 overflow-auto">  
+                        <table className="w-full border border-gray-200">
+                            <thead>
+                                <tr className="w-full bg-gray-200">                           
 ${thead_string}                                
-                                <th className="w-[100px] font-normal">
-                                    <div className="w-full flex justify-end py-0.5 pr-4">
-                                        <Add message={messageHandler} />
-                                    </div>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {${tbl}s.length ?(
-                                ${tbl}s.map(${tbl} => (
-                                    <tr className="border-b border-gray-200 hover:bg-gray-100" key={${tbl}._id}>                                           
+                                    <th className="w-[100px] font-normal">
+                                        <div className="w-full flex justify-end py-0.5 pr-4">
+                                            <Add message={messageHandler} />
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {${tbl}s.length ?(
+                                    ${tbl}s.map(${tbl} => (
+                                        <tr className="border-b border-gray-200 hover:bg-gray-100" key={${tbl}._id}>                                           
 ${td_string}                                            
-                                        <td className="flex justify-end items-center space-x-1 mt-1 mr-2">
-                                            <Edit message={messageHandler} id={${tbl}._id} data={${tbl}s} />
-                                            <Delete message={messageHandler} id={${tbl}._id} data={${tbl}s} />
+                                            <td className="flex justify-end items-center space-x-1 mt-1 mr-2">
+                                                <Edit message={messageHandler} id={${tbl}._id} data={${tbl}s} />
+                                                <Delete message={messageHandler} id={${tbl}._id} data={${tbl}s} />
+                                            </td>
+                                        </tr>
+                                    ))
+                                ): (
+                                    <tr>
+                                        <td colSpan={${data.length}} className="text-center py-10 px-4">
+                                            Data not available.
                                         </td>
                                     </tr>
-                                ))
-                            ): (
-                                <tr>
-                                    <td colSpan={${data.length}} className="text-center py-10 px-4">
-                                        Data not available.
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </>
         );

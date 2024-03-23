@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { MenuData } from '@/lib/MenuData';
 
 
+
 const MenuWraper = ({ Title, children }) => {
     return <div className="flex flex-col p-2 md:p-4 items-center bg-gradient-to-t from-white to-pink-100 rounded-lg">
         <h1 className='w-full text-start text-xs font-bold text-gray-500 italic'>{Title}</h1>
@@ -37,7 +38,7 @@ const Layout = ({ children }) => {
 
     useEffect(() => {
         const user = sessionStorage.getItem('log');
-        if (user === undefined || user === undefined) {
+        if (user === undefined || user === null) {
             router.push('/');
         }
     }, [router]);

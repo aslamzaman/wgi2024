@@ -50,7 +50,7 @@ const Order = () => {
     return (
         <>
             <div className="w-full my-6 lg:my-8">
-                <h1 className="w-full text-xl lg:text-3xl font-bold text-center text-blue-700">Order</h1>
+                <h1 className="w-full text-xl lg:text-3xl font-bold text-center text-blue-700">Purchase Order</h1>
             </div>    
             <div className="px-4 lg:px-6">
                 <p className="w-full text-sm text-red-700">{msg}</p>   

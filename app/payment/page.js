@@ -52,9 +52,9 @@ const Payment = () => {
                 <table className="w-full border border-gray-200">
                     <thead>
                         <tr className="w-full bg-gray-200">                           
-                                  <th className="text-center border-b border-gray-200 px-4 py-2">Customerid</th>
+                                  <th className="text-center border-b border-gray-200 px-4 py-2">Customer</th>
                                   <th className="text-center border-b border-gray-200 px-4 py-2">Date</th>
-                                  <th className="text-center border-b border-gray-200 px-4 py-2">Cashtypeid</th>
+                                  <th className="text-center border-b border-gray-200 px-4 py-2">Type</th>
                                   <th className="text-center border-b border-gray-200 px-4 py-2">Bank</th>
                                   <th className="text-center border-b border-gray-200 px-4 py-2">Taka</th>                                
                             <th className="w-[100px] font-normal">
