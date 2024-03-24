@@ -67,7 +67,7 @@ const Invoice = () => {
         doc.setFont("Poppins-Bold", "bold");
         doc.setFontSize(16);
 
-        doc.text(`BILL/INVOICE`, 105, 60, null, null, "center");
+        doc.text(`BILL/INVOICE`, 105, 55, null, null, "center");
 
         doc.setFont("Poppins-Regular", "normal");
         doc.setFontSize(12);

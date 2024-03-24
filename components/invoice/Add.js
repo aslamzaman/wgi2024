@@ -11,7 +11,6 @@ const Add = ({ message }) => {
     const [invoiceno, setInvoiceno] = useState('');
     const [shipment, setShipment] = useState('');
     const [customer, setCustomer] = useState('');
-    const [item, setItem] = useState('');
     const [deduct, setDeduct] = useState('');
     const [payment, setPayment] = useState('');
     const [show, setShow] = useState(false);
@@ -36,7 +35,6 @@ const Add = ({ message }) => {
         setInvoiceno(createInvoice);
         setShipment('');
         setCustomer('');
-        setItem('');
         setDeduct('');
         setPayment('');
     }
@@ -78,7 +76,7 @@ const Add = ({ message }) => {
             dt: dt,
             invoiceno: invoiceno,
             shipment: shipment,
-            customer: {name: customerSplit[0], address: customerSplit[1], contact: customerSplit[2] },
+            customer: { name: customerSplit[0], address: customerSplit[1], contact: customerSplit[2] },
             item: response.data,
             deduct: deduct,
             payment: payment
@@ -90,7 +88,7 @@ const Add = ({ message }) => {
         e.preventDefault();
         try {
             const newObject = createObject();
-           // console.log(newObject); return false;
+            // console.log(newObject); return false;
             const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/invoice`;
             const requestOptions = {
                 method: "POST",
@@ -136,7 +134,7 @@ const Add = ({ message }) => {
                 qty: newQty
             }
 
-            const response = addItem("invoice", obj);
+            addItem("invoice", obj);
             setMsg("Added Id: " + id);
         } catch (error) {
             console.log(error);
@@ -146,7 +144,7 @@ const Add = ({ message }) => {
 
     const deleteHookHandler = (id) => {
         try {
-            const response = deleteItem("invoice", id);
+            deleteItem("invoice", id);
             setMsg("Deleted Id: " + id);
         } catch (error) {
             console.log(error);
@@ -173,10 +171,10 @@ const Add = ({ message }) => {
 
                         <div className="px-6 pb-6 text-black">
 
-                            <div className="w-full p-1 overflow-auto">
-                                <p className="w-full text-start text-xs text-blue-400 mt-1">{msg}</p>
+                            <div className="w-full p-1  bg-blue-200 p-2  mt-1 rounded-md overflow-auto">
+                                <p className="w-full text-start text-xs text-blue-400">{msg}</p>
                                 <form onSubmit={itemAddHandler}>
-                                    <div className="grid grid-cols-4 gap-2 bg-blue-200 p-2">
+                                    <div className="grid grid-cols-4 gap-2">
                                         <div className="col-span-4">
                                             <DropdownEn Title="Item" Id="newItem" Change={e => setNewItem(e.target.value)} Value={newItem}>
                                                 {items.length ? items.map(item => <option value={`${item.name};${item.description}`} key={item._id}>{item.name}</option>) : null}
@@ -191,7 +189,7 @@ const Add = ({ message }) => {
                                     </div>
                                 </form>
                             </div>
-                            
+
                             <div className="w-full p-1 overflow-auto">
                                 <table className="w-full border border-gray-100 mt-1">
                                     <thead>
@@ -230,9 +228,9 @@ const Add = ({ message }) => {
                                 </table>
                             </div>
 
-                            <div className="w-full p-1 overflow-auto">
+                            <div className="w-full mt-10 bg-pink-200 p-2 rounded-md overflow-auto">
                                 <form onSubmit={saveHandler}>
-                                    <div className="grid grid-cols-3 gap-3 my-1 bg-pink-200 p-2">
+                                    <div className="grid grid-cols-3 gap-3 my-1">
                                         <TextDt Title="Date" Id="dt" Change={e => setDt(e.target.value)} Value={dt} />
                                         <TextEnDisabled Title="Invoice No (Auto)" Id="invoiceno" Change={e => setInvoiceno(e.target.value)} Value={invoiceno} Chr={50} />
                                         <TextNum Title="Shipment" Id="shipment" Change={e => setShipment(e.target.value)} Value={shipment} />
