@@ -22,18 +22,26 @@ const Customer = () => {
                     fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/payment`)
                 ]);
 
-               // console.log(responseCustomer, responseOrder, responseDelivery, responsePayment);
-          
-                const resultDeues = responseCustomer.map(customer=>{
-                    const matchOrder = responseOrder.filter(order=>order.customerId === customer._id);
-                    const matchDeliver = responseDelivery.filter(delivery=>delivery.orderId.customerId === customer._id);
-                    const matchPayment = responsePayment.filter(payment=>payment.customerid === customer._id);
-                    return{
-                        ...customer,matchOrder,matchDeliver,matchPayment
+                const ss = { c: responseCustomer, o: responseOrder, d: responseDelivery, p: responsePayment }
+                //   console.log(ss);
+
+                const resultDeues = responseCustomer.map(customer => {
+                    const matchOrder = responseOrder.filter(order => order.customerId._id === customer._id);
+                    const matchDeliver = responseDelivery.filter(delivery => delivery.orderId.customerId === customer._id);
+                    const matchPayment = responsePayment.filter(payment => payment.customerid._id === customer._id);
+                    //--------------------------------------------------------------------------------------------
+                    const orderTaka = matchOrder.reduce((t, c) => t + c.qty * c.taka, 0);
+                    return {
+                        ...customer,
+                        matchOrder,
+                        orderLength: matchOrder.length,
+                        orderTaka: orderTaka,
+                        matchDeliver,
+                        matchPayment
                     }
-                    
+
                 })
-console.log(resultDeues);
+                console.log(resultDeues);
 
 
 
@@ -50,7 +58,7 @@ console.log(resultDeues);
                 const data = await response.json();
                 console.log(data);
                 setCustomers(data);
-            
+
             } catch (error) {
                 console.error("Error fetching data:", error);
                 setMsg("Failed to fetch data");

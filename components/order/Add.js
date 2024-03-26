@@ -1,51 +1,49 @@
-import React, { useState } from "react";
-import { BtnSubmit, TextDt, TextBnDisabled, DropdownEn, TextNum } from "@/components/Form";
-import { fetchData } from "@/lib/utils/FetchData";
+import React, { useEffect, useState } from "react";
+import { TextEn, BtnSubmit, TextDt, TextEnDisabled, DropdownEn } from "@/components/Form";
 const date_format = dt => new Date(dt).toISOString().split('T')[0];
+import { fetchData } from "@/lib/utils/FetchData";
+import AddLocal from "./AddLocal";
+import DeleteLocal from "./DeleteLocal";
+import { getItems } from "@/lib/utils/LocalDatabase";
 
 
 const Add = ({ message }) => {
     const [dt, setDt] = useState('');
-    const [orderno, setOrderno] = useState('');
+    const [deliveryDt, setDeliverydt] = useState('');
+    const [orderNo, setOrderno] = useState('');
     const [customerId, setCustomerid] = useState('');
-    const [itemId, setItemid] = useState('');
-    const [unitId, setUnitid] = useState('');
-    const [qty, setQty] = useState('');
-    const [taka, setTaka] = useState('');
-    const [delivery, setDelivery] = useState('');
+    const [items, setItems] = useState([]);
     const [show, setShow] = useState(false);
 
     const [customers, setCustomers] = useState([]);
-    const [items, setItems] = useState([]);
-    const [unittypes, setUnittypes] = useState([]);
+    const [localitems, setLocalitems] = useState([]);
+    const [msg, setMsg] = useState("Data ready");
+
 
 
     const resetVariables = () => {
         message("Ready to make new additions");
         setDt(date_format(new Date()));
-        setOrderno(Math.round(Date.now() / 1000));
+        setDeliverydt(date_format(new Date()));
+        setOrderno(Math.round(Date.now() / 60000));
         setCustomerid('');
-        setItemid('');
-        setUnitid('');
-        setQty('');
-        setTaka('');
-        setDelivery([]);
+        setItems([]);
     }
 
 
     const showAddForm = async () => {
         setShow(true);
         resetVariables();
-        try {
-            const [responseCustomer, responseItem, responseUnittype] = await Promise.all([
-                fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/customer`),
-                fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/item`),
-                fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/unittype`)
-            ]);
+        let data = getItems("localitem");
+        console.log("Aslam", data)
+        setLocalitems(data.data);
 
-            setCustomers(responseCustomer);
-            setItems(responseItem);
-            setUnittypes(responseUnittype);
+
+
+        try {
+            const response = await fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/customer`);
+            console.log(response);
+            setCustomers(response);
         } catch (error) {
             console.error("Error fetching data:", error);
             setMsg("Failed to fetch data");
@@ -60,21 +58,26 @@ const Add = ({ message }) => {
 
 
     const createObject = () => {
+        let localData = getItems("localitem");
         return {
             dt: dt,
-            orderno: orderno,
+            deliveryDt: deliveryDt,
+            orderNo: orderNo,
             customerId: customerId,
-            itemId: itemId,
-            unitId: unitId,
-            qty: qty,
-            taka: taka,
-            delivery: delivery
+            items: localData.data
         }
     }
 
 
     const saveHandler = async (e) => {
         e.preventDefault();
+        let localData = getItems("localitem");
+        if(localData.data.length < 1){
+            message("No item added!");
+            setShow(false);
+            return false; 
+        } 
+            
         try {
             const newObject = createObject();
             const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/order`;
@@ -97,12 +100,21 @@ const Add = ({ message }) => {
         }
     }
 
+    //--------------------------------------------------
+
+
+
+    const msgHandler = (data) => {
+        setMsg(data);
+        let localData = getItems("localitem");
+        setLocalitems(localData.data);
+    }
 
     return (
         <>
             {show && (
                 <div className="fixed inset-0 py-16 bg-black bg-opacity-30 backdrop-blur-sm z-10 overflow-auto">
-                    <div className="w-11/12 md:w-1/2 mx-auto mb-10 bg-white border-2 border-gray-300 rounded-md shadow-md duration-300">
+                    <div className="w-11/12 md:w-9/12 mx-auto mb-10 bg-white border-2 border-gray-300 rounded-md shadow-md duration-300">
                         <div className="px-6 md:px-6 py-2 flex justify-between items-center border-b border-gray-300">
                             <h1 className="text-xl font-bold text-blue-600">Add New Data</h1>
                             <button onClick={closeAddForm} className="w-8 h-8 p-0.5 bg-gray-50 hover:bg-gray-300 rounded-md transition duration-500">
@@ -111,32 +123,71 @@ const Add = ({ message }) => {
                                 </svg>
                             </button>
                         </div>
-                        <div className="px-6 pb-6 text-black">
+                        <div className="px-6 pb-6 text-black overflow-auto">
+
+                            <h1 className="py-4font-bold text-lg text-start">Add Items</h1>
+
+                            <table className="w-full border border-gray-200">
+                                <thead>
+                                    <tr className="w-full bg-gray-200">
+                                        <th className="text-center border-b border-gray-200 py-2">Name</th>
+                                        <th className="text-center border-b border-gray-200 py-2">Description</th>
+                                        <th className="text-center border-b border-gray-200 py-2">Qty</th>
+                                        <th className="text-center border-b border-gray-200 py-2">Unit</th>
+                                        <th className="text-center border-b border-gray-200 py-2">Taka</th>
+                                        <th className="font-normal flex justify-end mt-1">
+                                            <AddLocal Msg={msgHandler} />
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        localitems.length ? localitems.map((localitem) => {
+                                            return (
+                                                <tr className="border-b border-gray-200 hover:bg-gray-100" key={localitem.id}>
+                                                    <td className="text-center py-2 px-4">{localitem.name}</td>
+                                                    <td className="text-center py-2 px-4">{localitem.description}</td>
+                                                    <td className="text-center py-2 px-4">{localitem.qty}</td>
+                                                    <td className="text-center py-2 px-4">{localitem.unit}</td>
+                                                    <td className="text-center py-2 px-4">{localitem.taka}</td>
+                                                    <td className="flex justify-end items-center mt-1">
+                                                        <DeleteLocal Msg={msgHandler} Id={localitem.id} />
+                                                    </td>
+                                                </tr>
+                                            )
+                                        })
+                                            : null
+                                    }
+                                </tbody>
+                            </table>
+
+
+
+
+                            <div className="bg-black h-[2px] my-6"></div>
+
                             <form onSubmit={saveHandler}>
-                                <div className="grid grid-cols-1 gap-4 my-4">
+                                <div className="grid grid-cols-2 gap-4 my-4">
                                     <TextDt Title="Date" Id="dt" Change={e => setDt(e.target.value)} Value={dt} />
-                                    <TextBnDisabled Title="Order No (Auto Generated)" Id="orderno" Change={e => setOrderno(e.target.value)} Value={orderno} Chr={50} />
+                                    <TextDt Title="Delivery Date" Id="deliveryDt" Change={e => setDeliverydt(e.target.value)} Value={deliveryDt} />
+                                    <TextEnDisabled Title="Order No (Auto)" Id="orderNo" Change={e => setOrderno(e.target.value)} Value={orderNo} Chr={50} />
                                     <DropdownEn Title="Customer" Id="customerId" Change={e => setCustomerid(e.target.value)} Value={customerId}>
                                         {customers.length ? customers.map(customer => <option value={customer._id} key={customer._id}>{customer.name}</option>) : null}
                                     </DropdownEn>
 
-
-                                    <DropdownEn Title="Item" Id="itemId" Change={e => setItemid(e.target.value)} Value={itemId}>
-                                        {items.length ? items.map(item => <option value={item._id} key={item._id}>{item.name}</option>) : null}
-                                    </DropdownEn>
-
-                                    <DropdownEn Title="Unit" Id="unitId" Change={e => setUnitid(e.target.value)} Value={unitId}>
-                                        {unittypes.length ? unittypes.map(unittype => <option value={unittype._id} key={unittype._id}>{unittype.name}</option>) : null}
-                                    </DropdownEn>
-
-                                    <TextNum Title="Quantity" Id="qty" Change={e => setQty(e.target.value)} Value={qty} />
-                                    <TextNum Title="Taka" Id="taka" Change={e => setTaka(e.target.value)} Value={taka} />
+                                    {/* <TextEn Title="Items" Id="items" Change={e => setItems(e.target.value)} Value={items} Chr={50} /> */}
                                 </div>
                                 <div className="w-full flex justify-start">
                                     <input type="button" onClick={closeAddForm} value="Close" className="bg-pink-600 hover:bg-pink-800 text-white text-center mt-3 mx-0.5 px-4 py-2 font-semibold rounded-md focus:ring-1 ring-blue-200 ring-offset-2 duration-300 cursor-pointer" />
                                     <BtnSubmit Title="Save" Class="bg-blue-600 hover:bg-blue-800 text-white" />
                                 </div>
                             </form>
+
+
+
+
+
+
                         </div>
                     </div>
                 </div>

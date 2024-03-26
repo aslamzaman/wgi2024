@@ -1,28 +1,28 @@
 import React, { useState } from "react";
-import { BtnSubmit, DropdownEn, TextDt, TextNum } from "@/components/Form";
-import { fetchData } from "@/lib/utils/FetchData";
-const date_format = dt => new Date(dt).toISOString().split('T')[0];
+import { TextEn, BtnSubmit } from "@/components/Form";
+const date_format = dt => new Date(dt).toISOString().split('T')[0];      
 
-
-const Edit = ({ message, id, data }) => {
-    const [orderId, setOrderid] = useState('');
+const Edit = ({ message, id, data }) => {        
     const [dt, setDt] = useState('');
-    const [qty, setQty] = useState('');
+    const [orderId, setOrderid] = useState('');
+    const [invoiceNo, setInvoiceno] = useState('');
+    const [shipment, setShipment] = useState('');
+    const [deduct, setDeduct] = useState('');
+    const [payment, setPayment] = useState('');        
     const [show, setShow] = useState(false);
 
-    const [orders, setOrders] = useState([]);
 
-    const showEditForm = async () => {
+    const showEditForm =  () => {
         setShow(true);
         message("Ready to edit");
         try {
-            const response = await fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/order`);
-            setOrders(response);
-            //----------------------------------------------------
-            const { orderId, dt, qty } = data.find(delivery => delivery._id === id) || { orderId: '', dt: '', qty: '' };
-            setOrderid(orderId._id);
-            setDt(date_format(dt));
-            setQty(qty);
+           const { dt, orderId, invoiceNo, shipment, deduct, payment } = data.find(delivery => delivery._id === id) || { dt: '', orderId: '', invoiceNo: '', shipment: '', deduct: '', payment: '' };
+           setDt(dt);
+           setOrderid(orderId);
+           setInvoiceno(invoiceNo);
+           setShipment(shipment);
+           setDeduct(deduct);
+           setPayment(payment);             
         } catch (err) {
             console.log(err);
         }
@@ -37,9 +37,12 @@ const Edit = ({ message, id, data }) => {
 
     const createObject = () => {
         return {
-            orderId: orderId,
-            dt: dt,
-            qty: qty
+          dt: dt,
+          orderId: orderId,
+          invoiceNo: invoiceNo,
+          shipment: shipment,
+          deduct: deduct,
+          payment: payment                
         }
     }
 
@@ -59,11 +62,11 @@ const Edit = ({ message, id, data }) => {
                 message("Updated successfully completed");
             } else {
                 throw new Error("Failed to create delivery");
-            }
+            } 
         } catch (error) {
             console.error("Error saving delivery data:", error);
             message("Error saving delivery data.");
-        } finally {
+        }finally {
             setShow(false);
         }
     }
@@ -77,25 +80,26 @@ const Edit = ({ message, id, data }) => {
                         <div className="px-6 md:px-6 py-2 flex justify-between items-center border-b border-gray-300">
                             <h1 className="text-xl font-bold text-blue-600">Edit Existing Data</h1>
                             <button onClick={closeEditForm} className="w-8 h-8 p-0.5 bg-gray-50 hover:bg-gray-300 rounded-md transition duration-500">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-full h-full stroke-black">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                            </button>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-full h-full stroke-black">
+                               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                           </svg>
+                          </button>
 
                         </div>
 
                         <div className="px-6 pb-6 text-black">
                             <form onSubmit={saveHandler} >
                                 <div className="grid grid-cols-1 gap-4 my-4">
-                                    <DropdownEn Title="Order No" Id="orderId" Change={e => setOrderid(e.target.value)} Value={orderId}>
-                                        {orders.length ? orders.map(order => <option value={order._id} key={order._id}>{order.orderno}-{order.customerId.name}-{order.itemId.name}</option>) : null}
-                                    </DropdownEn>
-                                    <TextDt Title="Date" Id="dt" Change={e => setDt(e.target.value)} Value={dt} />
-                                    <TextNum Title="Quantity" Id="qty" Change={e => setQty(e.target.value)} Value={qty} />
+                                    <TextEn Title="Dt" Id="dt" Change={e => setDt(e.target.value)} Value={dt} Chr={50} />
+                                    <TextEn Title="Orderid" Id="orderId" Change={e => setOrderid(e.target.value)} Value={orderId} Chr={50} />
+                                    <TextEn Title="Invoiceno" Id="invoiceNo" Change={e => setInvoiceno(e.target.value)} Value={invoiceNo} Chr={50} />
+                                    <TextEn Title="Shipment" Id="shipment" Change={e => setShipment(e.target.value)} Value={shipment} Chr={50} />
+                                    <TextEn Title="Deduct" Id="deduct" Change={e => setDeduct(e.target.value)} Value={deduct} Chr={50} />
+                                    <TextEn Title="Payment" Id="payment" Change={e => setPayment(e.target.value)} Value={payment} Chr={50} />                                        
                                 </div>
                                 <div className="w-full flex justify-start">
-                                    <input type="button" onClick={closeEditForm} value="Close" className="bg-pink-600 hover:bg-pink-800 text-white text-center mt-3 mx-0.5 px-4 py-2 font-semibold rounded-md focus:ring-1 ring-blue-200 ring-offset-2 duration-300 cursor-pointer" />
-                                    <BtnSubmit Title="Save" Class="bg-blue-600 hover:bg-blue-800 text-white" />
+                                <input type="button" onClick={closeEditForm} value="Close" className="bg-pink-600 hover:bg-pink-800 text-white text-center mt-3 mx-0.5 px-4 py-2 font-semibold rounded-md focus:ring-1 ring-blue-200 ring-offset-2 duration-300 cursor-pointer" />
+                                <BtnSubmit Title="Save" Class="bg-blue-600 hover:bg-blue-800 text-white" />
                                 </div>
                             </form>
                         </div>
@@ -106,7 +110,7 @@ const Edit = ({ message, id, data }) => {
             )}
             <button onClick={showEditForm} title="Edit" className="px-1 py-1 hover:bg-teal-300 rounded-md transition duration-500">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5 stroke-black hover:stroke-blue-800 transition duration-500">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
                 </svg>
             </button>
         </>

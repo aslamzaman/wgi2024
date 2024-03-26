@@ -1,31 +1,39 @@
 import React, { useState } from "react";
-import { BtnSubmit, DropdownEn, TextDt, TextNum } from "@/components/Form";
-import { fetchData } from "@/lib/utils/FetchData";
+import { TextEn, BtnSubmit, TextDt, DropdownEn, TextEnDisabled, TextNum } from "@/components/Form";
 const date_format = dt => new Date(dt).toISOString().split('T')[0];
+import { fetchData } from "@/lib/utils/FetchData";
 
 const Add = ({ message }) => {
-    const [orderId, setOrderid] = useState('');
     const [dt, setDt] = useState('');
-    const [qty, setQty] = useState('');
+    const [orderId, setOrderid] = useState('');
+    const [invoiceNo, setInvoiceno] = useState('');
+    const [shipment, setShipment] = useState('');
+    const [deduct, setDeduct] = useState('');
+    const [payment, setPayment] = useState('');
     const [show, setShow] = useState(false);
 
     const [orders, setOrders] = useState([]);
 
+
     const resetVariables = () => {
         message("Ready to make new additions");
-        setOrderid('');
         setDt(date_format(new Date()));
-        setQty('');
+        setOrderid('');
+        setInvoiceno(Math.round(Date.now()/60000));
+        setShipment('');
+        setDeduct('');
+        setPayment('');
     }
 
 
     const showAddForm = async () => {
         setShow(true);
         resetVariables();
+
         try {
-            const data = await fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/order`);
-            console.log(data)
-            setOrders(data);
+            const response = await fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/order`);
+            console.log(response);
+            setOrders(response);
         } catch (error) {
             console.error("Error fetching data:", error);
             setMsg("Failed to fetch data");
@@ -41,9 +49,12 @@ const Add = ({ message }) => {
 
     const createObject = () => {
         return {
-            orderId: orderId,
             dt: dt,
-            qty: qty
+            orderId: orderId,
+            invoiceNo: invoiceNo,
+            shipment: shipment,
+            deduct: deduct,
+            payment: payment
         }
     }
 
@@ -89,11 +100,14 @@ const Add = ({ message }) => {
                         <div className="px-6 pb-6 text-black">
                             <form onSubmit={saveHandler}>
                                 <div className="grid grid-cols-1 gap-4 my-4">
-                                    <DropdownEn Title="Order No" Id="orderId" Change={e => setOrderid(e.target.value)} Value={orderId}>
-                                        {orders.length ? orders.map(order => <option value={order._id} key={order._id}>{order.orderno}-{order.customerId.name}-{order.itemId.name}</option>) : null}
-                                    </DropdownEn>
                                     <TextDt Title="Date" Id="dt" Change={e => setDt(e.target.value)} Value={dt} />
-                                    <TextNum Title="Quantity" Id="qty" Change={e => setQty(e.target.value)} Value={qty} />
+                                    <DropdownEn Title="Order No" Id="orderId" Change={e => setOrderid(e.target.value)} Value={orderId} >
+                                        {orders.length ? orders.map(order => <option value={order._id} key={order._id}>{order.orderNo}</option>) : null}
+                                    </DropdownEn>
+                                    <TextEnDisabled Title="Invoice No (Auto)" Id="invoiceNo" Change={e => setInvoiceno(e.target.value)} Value={invoiceNo} Chr={50} />
+                                    <TextNum Title="Shipment" Id="shipment" Change={e => setShipment(e.target.value)} Value={shipment} />
+                                    <TextNum Title="Deduct" Id="deduct" Change={e => setDeduct(e.target.value)} Value={deduct} />
+                                    <TextNum Title="Payment" Id="payment" Change={e => setPayment(e.target.value)} Value={payment} />
                                 </div>
                                 <div className="w-full flex justify-start">
                                     <input type="button" onClick={closeAddForm} value="Close" className="bg-pink-600 hover:bg-pink-800 text-white text-center mt-3 mx-0.5 px-4 py-2 font-semibold rounded-md focus:ring-1 ring-blue-200 ring-offset-2 duration-300 cursor-pointer" />

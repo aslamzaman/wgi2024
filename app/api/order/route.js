@@ -6,7 +6,7 @@ import { OrderModel } from '@/lib/Models';
 export const GET = async () => {
   try {
     await Connect();
-    const orders = await OrderModel.find({}).populate('customerId').populate('itemId').populate('unitId').sort({_id:'desc'});
+    const orders = await OrderModel.find({}).populate('customerId').sort({_id:'desc'});
     return NextResponse.json( orders );
   } catch (error) {
     console.error('GET Error:', error);
@@ -19,8 +19,8 @@ export const GET = async () => {
 export const POST = async (Request) => {
   try {
     await Connect();
-    const { dt, orderno, customerId, itemId, unitId, qty, taka } = await Request.json();
-    const orders = await OrderModel.create({ dt, orderno, customerId, itemId, unitId, qty, taka });
+    const { dt, deliveryDt, orderNo, customerId, items } = await Request.json();
+    const orders = await OrderModel.create({ dt, deliveryDt, orderNo, customerId, items });
     return NextResponse.json(orders);
   } catch (err) {
     console.error(err);
