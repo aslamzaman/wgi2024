@@ -51,11 +51,13 @@ const Delivery = () => {
                         <thead>
                             <tr className="w-full bg-gray-200">                           
                                   <th className="text-center border-b border-gray-200 px-4 py-2">Date</th>
-                                  <th className="text-center border-b border-gray-200 px-4 py-2">Orderid</th>
                                   <th className="text-center border-b border-gray-200 px-4 py-2">Invoice No</th>
+                                  <th className="text-center border-b border-gray-200 px-4 py-2">Order No</th>
                                   <th className="text-center border-b border-gray-200 px-4 py-2">Shipment</th>
                                   <th className="text-center border-b border-gray-200 px-4 py-2">Deduct</th>
-                                  <th className="text-center border-b border-gray-200 px-4 py-2">Payment</th>                                
+                                  <th className="text-center border-b border-gray-200 px-4 py-2">Payment</th>
+                                  <th className="text-center border-b border-gray-200 px-4 py-2">Customer</th>
+                                           
                                 <th className="w-[100px] font-normal">
                                     <div className="w-full flex justify-end py-0.5 pr-4">
                                         <Add message={messageHandler} />
@@ -68,11 +70,13 @@ const Delivery = () => {
                                 deliverys.map(delivery => (
                                     <tr className="border-b border-gray-200 hover:bg-gray-100" key={delivery._id}>                                           
                                           <td className="text-center py-2 px-4">{date_format(delivery.dt)}</td>
-                                          <td className="text-center py-2 px-4">{delivery.orderId}</td>
                                           <td className="text-center py-2 px-4">{delivery.invoiceNo}</td>
+                                          <td className="text-center py-2 px-4">{delivery.orderNo}</td>
                                           <td className="text-center py-2 px-4">{delivery.shipment}</td>
                                           <td className="text-center py-2 px-4">{delivery.deduct}</td>
-                                          <td className="text-center py-2 px-4">{delivery.payment}</td>                                            
+                                          <td className="text-center py-2 px-4">{delivery.payment}</td>
+                                          <td className="text-center py-2 px-4">{delivery.customer.name}</td>
+                                             
                                         <td className="flex justify-end items-center space-x-1 mt-1 mr-2">
                                             <Edit message={messageHandler} id={delivery._id} data={deliverys} />
                                             <Delete message={messageHandler} id={delivery._id} data={deliverys} />
@@ -81,7 +85,7 @@ const Delivery = () => {
                                 ))
                             ): (
                                 <tr>
-                                    <td colSpan={7} className="text-center py-10 px-4">
+                                    <td colSpan={9} className="text-center py-10 px-4">
                                         Data not available.
                                     </td>
                                 </tr>

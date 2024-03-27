@@ -4,6 +4,8 @@ import Add from "@/components/order/Add";
 import Edit from "@/components/order/Edit";
 import Delete from "@/components/order/Delete";
 const date_format = dt => new Date(dt).toISOString().split('T')[0];
+import { fetchData } from "@/lib/utils/FetchData";
+
 
 
 const Order = () => {
@@ -12,26 +14,28 @@ const Order = () => {
 
 
     useEffect(() => {
-        const fetchData = async () => {
+        const loadData = async () => {
             try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/order`, {
-                    method: "GET",
-                    headers: { "Content-Type": "application/json" }
+
+                const [responseOrder, responseDelivery] = await Promise.all([
+                    fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/order`),
+                    fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/delivery`)
+                ]);
+                const result = responseOrder.map(order => {
+                    const matchDelivery = responseDelivery.find(delivery => delivery.orderNo === order.orderNo);
+                    return {
+                        ...order,
+                        delivery: matchDelivery ? true : false
+                    }
                 });
-
-                if (!response.ok) {
-                    throw new Error("Failed to fetch data");
-                }
-
-                const data = await response.json();
-                console.log(data);
-                setOrders(data);
+console.log(result)
+                setOrders(result);
             } catch (error) {
                 console.error("Error fetching data:", error);
                 setMsg("Failed to fetch data");
             }
         };
-        fetchData();
+        loadData();
     }, [msg]);
 
 
@@ -68,7 +72,7 @@ const Order = () => {
                                 orders.map(order => {
                                     let tTaka = order.items.reduce((t, c) => t + (c.qty * c.taka), 0);
                                     return (
-                                        <tr className="border-b border-gray-200 hover:bg-gray-100" key={order._id}>
+                                        <tr className={`border-b border-gray-200 hover:bg-gray-100 ${order.delivery===true?'line-through text-red-400':'no-underline text-black'}`} key={order._id}>
                                             <td className="text-center py-2 px-4">{date_format(order.dt)}</td>
                                             <td className="text-center py-2 px-4">{date_format(order.deliveryDt)}</td>
                                             <td className="text-center py-2 px-4">{order.orderNo}</td>

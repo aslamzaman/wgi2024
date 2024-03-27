@@ -1,28 +1,36 @@
 import React, { useState } from "react";
-import { TextEn, BtnSubmit, TextDt, DropdownEn, TextEnDisabled, TextNum } from "@/components/Form";
+import { TextEn, BtnSubmit, TextDt, TextEnDisabled, DropdownEn } from "@/components/Form";
 const date_format = dt => new Date(dt).toISOString().split('T')[0];
 import { fetchData } from "@/lib/utils/FetchData";
 
+
+
+
+
 const Add = ({ message }) => {
     const [dt, setDt] = useState('');
-    const [orderId, setOrderid] = useState('');
     const [invoiceNo, setInvoiceno] = useState('');
+    const [orderNum, setOrderNum] = useState('');
+    const [orderNo, setOrderno] = useState('');
     const [shipment, setShipment] = useState('');
     const [deduct, setDeduct] = useState('');
     const [payment, setPayment] = useState('');
+    const [customer, setCustomer] = useState({});
+    const [items, setItems] = useState([]);
     const [show, setShow] = useState(false);
 
     const [orders, setOrders] = useState([]);
 
-
     const resetVariables = () => {
         message("Ready to make new additions");
         setDt(date_format(new Date()));
-        setOrderid('');
-        setInvoiceno(Math.round(Date.now()/60000));
+        setInvoiceno(Math.round(Date.now() / 60000));
+        setOrderno('');
         setShipment('');
         setDeduct('');
         setPayment('');
+        setCustomer({});
+        setItems([]);
     }
 
 
@@ -31,9 +39,17 @@ const Add = ({ message }) => {
         resetVariables();
 
         try {
-            const response = await fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/order`);
-            console.log(response);
-            setOrders(response);
+            const [responseOrder, responseDelivery] = await Promise.all([
+                fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/order`),
+                fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/delivery`)
+            ]);
+          //  const result = responseOrder.filter(order=> !responseDelivery.some(delivery =>delivery.orderNo === order.orderNo));
+   
+            const result = responseOrder.filter(order => 
+                responseDelivery.every(delivery => delivery.orderNo !== order.orderNo)
+            );
+
+            setOrders(result);
         } catch (error) {
             console.error("Error fetching data:", error);
             setMsg("Failed to fetch data");
@@ -50,11 +66,13 @@ const Add = ({ message }) => {
     const createObject = () => {
         return {
             dt: dt,
-            orderId: orderId,
             invoiceNo: invoiceNo,
+            orderNo: orderNum,
             shipment: shipment,
             deduct: deduct,
-            payment: payment
+            payment: payment,
+            customer: customer,
+            items: items
         }
     }
 
@@ -84,11 +102,23 @@ const Add = ({ message }) => {
     }
 
 
+    const ordernoChangeHandler = (e) => {
+        const orderIdValue = e.target.value;
+        setOrderno(orderIdValue);
+        //---------------------------------------------------
+        const result = orders.find(order => order._id === orderIdValue);
+        setOrderNum(result.orderNo);
+        setCustomer(result.customerId);
+        setItems(result.items);
+    }
+
+
+
     return (
         <>
             {show && (
                 <div className="fixed inset-0 py-16 bg-black bg-opacity-30 backdrop-blur-sm z-10 overflow-auto">
-                    <div className="w-11/12 md:w-1/2 mx-auto mb-10 bg-white border-2 border-gray-300 rounded-md shadow-md duration-300">
+                    <div className="w-11/12 md:w-9/12 mx-auto mb-10 bg-white border-2 border-gray-300 rounded-md shadow-md duration-300">
                         <div className="px-6 md:px-6 py-2 flex justify-between items-center border-b border-gray-300">
                             <h1 className="text-xl font-bold text-blue-600">Add New Data</h1>
                             <button onClick={closeAddForm} className="w-8 h-8 p-0.5 bg-gray-50 hover:bg-gray-300 rounded-md transition duration-500">
@@ -99,15 +129,18 @@ const Add = ({ message }) => {
                         </div>
                         <div className="px-6 pb-6 text-black">
                             <form onSubmit={saveHandler}>
-                                <div className="grid grid-cols-1 gap-4 my-4">
+                                <div className="grid grid-cols-2 gap-4 my-4">
                                     <TextDt Title="Date" Id="dt" Change={e => setDt(e.target.value)} Value={dt} />
-                                    <DropdownEn Title="Order No" Id="orderId" Change={e => setOrderid(e.target.value)} Value={orderId} >
-                                        {orders.length ? orders.map(order => <option value={order._id} key={order._id}>{order.orderNo}</option>) : null}
-                                    </DropdownEn>
+
                                     <TextEnDisabled Title="Invoice No (Auto)" Id="invoiceNo" Change={e => setInvoiceno(e.target.value)} Value={invoiceNo} Chr={50} />
-                                    <TextNum Title="Shipment" Id="shipment" Change={e => setShipment(e.target.value)} Value={shipment} />
-                                    <TextNum Title="Deduct" Id="deduct" Change={e => setDeduct(e.target.value)} Value={deduct} />
-                                    <TextNum Title="Payment" Id="payment" Change={e => setPayment(e.target.value)} Value={payment} />
+                                    <DropdownEn Title="Order No" Id="orderNo" Change={ordernoChangeHandler} Value={orderNo}>
+                                        {orders.length ? orders.map(order => <option value={order._id} key={order._id}>{order.orderNo}-{order.customerId.name}</option>) : null}
+                                    </DropdownEn>
+
+                                    <TextEn Title="Shipment" Id="shipment" Change={e => setShipment(e.target.value)} Value={shipment} Chr={50} />
+                                    <TextEn Title="Deduct" Id="deduct" Change={e => setDeduct(e.target.value)} Value={deduct} Chr={50} />
+                                    <TextEn Title="Payment" Id="payment" Change={e => setPayment(e.target.value)} Value={payment} Chr={50} />
+
                                 </div>
                                 <div className="w-full flex justify-start">
                                     <input type="button" onClick={closeAddForm} value="Close" className="bg-pink-600 hover:bg-pink-800 text-white text-center mt-3 mx-0.5 px-4 py-2 font-semibold rounded-md focus:ring-1 ring-blue-200 ring-offset-2 duration-300 cursor-pointer" />

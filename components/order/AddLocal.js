@@ -93,7 +93,7 @@ const AddLocal = ({ Msg }) => {
                                 <DropdownEn Title="Name" Id="name" Change={itemChangeHandler} Value={name}>
                                     {items.length ? items.map(item => <option value={`${item.name};${item.description}`} key={item._id}>{item.name}</option>) : null}
                                 </DropdownEn>
-                                <TextEn Title="Qty" Id="qty" Change={e => setQty(e.target.value)} Value={qty} Chr="50" />
+                                <TextEn Title="Quantity" Id="qty" Change={e => setQty(e.target.value)} Value={qty} Chr="50" />
                                 <DropdownEn Title="Unit" Id="unit" Change={e => setUnit(e.target.value)} Value={unit}>
                                     {unittypes.length ? unittypes.map(unittype => <option value={unittype.name} key={unittype._id}>{unittype.name}</option>) : null}
                                 </DropdownEn>

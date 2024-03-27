@@ -43,7 +43,17 @@ const Add = ({ message }) => {
         try {
             const response = await fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/customer`);
             console.log(response);
-            setCustomers(response);
+            const SortResult = response.sort((a, b) => {
+                if ((a.name).toUpperCase() < (b.name).toUpperCase()) {
+                  return -1;
+                } else {
+                  return 1;
+                }
+              });
+
+
+            setCustomers(SortResult);
+
         } catch (error) {
             console.error("Error fetching data:", error);
             setMsg("Failed to fetch data");
@@ -132,7 +142,7 @@ const Add = ({ message }) => {
                                     <tr className="w-full bg-gray-200">
                                         <th className="text-center border-b border-gray-200 py-2">Name</th>
                                         <th className="text-center border-b border-gray-200 py-2">Description</th>
-                                        <th className="text-center border-b border-gray-200 py-2">Qty</th>
+                                        <th className="text-center border-b border-gray-200 py-2">Quantity</th>
                                         <th className="text-center border-b border-gray-200 py-2">Unit</th>
                                         <th className="text-center border-b border-gray-200 py-2">Taka</th>
                                         <th className="font-normal flex justify-end mt-1">

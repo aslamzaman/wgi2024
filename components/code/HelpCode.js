@@ -47,9 +47,16 @@ const url_2 = "`${process.env.NEXT_PUBLIC_URL}/gender/read_all`";
       }, 0);
       
       
- *** Filter:-
+ *** Filter1:-
  const result = staffs.filter(s => parseInt(s.place_id) === 1699884047193); // return array    
-  
+ 
+ 
+ *** Filter2:-
+ const result = responseOrder.filter(order => 
+  responseDelivery.every(delivery => delivery.orderNo !== order.orderNo)
+);
+
+
  
  *** Find:-
  const result = staffs.find(s => parseInt(s.place_id) === 1699884047193); // return object

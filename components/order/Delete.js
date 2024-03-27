@@ -9,7 +9,7 @@ const Delete = ({ message, id, data }) => {
     const showDeleteForm = () => {
         setShow(true);
         try {
-           const { dt } = data.find(order => order._id === id) || { dt: "" };
+           const { dt } = data.find(delivery => delivery._id === id) || { dt: "" };
            setDt(dt);
            message("Ready to delete"); 
         }
@@ -27,13 +27,13 @@ const Delete = ({ message, id, data }) => {
 
     const deleteYesClick = async () => {
         try {
-            const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/order/${id}`;
+            const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/delivery/${id}`;
             const requestOptions = { method: "DELETE" };
             const response = await fetch(apiUrl, requestOptions);
             if (response.ok) {
                 message("Deleted successfully completed");
             } else {
-                throw new Error("Failed to delete order");
+                throw new Error("Failed to delete delivery");
             }         
         } catch (error) {
             console.log(error);

@@ -4,9 +4,12 @@ import { TextEn, BtnSubmit } from "@/components/Form";
 
 const Edit = ({ message, id, data }) => {        
     const [dt, setDt] = useState('');
-    const [deliveryDt, setDeliverydt] = useState('');
+    const [invoiceNo, setInvoiceno] = useState('');
     const [orderNo, setOrderno] = useState('');
-    const [customerId, setCustomerid] = useState('');
+    const [shipment, setShipment] = useState('');
+    const [deduct, setDeduct] = useState('');
+    const [payment, setPayment] = useState('');
+    const [customer, setCustomer] = useState('');
     const [items, setItems] = useState('');        
     const [show, setShow] = useState(false);
 
@@ -15,11 +18,14 @@ const Edit = ({ message, id, data }) => {
         setShow(true);
         message("Ready to edit");
         try {
-           const { dt, deliveryDt, orderNo, customerId, items } = data.find(order => order._id === id) || { dt: '', deliveryDt: '', orderNo: '', customerId: '', items: '' };
+           const { dt, invoiceNo, orderNo, shipment, deduct, payment, customer, items } = data.find(delivery => delivery._id === id) || { dt: '', invoiceNo: '', orderNo: '', shipment: '', deduct: '', payment: '', customer: '', items: '' };
            setDt(dt);
-           setDeliverydt(deliveryDt);
+           setInvoiceno(invoiceNo);
            setOrderno(orderNo);
-           setCustomerid(customerId);
+           setShipment(shipment);
+           setDeduct(deduct);
+           setPayment(payment);
+           setCustomer(customer);
            setItems(items);             
         } catch (err) {
             console.log(err);
@@ -36,9 +42,12 @@ const Edit = ({ message, id, data }) => {
     const createObject = () => {
         return {
           dt: dt,
-          deliveryDt: deliveryDt,
+          invoiceNo: invoiceNo,
           orderNo: orderNo,
-          customerId: customerId,
+          shipment: shipment,
+          deduct: deduct,
+          payment: payment,
+          customer: customer,
           items: items                
         }
     }
@@ -48,7 +57,7 @@ const Edit = ({ message, id, data }) => {
         e.preventDefault();
         try {
             const newObject = createObject();
-            const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/order/${id}`;
+            const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/delivery/${id}`;
             const requestOptions = {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
@@ -58,11 +67,11 @@ const Edit = ({ message, id, data }) => {
             if (response.ok) {
                 message("Updated successfully completed");
             } else {
-                throw new Error("Failed to create order");
+                throw new Error("Failed to create delivery");
             } 
         } catch (error) {
-            console.error("Error saving order data:", error);
-            message("Error saving order data.");
+            console.error("Error saving delivery data:", error);
+            message("Error saving delivery data.");
         }finally {
             setShow(false);
         }
@@ -88,9 +97,12 @@ const Edit = ({ message, id, data }) => {
                             <form onSubmit={saveHandler} >
                                 <div className="grid grid-cols-1 gap-4 my-4">
                                     <TextEn Title="Dt" Id="dt" Change={e => setDt(e.target.value)} Value={dt} Chr={50} />
-                                    <TextEn Title="Deliverydt" Id="deliveryDt" Change={e => setDeliverydt(e.target.value)} Value={deliveryDt} Chr={50} />
+                                    <TextEn Title="Invoiceno" Id="invoiceNo" Change={e => setInvoiceno(e.target.value)} Value={invoiceNo} Chr={50} />
                                     <TextEn Title="Orderno" Id="orderNo" Change={e => setOrderno(e.target.value)} Value={orderNo} Chr={50} />
-                                    <TextEn Title="Customerid" Id="customerId" Change={e => setCustomerid(e.target.value)} Value={customerId} Chr={50} />
+                                    <TextEn Title="Shipment" Id="shipment" Change={e => setShipment(e.target.value)} Value={shipment} Chr={50} />
+                                    <TextEn Title="Deduct" Id="deduct" Change={e => setDeduct(e.target.value)} Value={deduct} Chr={50} />
+                                    <TextEn Title="Payment" Id="payment" Change={e => setPayment(e.target.value)} Value={payment} Chr={50} />
+                                    <TextEn Title="Customer" Id="customer" Change={e => setCustomer(e.target.value)} Value={customer} Chr={50} />
                                     <TextEn Title="Items" Id="items" Change={e => setItems(e.target.value)} Value={items} Chr={50} />                                        
                                 </div>
                                 <div className="w-full flex justify-start">
