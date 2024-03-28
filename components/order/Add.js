@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { TextEn, BtnSubmit, TextDt, TextEnDisabled, DropdownEn } from "@/components/Form";
+import { BtnSubmit, TextDt, TextEnDisabled, DropdownEn } from "@/components/Form";
 const date_format = dt => new Date(dt).toISOString().split('T')[0];
 import { fetchData } from "@/lib/utils/FetchData";
 import AddLocal from "./AddLocal";
@@ -50,8 +50,6 @@ const Add = ({ message }) => {
                   return 1;
                 }
               });
-
-
             setCustomers(SortResult);
 
         } catch (error) {

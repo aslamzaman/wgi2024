@@ -3,14 +3,14 @@ import { BtnEn } from "@/components/Form";
 
 
 const Delete = ({ message, id, data }) => {
-    const [dt, setDt] = useState("");   
+    const [orderNo, setOrderNo] = useState("");   
     const [show, setShow] = useState(false);
 
     const showDeleteForm = () => {
         setShow(true);
         try {
-           const { dt } = data.find(delivery => delivery._id === id) || { dt: "" };
-           setDt(dt);
+           const { orderNo } = data.find(order => order._id === id) || { orderNo: "" };
+           setOrderNo(orderNo);
            message("Ready to delete"); 
         }
         catch (err) {
@@ -27,13 +27,13 @@ const Delete = ({ message, id, data }) => {
 
     const deleteYesClick = async () => {
         try {
-            const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/delivery/${id}`;
+            const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/order/${id}`;
             const requestOptions = { method: "DELETE" };
             const response = await fetch(apiUrl, requestOptions);
             if (response.ok) {
                 message("Deleted successfully completed");
             } else {
-                throw new Error("Failed to delete delivery");
+                throw new Error("Failed to delete order");
             }         
         } catch (error) {
             console.log(error);
@@ -67,7 +67,7 @@ const Delete = ({ message, id, data }) => {
 
                                 <h1 className="text-sm text-center text-gray-600 mt-4">
                                     Are you sure to proceed with the deletion?</h1>
-                                <h1 className="text-center text-gray-600 font-bold">{dt}</h1>
+                                <h1 className="text-center text-gray-600 font-bold">Order No: {orderNo}</h1>
                             </div>
                             <div className="w-full flex justify-start">
                                 <BtnEn Title="Close" Click={closeDeleteForm} Class="bg-pink-700 hover:bg-pink-900 text-white mr-1" />

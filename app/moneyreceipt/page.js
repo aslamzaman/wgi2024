@@ -12,29 +12,30 @@ require("@/lib/fonts/Poppins-Regular-normal");
 
 const Moneyreceipt = () => {
     const [moneyreceipts, setMoneyreceipts] = useState([]);
+    const [searchText, setSearchText] = useState('28520945');
     const [msg, setMsg] = useState("Data ready");
 
+    const fetchData = async () => {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/moneyreceipt`, {
+                method: "GET",
+                headers: { "Content-Type": "application/json" }
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to fetch data");
+            }
+
+            const data = await response.json();
+            console.log(data);
+            setMoneyreceipts(data);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+            setMsg("Failed to fetch data");
+        }
+    };
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/moneyreceipt`, {
-                    method: "GET",
-                    headers: { "Content-Type": "application/json" }
-                });
-
-                if (!response.ok) {
-                    throw new Error("Failed to fetch data");
-                }
-
-                const data = await response.json();
-                console.log(data);
-                setMoneyreceipts(data);
-            } catch (error) {
-                console.error("Error fetching data:", error);
-                setMsg("Failed to fetch data");
-            }
-        };
         fetchData();
     }, [msg]);
 
@@ -190,6 +191,17 @@ doc.line(135,155,185,155);
     }
 
 
+    const searchClickHandler = () => {
+        const filterResult = moneyreceipts.filter(moneyreceipt => moneyreceipt.receiveNo === parseInt(searchText));
+        console.log(filterResult)
+        setMoneyreceipts(filterResult);
+    }
+
+    const refreshClickHandler = async () => {
+        await fetchData();
+        setMsg("Data ready");
+    }
+
 
     return (
         <>
@@ -197,7 +209,16 @@ doc.line(135,155,185,155);
                 <h1 className="w-full text-xl lg:text-3xl font-bold text-center text-blue-700">Money Receipt</h1>
             </div>
             <div className="px-4 lg:px-6">
-                <p className="w-full text-sm text-red-700">{msg}</p>
+                <div className="flex justify-between items-center px-2">
+                        <p className="w-full text-sm text-red-700">{msg}</p>
+                        <div className="flex justify-end">
+                            <input type="text" onChange={(e) => setSearchText(e.target.value)} value={searchText} placeholder="Invoice No" className="w-full px-4 py-1 text-gray-600 ring-1 focus:ring-4 ring-blue-300 outline-none rounded duration-300" />
+                            <button onClick={searchClickHandler} className="text-center mx-0.5 px-2 py-1 font-semibold rounded-md focus:ring-1 ring-blue-200 ring-offset-2 duration-300 bg-teal-800 hover:bg-teal-600 text-white cursor-pointer">Search</button>
+                            <button onClick={refreshClickHandler} className="text-center mx-0.5 px-2 py-1 font-semibold rounded-md focus:ring-1 ring-blue-200 ring-offset-2 duration-300 bg-green-800 hover:bg-green-600 text-white cursor-pointer">Refresh</button>
+                        </div>
+                    </div>
+
+
                 <div className="p-2 overflow-auto">
                     <table className="w-full border border-gray-200">
                         <thead>

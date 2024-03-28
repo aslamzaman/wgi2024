@@ -52,10 +52,7 @@ const url_2 = "`${process.env.NEXT_PUBLIC_URL}/gender/read_all`";
  
  
  *** Filter2:-
- const result = responseOrder.filter(order => 
-  responseDelivery.every(delivery => delivery.orderNo !== order.orderNo)
-);
-
+ const result = responseOrder.filter(order=> !responseDelivery.some(delivery =>delivery.orderNo === order.orderNo));
 
  
  *** Find:-

@@ -3,14 +3,15 @@ import { BtnEn } from "@/components/Form";
 
 
 const Delete = ({ message, id, data }) => {
-    const [dt, setDt] = useState("");   
+    const [invoiceNo, setInvoiceNo] = useState("");   
     const [show, setShow] = useState(false);
 
     const showDeleteForm = () => {
         setShow(true);
         try {
-           const { dt } = data.find(delivery => delivery._id === id) || { dt: "" };
-           setDt(dt);
+            console.log(data)
+           const { invoiceNo } = data.find(delivery => delivery._id === id) || { invoiceNo: "" };
+           setInvoiceNo(invoiceNo);
            message("Ready to delete"); 
         }
         catch (err) {
@@ -67,7 +68,7 @@ const Delete = ({ message, id, data }) => {
 
                                 <h1 className="text-sm text-center text-gray-600 mt-4">
                                     Are you sure to proceed with the deletion?</h1>
-                                <h1 className="text-center text-gray-600 font-bold">{dt}</h1>
+                                <h1 className="text-center text-gray-600 font-bold">Invoice No: {invoiceNo}</h1>
                             </div>
                             <div className="w-full flex justify-start">
                                 <BtnEn Title="Close" Click={closeDeleteForm} Class="bg-pink-700 hover:bg-pink-900 text-white mr-1" />

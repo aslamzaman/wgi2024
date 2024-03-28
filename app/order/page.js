@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Add from "@/components/order/Add";
-import Edit from "@/components/order/Edit";
 import Delete from "@/components/order/Delete";
 const date_format = dt => new Date(dt).toISOString().split('T')[0];
 import { fetchData } from "@/lib/utils/FetchData";
@@ -28,7 +27,7 @@ const Order = () => {
                         delivery: matchDelivery ? true : false
                     }
                 });
-console.log(result)
+                console.log(result)
                 setOrders(result);
             } catch (error) {
                 console.error("Error fetching data:", error);
@@ -72,15 +71,18 @@ console.log(result)
                                 orders.map(order => {
                                     let tTaka = order.items.reduce((t, c) => t + (c.qty * c.taka), 0);
                                     return (
-                                        <tr className={`border-b border-gray-200 hover:bg-gray-100 ${order.delivery===true?'line-through text-red-400':'no-underline text-black'}`} key={order._id}>
+                                        <tr className={`border-b border-gray-200 hover:bg-gray-100 ${order.delivery === true ? 'line-through text-red-400' : 'no-underline text-black'}`} key={order._id}>
                                             <td className="text-center py-2 px-4">{date_format(order.dt)}</td>
                                             <td className="text-center py-2 px-4">{date_format(order.deliveryDt)}</td>
                                             <td className="text-center py-2 px-4">{order.orderNo}</td>
                                             <td className="text-center py-2 px-4">{order.customerId.name}</td>
                                             <td className="text-center py-2 px-4">{tTaka}</td>
                                             <td className="flex justify-end items-center space-x-1 mt-1 mr-2">
-                                                <Edit message={messageHandler} id={order._id} data={orders} />
+                                            {order.delivery === false ?(  
+                                                <>
                                                 <Delete message={messageHandler} id={order._id} data={orders} />
+                                                </>
+                                            ):null}
                                             </td>
                                         </tr>
                                     )

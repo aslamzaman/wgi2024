@@ -43,12 +43,7 @@ const Add = ({ message }) => {
                 fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/order`),
                 fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/delivery`)
             ]);
-          //  const result = responseOrder.filter(order=> !responseDelivery.some(delivery =>delivery.orderNo === order.orderNo));
-   
-            const result = responseOrder.filter(order => 
-                responseDelivery.every(delivery => delivery.orderNo !== order.orderNo)
-            );
-
+           const result = responseOrder.filter(order=> !responseDelivery.some(delivery =>delivery.orderNo === order.orderNo));
             setOrders(result);
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -109,6 +104,7 @@ const Add = ({ message }) => {
         const result = orders.find(order => order._id === orderIdValue);
         setOrderNum(result.orderNo);
         setCustomer(result.customerId);
+        console.log(result.items);
         setItems(result.items);
     }
 
