@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { TextEn, BtnSubmit } from "@/components/Form";
        
 
-const Edit = ({ message, id, data }) => {        
+const Details = ({ message, id, data }) => {        
     const [name, setName] = useState('');
     const [address, setAddress] = useState('');
     const [contact, setContact] = useState('');        
@@ -12,14 +12,10 @@ const Edit = ({ message, id, data }) => {
     const showEditForm =  () => {
         setShow(true);
         message("Ready to edit");
-        try {
-           const { name, address, contact } = data.find(customer => customer._id === id) || { name: '', address: '', contact: '' };
-           setName(name);
-           setAddress(address);
-           setContact(contact);             
-        } catch (err) {
-            console.log(err);
-        }
+        console.log(id,data)
+        const singleCustomerData = data.find(customer=>customer.customer._id === id);
+        console.log(singleCustomerData);
+
     };
 
 
@@ -67,7 +63,7 @@ const Edit = ({ message, id, data }) => {
         <>
             {show && (
                 <div className="fixed inset-0 py-16 bg-black bg-opacity-30 backdrop-blur-sm z-10 overflow-auto">
-                    <div className="w-11/12 md:w-1/2 mx-auto mb-10 bg-white border-2 border-gray-300 rounded-md shadow-md duration-300">
+                    <div className="w-11/12 md:w-9/12 mx-auto mb-10 bg-white border-2 border-gray-300 rounded-md shadow-md duration-300">
                         <div className="px-6 md:px-6 py-2 flex justify-between items-center border-b border-gray-300">
                             <h1 className="text-xl font-bold text-blue-600">Edit Existing Data</h1>
                             <button onClick={closeEditForm} className="w-8 h-8 p-0.5 bg-gray-50 hover:bg-gray-300 rounded-md transition duration-500">
@@ -96,14 +92,14 @@ const Edit = ({ message, id, data }) => {
                     </div >
                 </div >
             )}
-            <button onClick={showEditForm} title="Edit" className="px-1 py-1 bg-teal-600 hover:bg-teal-700 rounded-md transition duration-500">
+            <button onClick={showEditForm} title="Details" className="px-1 py-1 bg-teal-600 hover:bg-teal-700 rounded-md transition duration-500">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5 stroke-white hover:stroke-gray-100">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
                 </svg>
             </button>
         </>
     )
 }
-export default Edit;
+export default Details;
 
 

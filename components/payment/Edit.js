@@ -1,25 +1,24 @@
 import React, { useState } from "react";
 import { TextEn, BtnSubmit, DropdownEn, TextDt, TextNum } from "@/components/Form";
 import { fetchData } from "@/lib/utils/FetchData";
-
-const date_format = (dt) => {
-    return new Date(dt).toISOString().split('T')[0];
-}
+const date_format = (dt) => new Date(dt).toISOString().split('T')[0];
 
 
 const Edit = ({ message, id, data }) => {
-    const [customerid, setCustomerid] = useState('');
+    const [customer, setCustomer] = useState({});
     const [dt, setDt] = useState('');
-    const [cashtypeid, setCashtypeid] = useState('');
+    const [cashtype, setCashtype] = useState({});
     const [bank, setBank] = useState('');
     const [taka, setTaka] = useState('');
     const [show, setShow] = useState(false);
 
+
     const [customers, setCustomers] = useState([]);
     const [cashtypes, setCashtypes] = useState([]);
+    const [cashtypeChange, setCashtypeChange] = useState('');
+    const [customerChange, setCustomerChange] = useState('');
 
     const [isCheque, setIsCheque] = useState(false);
-
 
     const showEditForm = async () => {
         setShow(true);
@@ -29,23 +28,27 @@ const Edit = ({ message, id, data }) => {
                 fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/customer`),
                 fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/cashtype`)
             ]);
-            console.log(data);
+
+
+            console.log(responseCustomer, responseCashtype);
             setCustomers(responseCustomer);
             setCashtypes(responseCashtype);
 
-            const { customerid, dt, cashtypeid, bank, taka } = data.find(payment => payment._id === id) || { customerid: '', dt: '', cashtypeid: '', bank: '', taka: '' };
- 
-            setCustomerid(customerid._id);
+            //-----------------------------------------------------
+            const { customer, dt, cashtype, bank, taka } = data.find(payment => payment._id === id) || { customer: '', dt: '', cashtype: '', bank: '', taka: '' };
+            setCustomer(customer);
             setDt(date_format(dt));
-            setCashtypeid(cashtypeid._id);
+            setCashtype(cashtype);
             setBank(bank);
             setTaka(taka);
-
-            if (cashtypeid._id === "65ede63629c4f0b23474c123") {
-                setIsCheque(true);
-            } else {
-                setIsCheque(false);
-            }
+            //-------------------------
+            setCustomerChange(customer._id);
+            setCashtypeChange(cashtype._id);
+           if(cashtype._id === "65ede63629c4f0b23474c123"){
+            setIsCheque(true); 
+           } else{
+            setIsCheque(false);
+           }
 
         } catch (err) {
             console.log(err);
@@ -61,9 +64,9 @@ const Edit = ({ message, id, data }) => {
 
     const createObject = () => {
         return {
-            customerid: customerid,
+            customer: customer,
             dt: dt,
-            cashtypeid: cashtypeid,
+            cashtype: cashtype,
             bank: bank,
             taka: taka
         }
@@ -95,9 +98,14 @@ const Edit = ({ message, id, data }) => {
     }
 
 
+
     const cashtypeChangeHandler = (e) => {
         const changeValue = e.target.value;
-        setCashtypeid(changeValue);
+        setCashtypeChange(changeValue);
+
+        const findCashTypeObject = cashtypes.find(cashtype => cashtype._id === changeValue);
+        setCashtype(findCashTypeObject);
+
         if (changeValue === "65ede63629c4f0b23474c123") {
             setIsCheque(true);
             setBank("");
@@ -105,6 +113,16 @@ const Edit = ({ message, id, data }) => {
             setIsCheque(false);
             setBank(" ");
         }
+    }
+
+
+
+    const customerChangeHandler = (e) => {
+        const changeValue = e.target.value;
+        setCustomerChange(changeValue);
+
+        const findCustomerObject = customers.find(customer => customer._id === changeValue);
+        setCustomer(findCustomerObject);
     }
 
 
@@ -125,9 +143,10 @@ const Edit = ({ message, id, data }) => {
                         </div>
 
                         <div className="px-6 pb-6 text-black">
-                            <form onSubmit={saveHandler} >
+                            <form onSubmit={saveHandler}>
                                 <div className="grid grid-cols-1 gap-4 my-4">
-                                    <DropdownEn Title="Customerid" Id="customerid" Change={e => setCustomerid(e.target.value)} Value={customerid}>
+
+                                    <DropdownEn Title="Customer" Id="customerChange" Change={customerChangeHandler} Value={customerChange}>
                                         {customers.length ? customers.map(customer => <option value={customer._id} key={customer._id}>{customer.name}</option>) : null}
                                     </DropdownEn>
 
@@ -135,7 +154,7 @@ const Edit = ({ message, id, data }) => {
                                     <TextDt Title="Date" Id="dt" Change={e => setDt(e.target.value)} Value={dt} />
 
 
-                                    <DropdownEn Title="Cash Type" Id="cashtypeid" Change={cashtypeChangeHandler} Value={cashtypeid}>
+                                    <DropdownEn Title="Cash Type" Id="cashtypeChange" Change={cashtypeChangeHandler} Value={cashtypeChange}>
                                         {cashtypes.length ? cashtypes.map(cashtype => <option value={cashtype._id} key={cashtype._id}>{cashtype.name}</option>) : null}
                                     </DropdownEn>
 

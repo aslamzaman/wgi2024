@@ -11,6 +11,7 @@ const Add = ({ message }) => {
     const [dt, setDt] = useState('');
     const [invoiceNo, setInvoiceno] = useState('');
     const [orderNum, setOrderNum] = useState('');
+    const [orderDt, setOrderDt] = useState('');
     const [orderNo, setOrderno] = useState('');
     const [shipment, setShipment] = useState('');
     const [deduct, setDeduct] = useState('');
@@ -26,6 +27,7 @@ const Add = ({ message }) => {
         setDt(date_format(new Date()));
         setInvoiceno(Math.round(Date.now() / 60000));
         setOrderno('');
+        setOrderDt(date_format(new Date()));
         setShipment('');
         setDeduct('');
         setPayment('');
@@ -44,6 +46,7 @@ const Add = ({ message }) => {
                 fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/delivery`)
             ]);
            const result = responseOrder.filter(order=> !responseDelivery.some(delivery =>delivery.orderNo === order.orderNo));
+          
             setOrders(result);
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -63,6 +66,7 @@ const Add = ({ message }) => {
             dt: dt,
             invoiceNo: invoiceNo,
             orderNo: orderNum,
+            orderDt: orderDt,
             shipment: shipment,
             deduct: deduct,
             payment: payment,
@@ -102,7 +106,9 @@ const Add = ({ message }) => {
         setOrderno(orderIdValue);
         //---------------------------------------------------
         const result = orders.find(order => order._id === orderIdValue);
+        console.log(result)
         setOrderNum(result.orderNo);
+        setOrderDt(result.dt);
         setCustomer(result.customerId);
         console.log(result.items);
         setItems(result.items);

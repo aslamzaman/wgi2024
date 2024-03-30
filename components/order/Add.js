@@ -104,6 +104,7 @@ const Add = ({ message }) => {
             console.error("Error saving order data:", error);
             message("Error saving order data.");
         } finally {
+            localStorage.removeItem("localitem");
             setShow(false);
         }
     }

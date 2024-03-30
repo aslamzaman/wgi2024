@@ -68,6 +68,10 @@ const SortResult = datas.sort((a, b) => {
     }
   });
 
+*** Unique Array
+const inputArray = [1, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 5, 5];
+const uniqueArray = [...new Set(inputArray)];
+
 
   *** PDF Multiple Page:-
   const printMultiplePageHandler = async () => {
