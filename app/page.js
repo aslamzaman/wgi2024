@@ -17,6 +17,7 @@ export default function Home() {
     setUser('');
     setPw('');
     const loadUser = async () => {
+      setMsg("Please wait..");
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/user`, {
           method: "GET",
@@ -28,6 +29,7 @@ export default function Home() {
         }
         const data = await response.json();
         setUserData(data);
+        setMsg("");
       } catch (error) {
         console.error("Error fetching data:", error);
         setMsg("Failed to fetch data");

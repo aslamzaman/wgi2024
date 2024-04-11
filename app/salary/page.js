@@ -9,10 +9,13 @@ import {monthConvert} from "@/lib/SalaryMonths";
 const Salary = () => {
     const [salarys, setSalarys] = useState([]);
     const [msg, setMsg] = useState("Data ready");
+    const [waitMsg, setWaitMsg] = useState("");
 
+    
 
     useEffect(() => {
         const fetchData = async () => {
+            setWaitMsg('Please Wait...');
             try {
                 const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/salary`, {
                     method: "GET",
@@ -26,6 +29,7 @@ const Salary = () => {
                 const data = await response.json();
                 console.log(data);
                 setSalarys(data);
+                setWaitMsg('');
             } catch (error) {
                 console.error("Error fetching data:", error);
                 setMsg("Failed to fetch data");
@@ -44,6 +48,7 @@ const Salary = () => {
         <>
             <div className="w-full my-6 lg:my-8">
                 <h1 className="w-full text-xl lg:text-3xl font-bold text-center text-blue-700">Salary</h1>
+                <p className="w-full text-center text-blue-300">&nbsp;{waitMsg}&nbsp;</p>
             </div>    
             <div className="px-4 lg:px-6">
                 <p className="w-full text-sm text-red-700">{msg}</p>    

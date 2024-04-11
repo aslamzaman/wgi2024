@@ -9,10 +9,12 @@ const date_format = (dt) => new Date(dt).toISOString().split('T')[0];
 const Lc = () => {
     const [lcs, setLcs] = useState([]);
     const [msg, setMsg] = useState("Data ready");
+    const [waitMsg, setWaitMsg] = useState("");
 
 
     useEffect(() => {
         const fetchData = async () => {
+            setWaitMsg('Please Wait...');
             try {
                 const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/lc`, {
                     method: "GET",
@@ -26,6 +28,7 @@ const Lc = () => {
                 const data = await response.json();
                 console.log(data);
                 setLcs(data);
+                setWaitMsg('');
             } catch (error) {
                 console.error("Error fetching data:", error);
                 setMsg("Failed to fetch data");
@@ -43,7 +46,8 @@ const Lc = () => {
     return (
         <>
             <div className="w-full my-6 lg:my-8">
-                <h1 className="w-full text-xl lg:text-3xl font-bold text-center text-blue-700">Lc</h1>
+                <h1 className="w-full text-xl lg:text-3xl font-bold text-center text-blue-700">LC</h1>
+                <p className="w-full text-center text-blue-300">&nbsp;{waitMsg}&nbsp;</p>
             </div>    
             <div className="px-4 lg:px-6">
                 <p className="w-full text-sm text-red-700">{msg}</p>    

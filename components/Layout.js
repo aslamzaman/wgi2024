@@ -58,7 +58,7 @@ const Layout = ({ children }) => {
 
     return (
         <>
-            <header id="top" className="fixed h-[60px] top-0 left-0 right-0 px-4 lg:px-6 bg-gray-100 border-b-2 border-white flex justify-between items-center shadow-lg z-10">
+            <header id="top" className="fixed h-[60px] top-0 left-0 right-0 px-4 lg:px-6 bg-gray-100 border-b-2 border-white flex justify-between items-center shadow-lg z-20">
                 <div className="text-lg font-bold">
                     {menu ? (<h1>Menu</h1>) : (<Link href="/dashboard">WGI</Link>)}
                 </div>
@@ -74,10 +74,10 @@ const Layout = ({ children }) => {
             </header>
 
             {menu && (
-                <nav className="fixed w-full top-[60px] z-10">
+                <nav className="fixed w-full top-[60px] z-20">
 
                     <div id="menuBack" onClick={menuBackClickHandler} className='w-full h-[calc(100vh-60px)] p-4 bg-gray-400 shadow-lg transition duration-500 overflow-auto'>
-                        <div className='w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3'>
+                        <div className='w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3'>
                             {
                                 MenuData.map((m, i) => {
                                     const btn = m.group;

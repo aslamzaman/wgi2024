@@ -12,8 +12,11 @@ const Delivery = () => {
     const [deliverys, setDeliverys] = useState([]);
     const [searchText, setSearchText] = useState('28528433');
     const [msg, setMsg] = useState("Data ready");
+    const [waitMsg, setWaitMsg] = useState("");
+
 
     const fetchData = async () => {
+        setWaitMsg('Please Wait...');
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/delivery`, {
                 method: "GET",
@@ -27,6 +30,7 @@ const Delivery = () => {
             const data = await response.json();
             console.log(data);
             setDeliverys(data);
+            setWaitMsg('');
         } catch (error) {
             console.error("Error fetching data:", error);
             setMsg("Failed to fetch data");
@@ -46,106 +50,106 @@ const Delivery = () => {
 
 
     const printHandler = (id) => {
+        setWaitMsg('Please Wait...');
+        setTimeout(() => {
+            const invoice = deliverys.find(delivery => delivery._id === id);
+            // console.log(invoice);
 
-        const invoice = deliverys.find(delivery => delivery._id === id);
-        // console.log(invoice);
-
-        const doc = new jsPDF({
-            orientation: "p",
-            unit: "mm",
-            format: "a4",
-            putOnlyUsedFonts: true,
-            floatPrecision: 16
-        });
-
-
-        doc.setFont("Poppins-Bold", "bold");
-        doc.setFontSize(16);
-
-        doc.text(`BILL/INVOICE`, 105, 55, null, null, "center");
-        doc.setFont("Poppins-Regular", "normal");
-        doc.setFontSize(10);
-        doc.text(`Order No: ${invoice.orderNo}`, 105, 61, null, null, "center");
-        doc.text(`Order Date: ${date_format(invoice.orderDt)}`, 105, 66, null, null, "center");
-
-        doc.setFont("Poppins-Regular", "normal");
-        doc.setFontSize(10);
-        doc.text(`Invoice No: ${invoice.invoiceNo}`, 190, 70, null, null, "right");
-        doc.text(`Shipment No: ${invoice.shipment}`, 190, 75, null, null, "right");
-        doc.text(`Invoice Date: ${date_format(invoice.dt)}`, 190, 80, null, null, "right");
-
-        doc.setFont("Poppins-Bold", "bold");
-        doc.text(`${invoice.customer.name}`, 20, 85, null, null, "left");
-        doc.setFont("Poppins-Regular", "normal");
-        doc.text(`${invoice.customer.address}`, 20, 90, null, null, "left");
-        doc.text(`${invoice.customer.contact}`, 20, 95, null, null, "left");
-        doc.setFontSize(7);
-        doc.text(`Print Data: ${date_format(invoice.orderDt)}`, 190, 98, null, null, "right");
-        doc.setFontSize(10);
-
-        doc.line(20, 99.5, 190, 99.5);
-        doc.line(20, 107, 190, 107);
-        doc.setFont("Poppins-Bold", "bold");
-        doc.text("Description", 23, 104, null, null, "left");
-        doc.text("Quantity", 105, 104, null, null, "center");
-        doc.text("Unit", 128, 104, null, null, "center");
-        doc.text("Rate", 158, 104, null, null, "right");
-        doc.text("Total", 187, 104, null, null, "right");
-        doc.setFont("Poppins-Regular", "normal");
-        let y = 112;
-        let subTotal = 0;
-        let items = invoice.items;
-        for (let i = 0; i < items.length; i++) {
-            const total = items[i].qty * items[i].taka;
-            subTotal = subTotal + total;
-            doc.text(`${items[i].name}`, 23, y, null, null, "left");
-            doc.text(`${items[i].description}`, 23, y + 5, null, null, "left");
-            doc.text(`${items[i].qty}`, 105, y, null, null, "center");
-            doc.text(`${items[i].unit}`, 128, y, null, null, "center");
-            doc.text(`${items[i].taka.toLocaleString("en-IN")}`, 158, y, null, null, "right");
-            doc.text(`${total.toLocaleString("en-IN")}`, 187, y, null, null, "right");
-            y = y + 12;
-        }
-
-        doc.line(20, y - 5, 190, y - 5); // Horizontal line
-        // Subtotal 
-        doc.text("Subtotal", 23, y - 1, null, null, "left");
-        doc.text(`${subTotal.toLocaleString("en-IN")}`, 187, y - 1, null, null, "right");
-
-        // Deduct
-        doc.text("Deduct", 23, y + 5, null, null, "left");
-        doc.text(`${parseInt(invoice.deduct).toLocaleString("en-IN")}`, 187, y + 5, null, null, "right");
-
-        // Advance
-        doc.text("Advance", 23, y + 11, null, null, "left");
-        doc.text(`${parseInt(invoice.payment).toLocaleString("en-IN")}`, 187, y + 11, null, null, "right");
+            const doc = new jsPDF({
+                orientation: "p",
+                unit: "mm",
+                format: "a4",
+                putOnlyUsedFonts: true,
+                floatPrecision: 16
+            });
 
 
-        // Amount to be pay
-        doc.setFont("Poppins-Bold", "bold");
-        doc.text("Amount to pay", 23, y + 17, null, null, "left");
-        const gt = subTotal - (parseInt(invoice.deduct) + parseInt(invoice.payment));
-        doc.text(`${gt.toLocaleString("en-IN")}`, 187, y + 17, null, null, "right");
+            doc.setFont("Poppins-Bold", "bold");
+            doc.setFontSize(16);
 
-        doc.line(20, y + 19, 190, y + 19); // Horizontal line
+            doc.text(`BILL/INVOICE`, 105, 55, null, null, "center");
+            doc.setFont("Poppins-Regular", "normal");
+            doc.setFontSize(10);
+            doc.text(`Order No: ${invoice.orderNo}`, 105, 61, null, null, "center");
+            doc.text(`Order Date: ${date_format(invoice.orderDt)}`, 105, 66, null, null, "center");
 
-        doc.setFont("Poppins-Regular", "normal");
-        doc.text(`INWORD: ${inword(gt).toUpperCase()}ONLY.`, 20, y + 24, null, null, "left");
+            doc.setFont("Poppins-Regular", "normal");
+            doc.setFontSize(10);
+            doc.text(`Invoice No: ${invoice.invoiceNo}`, 190, 70, null, null, "right");
+            doc.text(`Shipment No: ${invoice.shipment}`, 190, 75, null, null, "right");
+            doc.text(`Invoice Date: ${date_format(invoice.dt)}`, 190, 80, null, null, "right");
 
-        doc.line(20, 99.5, 20, y + 19); // Vertical Line
-        doc.line(94, 99.5, 94, y + 19); // Vertical Line
-        doc.line(117, 99.5, 117, y + 19); // Vertical Line
-        doc.line(140, 99.5, 140, y + 19); // Vertical Line
-        doc.line(160, 99.5, 160, y + 19); // Vertical Line
-        doc.line(190, 99.5, 190, y + 19); // Vertical Line
+            doc.setFont("Poppins-Bold", "bold");
+            doc.text(`${invoice.customer.name}`, 20, 85, null, null, "left");
+            doc.setFont("Poppins-Regular", "normal");
+            doc.text(`${invoice.customer.address}`, 20, 90, null, null, "left");
+            doc.text(`${invoice.customer.contact}`, 20, 95, null, null, "left");
+            doc.setFontSize(7);
+            doc.text(`Print Data: ${date_format(invoice.orderDt)}`, 190, 98, null, null, "right");
+            doc.setFontSize(10);
 
-        doc.setFontSize(10);
-        doc.text("Thank you for your kind cooperation.", 20, y + 40, null, null, "left");
+            doc.line(20, 99.5, 190, 99.5);
+            doc.line(20, 107, 190, 107);
+            doc.setFont("Poppins-Bold", "bold");
+            doc.text("Description", 23, 104, null, null, "left");
+            doc.text("Quantity", 105, 104, null, null, "center");
+            doc.text("Unit", 128, 104, null, null, "center");
+            doc.text("Rate", 158, 104, null, null, "right");
+            doc.text("Total", 187, 104, null, null, "right");
+            doc.setFont("Poppins-Regular", "normal");
+            let y = 112;
+            let subTotal = 0;
+            let items = invoice.items;
+            for (let i = 0; i < items.length; i++) {
+                const total = items[i].qty * items[i].taka;
+                subTotal = subTotal + total;
+                doc.text(`${items[i].name}`, 23, y, null, null, "left");
+                doc.text(`${items[i].description}`, 23, y + 5, null, null, "left");
+                doc.text(`${items[i].qty}`, 105, y, null, null, "center");
+                doc.text(`${items[i].unit}`, 128, y, null, null, "center");
+                doc.text(`${items[i].taka.toLocaleString("en-IN")}`, 158, y, null, null, "right");
+                doc.text(`${total.toLocaleString("en-IN")}`, 187, y, null, null, "right");
+                y = y + 12;
+            }
 
-        doc.save(`Invoice_${invoice.invoiceno}_Created_${date_format(new Date())}.pdf`);
+            doc.line(20, y - 5, 190, y - 5); // Horizontal line
+            // Subtotal 
+            doc.text("Subtotal", 23, y - 1, null, null, "left");
+            doc.text(`${subTotal.toLocaleString("en-IN")}`, 187, y - 1, null, null, "right");
+
+            // Deduct
+            doc.text("Deduct", 23, y + 5, null, null, "left");
+            doc.text(`${parseInt(invoice.deduct).toLocaleString("en-IN")}`, 187, y + 5, null, null, "right");
+
+            // Advance
+            doc.text("Advance", 23, y + 11, null, null, "left");
+            doc.text(`${parseInt(invoice.payment).toLocaleString("en-IN")}`, 187, y + 11, null, null, "right");
 
 
+            // Amount to be pay
+            doc.setFont("Poppins-Bold", "bold");
+            doc.text("Amount to pay", 23, y + 17, null, null, "left");
+            const gt = subTotal - (parseInt(invoice.deduct) + parseInt(invoice.payment));
+            doc.text(`${gt.toLocaleString("en-IN")}`, 187, y + 17, null, null, "right");
 
+            doc.line(20, y + 19, 190, y + 19); // Horizontal line
+
+            doc.setFont("Poppins-Regular", "normal");
+            doc.text(`INWORD: ${inword(gt).toUpperCase()}ONLY.`, 20, y + 24, null, null, "left");
+
+            doc.line(20, 99.5, 20, y + 19); // Vertical Line
+            doc.line(94, 99.5, 94, y + 19); // Vertical Line
+            doc.line(117, 99.5, 117, y + 19); // Vertical Line
+            doc.line(140, 99.5, 140, y + 19); // Vertical Line
+            doc.line(160, 99.5, 160, y + 19); // Vertical Line
+            doc.line(190, 99.5, 190, y + 19); // Vertical Line
+
+            doc.setFontSize(10);
+            doc.text("Thank you for your kind cooperation.", 20, y + 40, null, null, "left");
+
+            doc.save(`Invoice_${invoice.invoiceno}_Created_${date_format(new Date())}.pdf`);
+            setWaitMsg('');
+        }, 0);
 
     }
 
@@ -164,8 +168,9 @@ const Delivery = () => {
         <>
             <div className="w-full my-6 lg:my-8">
                 <h1 className="w-full text-xl lg:text-3xl font-bold text-center text-blue-700">Delivery & Invoice</h1>
+                <p className="w-full text-center text-blue-300">&nbsp;{waitMsg}&nbsp;</p>
             </div>
-            <div className="px-4 lg:px-6">              
+            <div className="px-4 lg:px-6">
                 <div className="p-2 overflow-auto">
 
                     <div className="flex justify-between items-center p-1 overflow-auto">

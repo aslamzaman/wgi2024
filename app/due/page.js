@@ -7,10 +7,13 @@ import { fetchData } from "@/lib/utils/FetchData";
 const Customer = () => {
     const [customers, setCustomers] = useState([]);
     const [msg, setMsg] = useState("Data ready");
+    const [waitMsg, setWaitMsg] = useState("");
 
+    
 
     useEffect(() => {
         const loadData = async () => {
+            setWaitMsg('Please Wait...');
             try {
 
                 const [responseCustomer, responseDelivery, responsePayment] = await Promise.all([
@@ -60,6 +63,7 @@ const Customer = () => {
                   });
 
                 setCustomers(SortResult);
+                setWaitMsg('');
             } catch (error) {
                 console.error("Error fetching data:", error);
                 setMsg("Failed to fetch data");
@@ -80,6 +84,7 @@ const Customer = () => {
         <>
             <div className="w-full my-6 lg:my-8">
                 <h1 className="w-full text-xl lg:text-3xl font-bold text-center text-blue-700">Customer Dues</h1>
+                <p className="w-full text-center text-blue-300">&nbsp;{waitMsg}&nbsp;</p>
             </div>
             <div className="px-4 lg:px-6 overflow-auto">
                 <p className="w-full text-sm text-red-700">{msg}</p>

@@ -8,10 +8,12 @@ import Delete from "@/components/unittype/Delete";
 const Unittype = () => {
     const [unittypes, setUnittypes] = useState([]);
     const [msg, setMsg] = useState("Data ready");
+    const [waitMsg, setWaitMsg] = useState("");
 
 
     useEffect(() => {
         const fetchData = async () => {
+            setWaitMsg('Please Wait...');
             try {
                 const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/unittype`, {
                     method: "GET",
@@ -25,6 +27,7 @@ const Unittype = () => {
                 const data = await response.json();
                 console.log(data);
                 setUnittypes(data);
+                setWaitMsg('');
             } catch (error) {
                 console.error("Error fetching data:", error);
                 setMsg("Failed to fetch data");
@@ -43,6 +46,7 @@ const Unittype = () => {
         <>
             <div className="w-full my-6 lg:my-8">
                 <h1 className="w-full text-xl lg:text-3xl font-bold text-center text-blue-700">Unit Type</h1>
+                <p className="w-full text-center text-blue-300">&nbsp;{waitMsg}&nbsp;</p>
             </div>    
             <div className="px-4 lg:px-6">
                 <p className="w-full text-sm text-red-700">{msg}</p>    
