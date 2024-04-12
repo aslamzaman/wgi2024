@@ -147,7 +147,7 @@ const Delivery = () => {
             doc.setFontSize(10);
             doc.text("Thank you for your kind cooperation.", 20, y + 40, null, null, "left");
 
-            doc.save(`Invoice_${invoice.invoiceno}_Created_${date_format(new Date())}.pdf`);
+            doc.save(`WGI_Invoice_${invoice.invoiceNo}_Created_${date_format(invoice.dt)}.pdf`);
             setWaitMsg('');
         }, 0);
 
