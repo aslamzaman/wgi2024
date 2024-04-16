@@ -17,8 +17,8 @@ const OnePage = (tbl, datas) => {
     data.map((d, i) => {
         if (i > 0) {
             i === (data.length - 1)
-                ? dd = dd + `                                      <TextEn Title="${titleCase(d)}" Id="${d}" Change={(e) => set${titleCase(d)}(e.target.value)} Value={${d}} Chr="50" />`
-                : dd = dd + `                                      <TextEn Title="${titleCase(d)}" Id="${d}" Change={(e) => set${titleCase(d)}(e.target.value)} Value={${d}} Chr="50" />\n`;
+                ? dd = dd + `                                      <TextEn Title="${titleCase(d)}" Id="${d}" Change={e => set${titleCase(d)}(e.target.value)} Value={${d}} Chr="50" />`
+                : dd = dd + `                                      <TextEn Title="${titleCase(d)}" Id="${d}" Change={e => set${titleCase(d)}(e.target.value)} Value={${d}} Chr="50" />\n`;
         }
     }
     );
@@ -94,7 +94,7 @@ const OnePage = (tbl, datas) => {
     import React, { useState, useEffect } from "react";
     import { jsPDF } from "jspdf";
     import { BtnSubmit, TextEn, TextDt } from "@/components/Form";
-    import { Lib } from "@/lib/Lib";
+    
    
     
     const ${titleCase(tbl)} = () => {
@@ -105,9 +105,11 @@ ${stateVar}
 
         useEffect(() => {
             const load = () => {
+                setWaitMsg('Please Wait...');
                 try {
                     setMsg("Ready to works"); 
 ${stateClear}
+                    setWaitMsg('');
                 } catch (error) {
                     console.log(error);
                 }
@@ -127,7 +129,6 @@ ${getValue}
     
         const createHandler = async (e) => {
             e.preventDefault();
-            setMsg("Please wait..."); 
             const doc = new jsPDF({
                 orientation: 'p',
                 unit: 'mm',
@@ -136,13 +137,14 @@ ${getValue}
                 floatPrecision: 16 // or "smart", default is 16
             });
 
-
+            setWaitMsg('Please Wait...');
             try {
                 setTimeout(() => {
                     const newObject = createObject();
                     doc.text("A PDF File",105, 20, null, null, 'center');                    
                     doc.save(new Date().toISOString() + "-${tbl}.pdf");
                     setMsg("PDF Created Completed."); 
+                    setWaitMsg('');
                 }, 0);
             } catch (error) {
                 console.log(error);
@@ -153,14 +155,14 @@ ${getValue}
     
         return (
             <>
-                <div className="w-full my-6 lg:my-10">
+                <div className="w-full mb-3 mt-8">
                     <h1 className="w-full text-xl lg:text-3xl font-bold text-center text-blue-700">${titleCase(tbl)}</h1>
+                    <p className="w-full text-center text-lg text-blue-300">&nbsp;{msg}&nbsp;</p>
                 </div>
     
                 <div className="px-4 lg:px-6">
                     <div className="w-11/12 md:w-1/2 mx-auto mb-10 bg-white border-2 border-gray-300 rounded-md shadow-md duration-300">
-                        <div className="w-full p-4">
-                            <p className="w-full text-center text-sm text-red-700">{msg}</p>
+                        <div className="w-full p-4">                            
                             <form onSubmit={createHandler}>
                                 <div className="grid grid-cols-1 gap-2 my-2">
 ${dd}                                   

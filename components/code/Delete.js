@@ -7,6 +7,16 @@ const Delete = (tbl, datas) => {
             .map((word) => word[0].toUpperCase() + word.slice(1).toLowerCase())
             .join(' ');
     }
+    
+    const FirstCap = (str) => {
+        const firstLetter = str.substr(0,1);
+        const restLetter = str.substr(1, str.length-1);
+        const firstLetterCap = firstLetter.toUpperCase();
+        const joinToOne = firstLetterCap + restLetter;
+        return joinToOne
+    }
+
+
 
     const replaceQutation = datas.replaceAll('`', '');
     const splitData = replaceQutation.split(",");
@@ -71,7 +81,7 @@ const Delete = (tbl, datas) => {
     let sowFormMongoData = '';
     sowFormMongoData = '               const { ' + data[1] + ' } = data.find(' + tbl + ' => ' + tbl + '._id === id) || { ' + data[1] + ': "" };' + '\n'
 
-    sowFormMongoData += `               set${titleCase(data[1])}(${data[1]});\n`;
+    sowFormMongoData += `               set${FirstCap(data[1])}(${data[1]});\n`;
     sowFormMongoData += `               message("Ready to delete");`;
     //--------------------------
     let sowFormLocalData = '';
@@ -105,7 +115,7 @@ const Delete = (tbl, datas) => {
 
 
     const Delete = ({ message, id, data }) => {
-        const [${data[1]}, set${titleCase(data[1])}] = useState("");   
+        const [${data[1]}, set${FirstCap(data[1])}] = useState("");   
         const [show, setShow] = useState(false);
     
         const showDeleteForm = () => {

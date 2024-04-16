@@ -24,6 +24,14 @@ const titleCase = (str) => {
         .join(' ');
 }
 
+const FirstCap = (str) => {
+    const firstLetter = str.substr(0,1);
+    const restLetter = str.substr(1, str.length-1);
+    const firstLetterCap = firstLetter.toUpperCase();
+    const joinToOne = firstLetterCap + restLetter;
+    return joinToOne
+}
+
 
 
 const Code = () => {
@@ -192,43 +200,46 @@ const Code = () => {
 
 
     const DropdownById = () => {
-        const tblName = prompt("Dropdown Id. (say: customer_id)");
+        const tblName = prompt("Collection Name, Referance Id(say: post, postId)");
         if (tblName === null || tblName === '') return false;
 
-        const tbl = tblName.split("_");
-        if (tbl.length < 1) return false;
+        const tbl = tblName.split(",").map(p=>p.trim());
+        console.log("a"+tbl[0]+' n'+tbl[1]);
+        if (tbl.length < 2) return false;
         console.log(tbl.length);
 
 
-        let str = '    import {fetchAll} from "@/lib/DexieDatabase";\n';
-        str = str + '    import { BtnSubmit, BtnEn, DropdownEn, TextNum } from "@/components/Form";\n';
+
+        let str = '    import { fetchData } from "@/lib/utils/FetchData";\n';
         str = str + "\n";
         str = str + "\n";
         str = str + `    const [${tbl[0]}s, set${titleCase(tbl[0])}s] = useState([]);\n`;
-        str = str + `    const [${tblName}, set${titleCase(tblName)}] = useState("");\n`;
+        str = str + `    const [${tbl[1]}Change, set${FirstCap(tbl[1])}Change] = useState('');\n`;
 
         str = str + "\n";
         str = str + "\n";
-
-        str = str + "    const fetchData = async () => {\n";
+    
         str = str + "        try {\n";
-        str = str + "            const " + tbl[0] + "Response = await fetchAll('" + tbl[0] + "');\n";
-        str = str + "            const " + tbl[0] + "Data = " + tbl[0] + "Response.data;\n";
-        str = str + `            set${titleCase(tbl[0])}s(${tbl[0]}Data);\n`;
+        str = str + "            const response"+titleCase(tbl[0])+" = await fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/"+tbl[0]+"`);\n";
+        str = str + "            set"+titleCase(tbl[0])+"s(response"+titleCase(tbl[0])+");\n";
         str = str + "        } catch (error) {\n";
         str = str + '            console.error("Error fetching data:", error);\n';
         str = str + "        }\n";
 
-        str = str + "    };\n";
         str = str + "\n";
         str = str + "\n";
 
+        str = str + "const "+tbl[1]+"ChangeHandler = (e) => {\n";
+            str = str + "   const "+tbl[1]+"Value = e.target.value;\n";
+            str = str + `   set${FirstCap(tbl[1])}Change(${tbl[1]}Value);\n`;
+            str = str + "   set"+FirstCap(tbl[1])+"("+tbl[1]+"Value);\n";
+        str = str + "}\n";
 
+        str = str + "\n";
+        str = str + "\n";
 
-
-
-        str = str + `                                    <DropdownEn Title="${titleCase(tbl[0])}" Id="${tblName}" Change={e => set${titleCase(tblName)}(e.target.value)} Value={${tblName}}>\n`;
-        str = str + `                                        {${tbl[0]}s.length?${tbl[0]}s.map(${tbl[0]}=><option value={${tbl[0]}.id} key={${tbl[0]}.id}>{${tbl[0]}.name}</option>):null}\n`;
+        str = str + `                                    <DropdownEn Title="${titleCase(tbl[0])}" Id="${tbl[1]}Change" Change={${tbl[1]}ChangeHandler} Value={${tbl[1]}Change}>\n`;
+        str = str + `                                        {${tbl[0]}s.length?${tbl[0]}s.map(${tbl[0]}=><option value={${tbl[0]}._id} key={${tbl[0]}._id}>{${tbl[0]}._id}</option>):null}\n`;
 
         str = str + `                                    </DropdownEn>\n`;
 

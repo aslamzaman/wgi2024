@@ -173,7 +173,7 @@ const Add = ({ message }) => {
 
 
 
-                            <div className="bg-black h-[2px] my-6"></div>
+                            <div className="bg-blue-400 h-[3px] my-16"></div>
 
                             <form onSubmit={saveHandler}>
                                 <div className="grid grid-cols-2 gap-4 my-4">

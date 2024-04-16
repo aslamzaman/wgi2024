@@ -47,7 +47,7 @@ const Employee = () => {
 
     return (
         <>
-            <div className="w-full my-6 lg:my-8">
+            <div className="w-full mb-3 mt-8">
                 <h1 className="w-full text-xl lg:text-3xl font-bold text-center text-blue-700">Employee</h1>
                 <p className="w-full text-center text-blue-300">&nbsp;{waitMsg}&nbsp;</p>
             </div>    

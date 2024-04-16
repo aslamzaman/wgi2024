@@ -8,6 +8,15 @@ const Edit = (tbl, datas) => {
             .join(' ');
     }
 
+    const FirstCap = (str) => {
+        const firstLetter = str.substr(0,1);
+        const restLetter = str.substr(1, str.length-1);
+        const firstLetterCap = firstLetter.toUpperCase();
+        const joinToOne = firstLetterCap + restLetter;
+        return joinToOne
+    }
+
+
     const replaceQutation = datas.replaceAll('`', '');
     const splitData = replaceQutation.split(",");
     const data = splitData.map(s => s.trim());
@@ -17,8 +26,8 @@ const Edit = (tbl, datas) => {
     data.map((d, i) => {
         if (i > 0) {
             i === (data.length - 1)
-                ? dd = dd + `                                        <TextEn Title="${titleCase(d)}" Id="${d}" Change={e => set${titleCase(d)}(e.target.value)} Value={${d}} Chr={50} />`
-                : dd = dd + `                                        <TextEn Title="${titleCase(d)}" Id="${d}" Change={e => set${titleCase(d)}(e.target.value)} Value={${d}} Chr={50} />\n`;
+                ? dd = dd + `                                        <TextEn Title="${titleCase(d)}" Id="${d}" Change={e => set${FirstCap(d)}(e.target.value)} Value={${d}} Chr={50} />`
+                : dd = dd + `                                        <TextEn Title="${titleCase(d)}" Id="${d}" Change={e => set${FirstCap(d)}(e.target.value)} Value={${d}} Chr={50} />\n`;
         }
     }
     );
@@ -28,8 +37,8 @@ const Edit = (tbl, datas) => {
     data.map((d, i) => {
         if (i > 0) {
             i === (data.length - 1)
-                ? stateVar = stateVar + `        const [${d}, set${titleCase(d)}] = useState('');`
-                : stateVar = stateVar + `        const [${d}, set${titleCase(d)}] = useState('');\n`
+                ? stateVar = stateVar + `        const [${d}, set${FirstCap(d)}] = useState('');`
+                : stateVar = stateVar + `        const [${d}, set${FirstCap(d)}] = useState('');\n`
         }
     }
     );
@@ -40,8 +49,8 @@ const Edit = (tbl, datas) => {
     data.map((d, i) => {
         if (i > 0) {
             i === (data.length - 1)
-                ? stateClear = stateClear + `                    set${titleCase(d)}('');`
-                : stateClear = stateClear + `                    set${titleCase(d)}('');\n`
+                ? stateClear = stateClear + `                    set${FirstCap(d)}('');`
+                : stateClear = stateClear + `                    set${FirstCap(d)}('');\n`
         }
     }
     );
@@ -95,8 +104,8 @@ const Edit = (tbl, datas) => {
     data.map((d, i) => {
         if (i > 0) {
             i === (data.length - 1)
-                ? sowFormMongo2 += `               set${titleCase(d)}(${d});`
-                : sowFormMongo2 += `               set${titleCase(d)}(${d});` + `\n`
+                ? sowFormMongo2 += `               set${FirstCap(d)}(${d});`
+                : sowFormMongo2 += `               set${FirstCap(d)}(${d});` + `\n`
         }
     }
     );

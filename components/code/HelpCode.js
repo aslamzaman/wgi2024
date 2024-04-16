@@ -48,18 +48,23 @@ const url_2 = "`${process.env.NEXT_PUBLIC_URL}/gender/read_all`";
       
       
  *** Filter1:-
- const result = staffs.filter(s => parseInt(s.place_id) === 1699884047193); // return array    
+ const result = staffs.filter(staff => parseInt(staff.place_id) === 1699884047193); // return array    
  
  
- *** Filter2:-
- const result = responseOrder.filter(order=> !responseDelivery.some(delivery =>delivery.orderNo === order.orderNo));
+ *** Filter2:- (some)
+ const result = customers.filter(customer=> payments.some(payment =>payment.customer._id === customer._id));
+ const result = orders.filter(order=> !delivery.some(delivery =>delivery.orderNo === order.orderNo));
+ 
+
+ *** Filter3:- (Range)
+ const filteredValue = data.filter(item => item.Price >= 230 && item.Price <= 800);
 
  
  *** Find:-
  const result = staffs.find(s => parseInt(s.place_id) === 1699884047193); // return object
 
 
-*** Sort:-
+*** Sort-1:-
 const SortResult = datas.sort((a, b) => {
     if (parseInt(a.id) < parseInt(b.id)) {
       return -1;
@@ -67,10 +72,8 @@ const SortResult = datas.sort((a, b) => {
       return 1;
     }
   });
-
-*** Unique Array
-const inputArray = [1, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 5, 5];
-const uniqueArray = [...new Set(inputArray)];
+*** Sort-2:
+const sortPost = responsePost.sort((a, b) => (a.nmEn).toUpperCase() < (b.nmEn).toUpperCase() ? -1 : 1);
 
 
   *** PDF Multiple Page:-

@@ -61,15 +61,14 @@ const Page = (tbl, datas) => {
         const [${tbl}s, set${titleCase(tbl)}s] = useState([]);
         const [msg, setMsg] = useState("Data ready");
         const [waitMsg, setWaitMsg] = useState("");
-
-
     
+
         useEffect(() => {
             const fetchData = async () => {
                 setWaitMsg('Please Wait...');
                 try {
 ${loadMongo}
-                    setWaitMsg('');
+                setWaitMsg('');
                 } catch (error) {
                     console.error("Error fetching data:", error);
                     setMsg("Failed to fetch data");
@@ -86,7 +85,7 @@ ${loadMongo}
     
         return (
             <>
-                <div className="w-full my-6 lg:my-8">
+                <div className="w-full mb-3 mt-8">
                     <h1 className="w-full text-xl lg:text-3xl font-bold text-center text-blue-700">${titleCase(tbl)}</h1>
                     <p className="w-full text-center text-blue-300">&nbsp;{waitMsg}&nbsp;</p>
                 </div>    
@@ -109,7 +108,7 @@ ${thead_string}
                                     ${tbl}s.map(${tbl} => (
                                         <tr className="border-b border-gray-200 hover:bg-gray-100" key={${tbl}._id}>                                           
 ${td_string}                                            
-                                            <td className="flex justify-end items-center space-x-1 mt-1 mr-2">
+                                            <td className="h-8 flex justify-end items-center space-x-1 mt-1 mr-2">
                                                 <Edit message={messageHandler} id={${tbl}._id} data={${tbl}s} />
                                                 <Delete message={messageHandler} id={${tbl}._id} data={${tbl}s} />
                                             </td>

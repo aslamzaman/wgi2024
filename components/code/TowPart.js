@@ -95,32 +95,38 @@ const TwoPart = (tbl, datas) => {
     import Add from "@/components/${tbl}/Add";
     import Edit from "@/components/${tbl}/Edit";   
     import Delete from "@/components/${tbl}/Delete";
-    import { getItems } from "@/lib/LocalDatabase";
-    
-    import { Lib } from "@/lib/Lib";
     import { jsPDF } from "jspdf";
+    import { getItems } from "@/lib/utils/LocalDatabase";
+    const date_format = dt => new Date(dt).toISOString().split('T')[0];
     
     
     const ${titleCase(tbl)} = () => {
         const [${tbl}s, set${titleCase(tbl)}s] = useState([]);
         const [msg, setMsg] = useState("Data ready");
+        const [waitMsg, setWaitMsg] = useState("");
        
         const [dt, setDt] = useState('');
-
+        const [total, setTotal] = useState(0);
         
         useEffect(() => {
             const load = () => {
+                setWaitMsg('Please Wait...');
                 try {
                     const response = getItems("${tbl}");
                     const data = response.data;                    
                     const result = data.sort((a, b) => parseInt(b.id) > parseInt(a.id) ? 1 : -1);
                     set${titleCase(tbl)}s(result);
+
+                    //-----------------------------------------------------------------------
+                  //  const grandTotal = data.reduce((t, c) => t + (c.qty + c.tk), 0);
+                  //  setTotal(grandTotal);
+                  setWaitMsg('');
                 } catch (error) {
                     console.log(error);
                 }
             };
             load();
-            setDt(Lib.util.dateFormat(new Date(),"-"));
+            setDt(date_format(new Date()));
         }, [msg]);
     
     
@@ -143,10 +149,10 @@ const TwoPart = (tbl, datas) => {
             const data = response.data;
     
             if (data.length < 0) {
-                setMsg("No data to creating ${tbl}.");
+                setWaitMsg("No data to creating ${tbl}.");
                 return false;
             }
-    
+            setWaitMsg('Please Wait...');
             try {
                 const doc = new jsPDF({
                     orientation: 'p',
@@ -157,7 +163,8 @@ const TwoPart = (tbl, datas) => {
                 });
                 const newObject = createObject();
                 console.log(newObject);
-               // doc.save(new Date().toISOString() + "-${titleCase(tbl)}.pdf");               
+               // doc.save(new Date().toISOString() + "-${titleCase(tbl)}.pdf");  
+               setWaitMsg('');             
             } catch (error) {
                 console.log(error);
             }
@@ -166,8 +173,9 @@ const TwoPart = (tbl, datas) => {
     
         return (
             <>
-                <div className="w-full my-6 lg:my-10">
+                <div className="w-full mb-3 mt-8">
                     <h1 className="w-full text-xl lg:text-3xl font-bold text-center text-blue-700">${titleCase(tbl)}</h1>
+                    <p className="w-full text-center text-blue-300">&nbsp;{waitMsg}&nbsp;</p>
                 </div>
     
                 <div className="px-4 lg:px-6"> 
@@ -178,7 +186,7 @@ const TwoPart = (tbl, datas) => {
                                     <TextDt Title="Date" Id="dt" Change={(e) => setDt(e.target.value)} Value={dt} />
                                 </div>
                                 <div className="w-full flex justify-start">
-                                    <BtnSubmit Title="Create Invoice" Class="bg-blue-600 hover:bg-blue-800 text-white" />
+                                    <BtnSubmit Title="Create PDF" Class="bg-blue-600 hover:bg-blue-800 text-white" />
                                 </div>
                             </form>
                         </div>                    
