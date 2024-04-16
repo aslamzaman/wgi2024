@@ -7,7 +7,6 @@ export const GET = async () => {
   try {
     await Connect();
     const employees = await EmployeeModel.find({}).populate("post_id").sort({_id:'desc'});
-    console.log(employees)
     return NextResponse.json( employees );
   } catch (error) {
     console.error('GET Error:', error);

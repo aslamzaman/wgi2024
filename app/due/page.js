@@ -22,16 +22,12 @@ const Customer = () => {
                     fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/payment`)
                 ]);
 
-                const ss = { c: responseCustomer, d: responseDelivery, p: responsePayment }
-                console.log(ss);
 
                 const resultCustomer = responseCustomer.map(customer => {
                     const matchDelivery = responseDelivery.filter(delivery => delivery.customer._id === customer._id);
                     const deliverItems = matchDelivery.map(delivery => delivery.items);
                     const flattenedArray = deliverItems.flat();
-                    //  console.log("dfdsfdsf" ,flattenedArray);
 
-                    // Calculate the total qty multiplied by taka using reduce
                     const totalPrice = flattenedArray.reduce((total, current) => total + (current.qty * current.taka), 0);
 
                     const deliverDeduct = matchDelivery.reduce((t, c) => t + c.deduct, 0);
@@ -53,7 +49,7 @@ const Customer = () => {
 
                     }
                 })
-                console.log(resultCustomer);
+
                 const SortResult = resultCustomer.sort((a, b) => {
                     if (parseInt(a.totalItemPrice) < parseInt(b.totalItemPrice)) {
                       return 1;
