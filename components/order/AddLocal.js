@@ -48,7 +48,10 @@ const AddLocal = ({ Msg }) => {
                 fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/item`),
                 fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/unittype`)
             ]);
-            setItems(responseItem);
+
+            const sortIems = responseItem.sort((a, b)=>(a.name).toUpperCase() < (b.name).toUpperCase()?-1:1);
+console.log(sortIems)
+            setItems(sortIems);
             setUnittypes(responseUnit);
         } catch (error) {
             console.error("Error fetching data:", error);

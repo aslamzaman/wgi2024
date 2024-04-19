@@ -31,7 +31,9 @@ const Edit = ({ message, id, data }) => {
 
 
             console.log(responseCustomer, responseCashtype);
-            setCustomers(responseCustomer);
+            const sortCustomer = responseCustomer.sort((a, b)=>(a.name).toUpperCase() < (b.name).toUpperCase()?-1:1);
+
+            setCustomers(sortCustomer);
             setCashtypes(responseCashtype);
 
             //-----------------------------------------------------

@@ -44,8 +44,10 @@ const Add = ({ message }) => {
             ]);
 
 
-            console.log(responseCustomer, responseCashtype);
-            setCustomers(responseCustomer);
+           // console.log(responseCustomer, responseCashtype);
+            const sortCustomer = responseCustomer.sort((a, b)=>(a.name).toUpperCase() < (b.name).toUpperCase()?-1:1);
+            console.log(sortCustomer)
+            setCustomers(sortCustomer);
             setCashtypes(responseCashtype);
 
         } catch (error) {
