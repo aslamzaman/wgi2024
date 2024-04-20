@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { TextEn, BtnSubmit, DropdownEn, TextDt, TextNum } from "@/components/Form";
-import { fetchData } from "@/lib/utils/FetchData";
+import { fetchLocalData } from "@/lib/utils/FetchData";
 
 const date_format = (dt) =>  new Date(dt).toISOString().split('T')[0];
 
@@ -24,7 +24,6 @@ const Add = ({ message }) => {
 
 
     const resetVariables = () => {
-        message("Ready to make new additions");
         setCustomer('');
         setDt(date_format(new Date()));
         setCashtype('');
@@ -39,14 +38,14 @@ const Add = ({ message }) => {
         resetVariables();
         try {
             const [responseCustomer, responseCashtype] = await Promise.all([
-                fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/customer`),
-                fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/cashtype`)
+                fetchLocalData('customer'),
+                fetchLocalData('cashtype')
             ]);
 
 
-           // console.log(responseCustomer, responseCashtype);
+            //console.log(responseCustomer, responseCashtype);
             const sortCustomer = responseCustomer.sort((a, b)=>(a.name).toUpperCase() < (b.name).toUpperCase()?-1:1);
-            console.log(sortCustomer)
+           // console.log(sortCustomer)
             setCustomers(sortCustomer);
             setCashtypes(responseCashtype);
 
@@ -63,7 +62,6 @@ const Add = ({ message }) => {
 
     const closeAddForm = () => {
         setShow(false);
-        message("Data ready");
     }
 
 

@@ -1,34 +1,43 @@
 import React, { useState } from "react";
-import { TextEn, BtnSubmit, TextDt, TextNum, DropdownEn } from "@/components/Form";
-import { fetchData } from "@/lib/utils/FetchData";
+import { TextEn, BtnSubmit, TextNum, DropdownEn, TextDt } from "@/components/Form";
 
 const date_format = dt => new Date(dt).toISOString().split('T')[0];
+import { getItems } from "@/lib/utils/LocalDatabase";
+
+
+
+
 
 const Add = ({ message }) => {
     const [dt, setDt] = useState('');
-    const [shipmentno, setShipmentno] = useState('');
-    const [lcid, setLcid] = useState('');
-    const [supplierid, setSupplierid] = useState('');
-    const [itemid, setItemid] = useState('');
-    const [unitid, setUnitid] = useState('');
+    const [shipmentNo, setShipmentNo] = useState('');
+    const [lcId, setLcId] = useState('');
+    const [supplierId, setSupplierId] = useState('');
+    const [itemId, setItemId] = useState('');
+    const [unittypeId, setUnittypeId] = useState('');
     const [qty, setQty] = useState('');
     const [taka, setTaka] = useState('');
     const [show, setShow] = useState(false);
 
+
     const [lcs, setLcs] = useState([]);
+    const [lcIdChange, setLcIdChange] = useState('');
+
     const [suppliers, setSuppliers] = useState([]);
+    const [supplierIdChange, setSupplierIdChange] = useState('');
     const [items, setItems] = useState([]);
+    const [itemIdChange, setItemIdChange] = useState('');
     const [unittypes, setUnittypes] = useState([]);
+    const [unittypeIdChange, setUnittypeIdChange] = useState('');
 
 
     const resetVariables = () => {
-        message("Ready to make new additions");
         setDt(date_format(new Date()));
-        setShipmentno('');
-        setLcid('');
-        setSupplierid('');
-        setItemid('');
-        setUnitid('');
+        setShipmentNo('');
+        setLcId('');
+        setSupplierId('');
+        setItemId('');
+        setUnittypeId('');
         setQty('');
         setTaka('');
     }
@@ -37,41 +46,26 @@ const Add = ({ message }) => {
     const showAddForm = async () => {
         setShow(true);
         resetVariables();
-        try {
-            const [responseLc, responseSupplier, responseItem, responseUnittype] = await Promise.all([
-                fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/lc`),
-                fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/supplier`),
-                fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/item`),
-                fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/unittype`)
-            ]);
-
-            console.log(responseLc, responseSupplier, responseItem, responseUnittype);
-
-            setLcs(responseLc);
-            setSuppliers(responseSupplier);
-            setItems(responseItem);
-            setUnittypes(responseUnittype);
-        } catch (error) {
-            console.error("Error fetching data:", error);
-            setMsg("Failed to fetch data");
-        }
+        setLcs(getItems('lc'));
+        setSuppliers(getItems('supplier'));
+        setItems(getItems('item'));
+        setUnittypes(getItems('unittype'));
     }
 
 
     const closeAddForm = () => {
         setShow(false);
-        message("Data ready");
     }
 
 
     const createObject = () => {
         return {
             dt: dt,
-            shipmentno: shipmentno,
-            lcid: lcid,
-            supplierid: supplierid,
-            itemid: itemid,
-            unitid: unitid,
+            shipmentNo: shipmentNo,
+            lcId: lcId,
+            supplierId: supplierId,
+            itemId: itemId,
+            unittypeId: unittypeId,
             qty: qty,
             taka: taka
         }
@@ -90,7 +84,7 @@ const Add = ({ message }) => {
             };
             const response = await fetch(apiUrl, requestOptions);
             if (response.ok) {
-                message("Shipment is created!");
+                message(`Shipment is created at ${new Date().toISOString()}`);
             } else {
                 throw new Error("Failed to create shipment");
             }
@@ -100,6 +94,32 @@ const Add = ({ message }) => {
         } finally {
             setShow(false);
         }
+    }
+
+
+    const lcIdChangeHandler = (e) => {
+        const lcIdValue = e.target.value;
+        setLcIdChange(lcIdValue);
+        setLcId(lcIdValue);
+    }
+
+
+    const supplierIdChangeHandler = (e) => {
+        const supplierIdValue = e.target.value;
+        setSupplierIdChange(supplierIdValue);
+        setSupplierId(supplierIdValue);
+    }
+
+    const itemIdChangeHandler = (e) => {
+        const itemIdValue = e.target.value;
+        setItemIdChange(itemIdValue);
+        setItemId(itemIdValue);
+    }
+
+    const unittypeIdChangeHandler = (e) => {
+        const unittypeIdValue = e.target.value;
+        setUnittypeIdChange(unittypeIdValue);
+        setUnittypeId(unittypeIdValue);
     }
 
 
@@ -118,26 +138,27 @@ const Add = ({ message }) => {
                         </div>
                         <div className="px-6 pb-6 text-black">
                             <form onSubmit={saveHandler}>
-                                <div className="grid grid-cols-1 gap-4 my-4">
-                                    <TextEn Title="Date" Id="dt" Change={e => setDt(e.target.value)} Value={dt} Chr={50} />
-                                    <TextEn Title="Shipmentno" Id="shipmentno" Change={e => setShipmentno(e.target.value)} Value={shipmentno} Chr={50} />
+                                <div className="grid grid-cols-2 gap-4 my-4">
+                                    <TextDt Title="Date" Id="dt" Change={e => setDt(e.target.value)} Value={dt} />
+                                    <TextEn Title="Shipmentno" Id="shipmentNo" Change={e => setShipmentNo(e.target.value)} Value={shipmentNo} Chr={50} />
 
-                                    <DropdownEn Title="LC" Id="lcid" Change={e => setLcid(e.target.value)} Value={lcid}>
-                                        {lcs.length ? lcs.map(lc => <option value={lc._id} key={lc._id}>{lc.lcno}</option>) : null}
+                                    <DropdownEn Title="LC No" Id="lcIdChange" Change={lcIdChangeHandler} Value={lcIdChange}>
+                                        {lcs.length ? lcs.map(lc => <option value={lc._id} key={lc._id}>{lc.lcNo}</option>) : null}
                                     </DropdownEn>
 
-
-                                    <DropdownEn Title="Supplier" Id="supplierid" Change={e => setSupplierid(e.target.value)} Value={supplierid}>
+                                    <DropdownEn Title="Supplier" Id="supplierIdChange" Change={supplierIdChangeHandler} Value={supplierIdChange}>
                                         {suppliers.length ? suppliers.map(supplier => <option value={supplier._id} key={supplier._id}>{supplier.name}</option>) : null}
                                     </DropdownEn>
 
-                                    <DropdownEn Title="Item" Id="itemid" Change={e => setItemid(e.target.value)} Value={itemid}>
+                                    <DropdownEn Title="Item" Id="itemIdChange" Change={itemIdChangeHandler} Value={itemIdChange}>
                                         {items.length ? items.map(item => <option value={item._id} key={item._id}>{item.name}</option>) : null}
                                     </DropdownEn>
 
-                                    <DropdownEn Title="Unit" Id="unitid" Change={e => setUnitid(e.target.value)} Value={unitid}>
+                                    <DropdownEn Title="Unit Type" Id="unittypeIdChange" Change={unittypeIdChangeHandler} Value={unittypeIdChange}>
                                         {unittypes.length ? unittypes.map(unittype => <option value={unittype._id} key={unittype._id}>{unittype.name}</option>) : null}
                                     </DropdownEn>
+
+
                                     <TextNum Title="Quantity" Id="qty" Change={e => setQty(e.target.value)} Value={qty} />
                                     <TextNum Title="Taka" Id="taka" Change={e => setTaka(e.target.value)} Value={taka} />
                                 </div>

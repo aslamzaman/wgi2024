@@ -6,7 +6,7 @@ import { LcModel } from '@/lib/Models';
 export const GET = async () => {
   try {
     await Connect();
-    const lcs = await LcModel.find({}).populate('unittypeid').sort({_id:'desc'});
+    const lcs = await LcModel.find({}).populate('unittypeId').sort({_id:'desc'});
     return NextResponse.json( lcs );
   } catch (error) {
     console.error('GET Error:', error);
@@ -19,8 +19,8 @@ export const GET = async () => {
 export const POST = async (Request) => {
   try {
     await Connect();
-    const { dt, lcno, qty, unittypeid, taka } = await Request.json();
-    const lcs = await LcModel.create({ dt, lcno, qty, unittypeid, taka });
+    const { dt, lcNo, qty, unittypeId, taka } = await Request.json();
+    const lcs = await LcModel.create({ dt, lcNo, qty, unittypeId, taka });
     return NextResponse.json(lcs);
   } catch (err) {
     console.error(err);

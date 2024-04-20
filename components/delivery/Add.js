@@ -1,10 +1,7 @@
 import React, { useState } from "react";
 import { TextEn, BtnSubmit, TextDt, TextEnDisabled, DropdownEn } from "@/components/Form";
 const date_format = dt => new Date(dt).toISOString().split('T')[0];
-import { fetchData } from "@/lib/utils/FetchData";
-
-
-
+import { fetchLocalData } from "@/lib/utils/FetchData";
 
 
 const Add = ({ message }) => {
@@ -23,7 +20,6 @@ const Add = ({ message }) => {
     const [orders, setOrders] = useState([]);
 
     const resetVariables = () => {
-        message("Ready to make new additions");
         setDt(date_format(new Date()));
         setInvoiceno(Math.round(Date.now() / 60000));
         setOrderno('');
@@ -42,11 +38,10 @@ const Add = ({ message }) => {
 
         try {
             const [responseOrder, responseDelivery] = await Promise.all([
-                fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/order`),
-                fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/delivery`)
+                fetchLocalData('order'),
+                fetchLocalData('delivery')
             ]);
-           const result = responseOrder.filter(order=> !responseDelivery.some(delivery =>delivery.orderNo === order.orderNo));
-          
+            const result = responseOrder.filter(order => !responseDelivery.some(delivery => delivery.orderNo === order.orderNo));
             setOrders(result);
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -57,7 +52,6 @@ const Add = ({ message }) => {
 
     const closeAddForm = () => {
         setShow(false);
-        message("Data ready");
     }
 
 
@@ -88,7 +82,7 @@ const Add = ({ message }) => {
             };
             const response = await fetch(apiUrl, requestOptions);
             if (response.ok) {
-                message("Delivery is created!");
+                message(`Delivery is created at ${new Date().toISOString()}`);
             } else {
                 throw new Error("Failed to create delivery");
             }

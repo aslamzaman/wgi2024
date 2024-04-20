@@ -10,8 +10,7 @@ const Delete = ({ message, id, data }) => {
         setShow(true);
         try {
            const { customer } = data.find(payment => payment._id === id) || { customer: "" };
-           setCustomer(customer);
-           message("Ready to delete"); 
+           setCustomer(customer.name);
         }
         catch (err) {
             console.log(err);
@@ -21,7 +20,6 @@ const Delete = ({ message, id, data }) => {
 
     const closeDeleteForm = () => {
         setShow(false);
-        message("Data ready");
     }
 
 
@@ -31,7 +29,7 @@ const Delete = ({ message, id, data }) => {
             const requestOptions = { method: "DELETE" };
             const response = await fetch(apiUrl, requestOptions);
             if (response.ok) {
-                message("Deleted successfully completed");
+                message(`Deleted successfully completed. id: ${id}`);
             } else {
                 throw new Error("Failed to delete payment");
             }         

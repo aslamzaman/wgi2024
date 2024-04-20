@@ -10,7 +10,6 @@ const Add = ({ message }) => {
 
 
     const resetVariables = () => {
-        message("Ready to make new additions");        
         setName('');
         setAddress('');
         setContact('');
@@ -25,7 +24,6 @@ const Add = ({ message }) => {
 
     const closeAddForm = () => {
         setShow(false);
-        message("Data ready");
     }
 
 
@@ -50,7 +48,7 @@ const Add = ({ message }) => {
             };
             const response = await fetch(apiUrl, requestOptions);
             if (response.ok) {
-              message("Customer is created!");
+              message(`Customer is created at ${new Date().toISOString()}`);
             } else {
               throw new Error("Failed to create customer");
             } 

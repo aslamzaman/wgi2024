@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { BtnSubmit, TextDt, TextEnDisabled, DropdownEn } from "@/components/Form";
 const date_format = dt => new Date(dt).toISOString().split('T')[0];
-import { fetchData } from "@/lib/utils/FetchData";
+import { fetchData, fetchLocalData } from "@/lib/utils/FetchData";
 import AddLocal from "./AddLocal";
 import DeleteLocal from "./DeleteLocal";
 import { getItems } from "@/lib/utils/LocalDatabase";
@@ -37,19 +37,15 @@ const Add = ({ message }) => {
         let data = getItems("localitem");
         console.log("Aslam", data)
         setLocalitems(data.data);
-
-
-
         try {
-            const response = await fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/customer`);
-            console.log(response);
+            const response = await fetchLocalData('customer');
             const SortResult = response.sort((a, b) => {
                 if ((a.name).toUpperCase() < (b.name).toUpperCase()) {
-                  return -1;
+                    return -1;
                 } else {
-                  return 1;
+                    return 1;
                 }
-              });
+            });
             setCustomers(SortResult);
 
         } catch (error) {
@@ -80,12 +76,12 @@ const Add = ({ message }) => {
     const saveHandler = async (e) => {
         e.preventDefault();
         let localData = getItems("localitem");
-        if(localData.data.length < 1){
+        if (localData.data.length < 1) {
             message("No item added!");
             setShow(false);
-            return false; 
-        } 
-            
+            return false;
+        }
+
         try {
             const newObject = createObject();
             const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/order`;

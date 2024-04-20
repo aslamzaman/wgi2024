@@ -6,7 +6,7 @@ import { SalaryModel } from '@/lib/Models';
 export const GET = async () => {
   try {
     await Connect();
-    const salarys = await SalaryModel.find({}).populate('employee').sort({_id:'desc'});
+    const salarys = await SalaryModel.find({}).populate('employeeId').sort({_id:'desc'});
     return NextResponse.json( salarys );
   } catch (error) {
     console.error('GET Error:', error);
@@ -19,8 +19,8 @@ export const GET = async () => {
 export const POST = async (Request) => {
   try {
     await Connect();
-    const { employee, month, taka, deduct, arear, note } = await Request.json();
-    const salarys = await SalaryModel.create({ employee, month, taka, deduct, arear, note });
+    const { employeeId, month, taka, deduct, arear, note } = await Request.json();
+    const salarys = await SalaryModel.create({ employeeId, month, taka, deduct, arear, note });
     return NextResponse.json(salarys);
   } catch (err) {
     console.error(err);

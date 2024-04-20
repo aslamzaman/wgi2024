@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { TextEn, BtnEn, BtnSubmit, DropdownEn } from "../Form";
 import { Close } from "../Icons";
 import { addItem } from "@/lib/utils/LocalDatabase";
-import { fetchData } from "@/lib/utils/FetchData";
+import { fetchLocalData } from "@/lib/utils/FetchData";
 
 
 const AddLocal = ({ Msg }) => {
@@ -45,8 +45,8 @@ const AddLocal = ({ Msg }) => {
         resetStateVariables();
         try {
             const [responseItem, responseUnit] = await Promise.all([
-                fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/item`),
-                fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/unittype`)
+                fetchLocalData('item'),
+                fetchLocalData('unittype')
             ]);
 
             const sortIems = responseItem.sort((a, b)=>(a.name).toUpperCase() < (b.name).toUpperCase()?-1:1);

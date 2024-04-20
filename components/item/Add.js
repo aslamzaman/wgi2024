@@ -9,7 +9,6 @@ const Add = ({ message }) => {
 
 
     const resetVariables = () => {
-        message("Ready to make new additions");        
         setName('');
         setDescription('');
     }
@@ -23,7 +22,6 @@ const Add = ({ message }) => {
 
     const closeAddForm = () => {
         setShow(false);
-        message("Data ready");
     }
 
 
@@ -47,7 +45,7 @@ const Add = ({ message }) => {
             };
             const response = await fetch(apiUrl, requestOptions);
             if (response.ok) {
-              message("Item is created!");
+              message(`Item is created at ${new Date().toISOString()}`);
             } else {
               throw new Error("Failed to create item");
             } 

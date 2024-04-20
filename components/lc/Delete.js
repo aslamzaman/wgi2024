@@ -3,15 +3,15 @@ import { BtnEn } from "@/components/Form";
 
 
 const Delete = ({ message, id, data }) => {
-    const [lcno, setLcno] = useState('');
+    const [dt, setDt] = useState("");   
     const [show, setShow] = useState(false);
 
     const showDeleteForm = () => {
         setShow(true);
         try {
-           const { lcno } = data.find(lc => lc._id === id) || { dt: "" };
-           setLcno(lcno);
-           message("Ready to delete"); 
+           const { dt } = data.find(lc => lc._id === id) || { dt: "" };
+           setDt(dt);
+
         }
         catch (err) {
             console.log(err);
@@ -20,8 +20,7 @@ const Delete = ({ message, id, data }) => {
 
 
     const closeDeleteForm = () => {
-        setShow(false);
-        message("Data ready");
+        setShow(false);           
     }
 
 
@@ -31,7 +30,7 @@ const Delete = ({ message, id, data }) => {
             const requestOptions = { method: "DELETE" };
             const response = await fetch(apiUrl, requestOptions);
             if (response.ok) {
-                message("Deleted successfully completed");
+                message(`Deleted successfully completed. id: ${id}`);
             } else {
                 throw new Error("Failed to delete lc");
             }         
@@ -67,7 +66,7 @@ const Delete = ({ message, id, data }) => {
 
                                 <h1 className="text-sm text-center text-gray-600 mt-4">
                                     Are you sure to proceed with the deletion?</h1>
-                                <h1 className="text-center text-gray-600 font-bold">LC No: {lcno}</h1>
+                                <h1 className="text-center text-gray-600 font-bold">{dt}</h1>
                             </div>
                             <div className="w-full flex justify-start">
                                 <BtnEn Title="Close" Click={closeDeleteForm} Class="bg-pink-700 hover:bg-pink-900 text-white mr-1" />

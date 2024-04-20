@@ -19,8 +19,8 @@ export const PUT = async (Request,{ params }) => {
   try {
     await Connect();
     const {id} = params;
-    const { name, shortname } = await Request.json();
-    const posts = await PostModel.findOneAndUpdate({ _id: id }, { name, shortname });
+    const { name, shortName } = await Request.json();
+    const posts = await PostModel.findOneAndUpdate({ _id: id }, { name, shortName });
     return NextResponse.json(posts);
   } catch (err) {
     return NextResponse.json({ message: "PUT Error", err }, { status: 500 });

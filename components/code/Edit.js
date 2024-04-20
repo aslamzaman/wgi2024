@@ -98,14 +98,14 @@ const Edit = (tbl, datas) => {
     }
     );
 
-    sowFormMongoData = '               const { ' + sowFormMongo + ' } = data.find(' + tbl + ' => ' + tbl + '._id === id) || { ' + sowFormMongop + ' };'+'\n'
+    sowFormMongoData = '             const { ' + sowFormMongo + ' } = data.find(' + tbl + ' => ' + tbl + '._id === id) || { ' + sowFormMongop + ' };'+'\n'
   
     let sowFormMongo2 = "";
     data.map((d, i) => {
         if (i > 0) {
             i === (data.length - 1)
-                ? sowFormMongo2 += `               set${FirstCap(d)}(${d});`
-                : sowFormMongo2 += `               set${FirstCap(d)}(${d});` + `\n`
+                ? sowFormMongo2 += `             set${FirstCap(d)}(${d});`
+                : sowFormMongo2 += `             set${FirstCap(d)}(${d});` + `\n`
         }
     }
     );
@@ -126,7 +126,7 @@ const Edit = (tbl, datas) => {
 
  saveStr += '                const response = await fetch(apiUrl, requestOptions);' + '\n';
  saveStr += '                if (response.ok) {' + '\n';
- saveStr += '                    message("Updated successfully completed");' + '\n';
+ saveStr += '                    message(`Updated successfully completed at ${new Date().toISOString()}`);' + '\n';
  saveStr += '                } else {' + '\n';
  saveStr += '                    throw new Error("Failed to create '+tbl+'");' + '\n';
  saveStr += '                }';
@@ -151,18 +151,12 @@ ${stateVar}
     
         const showEditForm =  () => {
             setShow(true);
-            message("Ready to edit");
-            try {
 ${sowFormMongoData}             
-            } catch (err) {
-                console.log(err);
-            }
         };
     
     
         const closeEditForm = () => {
             setShow(false);
-            message("Data ready.");
         };
     
     

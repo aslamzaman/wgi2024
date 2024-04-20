@@ -12,7 +12,6 @@ const Delete = ({ message, id, data }) => {
             console.log(data)
            const { invoiceNo } = data.find(delivery => delivery._id === id) || { invoiceNo: "" };
            setInvoiceNo(invoiceNo);
-           message("Ready to delete"); 
         }
         catch (err) {
             console.log(err);
@@ -22,7 +21,6 @@ const Delete = ({ message, id, data }) => {
 
     const closeDeleteForm = () => {
         setShow(false);
-        message("Data ready");
     }
 
 

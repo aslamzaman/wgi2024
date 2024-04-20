@@ -7,7 +7,7 @@ const date_format = dt => new Date(dt).toISOString().split('T')[0];
 import { inword } from "@/lib/Inword";
 require("@/lib/fonts/Poppins-Bold-normal");
 require("@/lib/fonts/Poppins-Regular-normal");
-
+import { fetchLocalData } from "@/lib/utils/FetchData";
 
 
 const Moneyreceipt = () => {
@@ -20,18 +20,9 @@ const Moneyreceipt = () => {
     const fetchData = async () => {
         setWaitMsg('Please Wait...');
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/moneyreceipt`, {
-                method: "GET",
-                headers: { "Content-Type": "application/json" }
-            });
-
-            if (!response.ok) {
-                throw new Error("Failed to fetch data");
-            }
-
-            const data = await response.json();
-            console.log(data);
-            setMoneyreceipts(data);
+            const response = await fetchLocalData('moneyreceipt');
+            console.log(response);
+            setMoneyreceipts(response);
             setWaitMsg('');
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -109,7 +100,6 @@ const Moneyreceipt = () => {
 
     const refreshClickHandler = async () => {
         await fetchData();
-        setMsg("Data ready");
     }
 
 

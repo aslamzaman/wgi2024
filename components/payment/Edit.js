@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { TextEn, BtnSubmit, DropdownEn, TextDt, TextNum } from "@/components/Form";
-import { fetchData } from "@/lib/utils/FetchData";
+import { fetchLocalData } from "@/lib/utils/FetchData";
 const date_format = (dt) => new Date(dt).toISOString().split('T')[0];
 
 
@@ -22,15 +22,15 @@ const Edit = ({ message, id, data }) => {
 
     const showEditForm = async () => {
         setShow(true);
-        message("Ready to edit");
+
         try {
             const [responseCustomer, responseCashtype] = await Promise.all([
-                fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/customer`),
-                fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/cashtype`)
+                fetchLocalData('customer'),
+                fetchLocalData('cashtype')
             ]);
 
 
-            console.log(responseCustomer, responseCashtype);
+          //  console.log(responseCustomer, responseCashtype);
             const sortCustomer = responseCustomer.sort((a, b)=>(a.name).toUpperCase() < (b.name).toUpperCase()?-1:1);
 
             setCustomers(sortCustomer);
@@ -60,7 +60,6 @@ const Edit = ({ message, id, data }) => {
 
     const closeEditForm = () => {
         setShow(false);
-        message("Data ready.");
     };
 
 

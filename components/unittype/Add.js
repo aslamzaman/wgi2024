@@ -8,7 +8,6 @@ const Add = ({ message }) => {
 
 
     const resetVariables = () => {
-        message("Ready to make new additions");        
         setName('');
     }
 
@@ -21,7 +20,6 @@ const Add = ({ message }) => {
 
     const closeAddForm = () => {
         setShow(false);
-        message("Data ready");
     }
 
 
@@ -44,7 +42,7 @@ const Add = ({ message }) => {
             };
             const response = await fetch(apiUrl, requestOptions);
             if (response.ok) {
-              message("Unittype is created!");
+              message(`Unittype is created at ${new Date().toISOString()}`);
             } else {
               throw new Error("Failed to create unittype");
             } 

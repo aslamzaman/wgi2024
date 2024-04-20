@@ -79,15 +79,13 @@ const Delete = (tbl, datas) => {
     //------------------------------------------------------------------------
 
     let sowFormMongoData = '';
-    sowFormMongoData = '               const { ' + data[1] + ' } = data.find(' + tbl + ' => ' + tbl + '._id === id) || { ' + data[1] + ': "" };' + '\n'
+    sowFormMongoData = '            const { ' + data[1] + ' } = data.find(' + tbl + ' => ' + tbl + '._id === id) || { ' + data[1] + ': "" };' + '\n'
 
-    sowFormMongoData += `               set${FirstCap(data[1])}(${data[1]});\n`;
-    sowFormMongoData += `               message("Ready to delete");`;
+    sowFormMongoData += `            set${FirstCap(data[1])}(${data[1]});`;
     //--------------------------
     let sowFormLocalData = '';
     sowFormLocalData += '               const response = getOne("' + tbl + '", id);' + '\n';
     sowFormLocalData += '               set'+ titleCase(data[1]) + '(response.data.'+data[1]+');' + '\n';
-    sowFormLocalData += '               message("Ready to delete");';
 
     //------------------------------------------------------------------------------
     let saveStr = '';
@@ -95,7 +93,7 @@ const Delete = (tbl, datas) => {
     saveStr += '                const requestOptions = { method: "DELETE" };' + '\n';
     saveStr += '                const response = await fetch(apiUrl, requestOptions);' + '\n';
     saveStr += '                if (response.ok) {' + '\n';
-    saveStr += '                    message("Deleted successfully completed");' + '\n';
+    saveStr += '                    message(`Deleted successfully completed. id: ${id}`);' + '\n';
     saveStr += '                } else {' + '\n';
     saveStr += '                    throw new Error("Failed to delete '+tbl+'");' + '\n';
     saveStr += '                }';
@@ -120,18 +118,12 @@ const Delete = (tbl, datas) => {
     
         const showDeleteForm = () => {
             setShow(true);
-            try {
 ${sowFormMongoData} 
-            }
-            catch (err) {
-                console.log(err);
-            }
         }
     
     
         const closeDeleteForm = () => {
-            setShow(false);
-            message("Data ready");
+            setShow(false);           
         }
     
     

@@ -19,8 +19,8 @@ export const GET = async () => {
 export const POST = async (Request) => {
   try {
     await Connect();
-    const { name, shortname } = await Request.json();
-    const posts = await PostModel.create({ name, shortname });
+    const { name, shortName } = await Request.json();
+    const posts = await PostModel.create({ name, shortName });
     return NextResponse.json(posts);
   } catch (err) {
     console.error(err);

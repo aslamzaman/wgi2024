@@ -1,17 +1,16 @@
 import React, { useState } from "react";
 import { TextEn, BtnSubmit } from "@/components/Form";
-import Image from "next/image";
+
 
 const Add = ({ message }) => {
     const [name, setName] = useState('');
-    const [shortname, setShortname] = useState('');
+    const [shortName, setShortName] = useState('');
     const [show, setShow] = useState(false);
 
 
     const resetVariables = () => {
-        message("Ready to make new additions");        
         setName('');
-        setShortname('');
+        setShortName('');
     }
 
 
@@ -23,14 +22,13 @@ const Add = ({ message }) => {
 
     const closeAddForm = () => {
         setShow(false);
-        message("Data ready");
     }
 
 
     const createObject = () => {
         return {
             name: name,
-            shortname: shortname 
+            shortName: shortName 
         }
     }
 
@@ -47,7 +45,7 @@ const Add = ({ message }) => {
             };
             const response = await fetch(apiUrl, requestOptions);
             if (response.ok) {
-              message("Post is created!");
+              message(`Post is created at ${new Date().toISOString()}`);
             } else {
               throw new Error("Failed to create post");
             } 
@@ -74,18 +72,14 @@ const Add = ({ message }) => {
                              </button>
                         </div>
                         <div className="px-6 pb-6 text-black">
-
-                        <Image src="https://images.pexels.com/photos/20194382/pexels-photo-20194382/free-photo-of-a-person-sitting-on-a-beach-chair-in-the-ocean.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" width={700} height={468} alt="Landing page" priority={true} className="w-auto" /> 
-
-
                             <form onSubmit={saveHandler}>
                                 <div className="grid grid-cols-1 gap-4 my-4">
                                     <TextEn Title="Name" Id="name" Change={e => setName(e.target.value)} Value={name} Chr={50} />
-                                    <TextEn Title="Shortname" Id="shortname" Change={e => setShortname(e.target.value)} Value={shortname} Chr={50} />                                      
+                                    <TextEn Title="Shortname" Id="shortName" Change={e => setShortName(e.target.value)} Value={shortName} Chr={50} />                                      
                                 </div>
                                 <div className="w-full flex justify-start">                        
-                                   <input type="button" onClick={closeAddForm} value="Close" className="bg-pink-600 hover:bg-pink-800 text-white text-center mt-3 mx-0.5 px-4 py-2 font-semibold rounded-md focus:ring-1 ring-blue-200 ring-offset-2 duration-300 cursor-pointer" />
-                                   <BtnSubmit Title="Save" Class="bg-blue-600 hover:bg-blue-800 text-white" />   
+                                <input type="button" onClick={closeAddForm} value="Close" className="bg-pink-600 hover:bg-pink-800 text-white text-center mt-3 mx-0.5 px-4 py-2 font-semibold rounded-md focus:ring-1 ring-blue-200 ring-offset-2 duration-300 cursor-pointer" />
+                                <BtnSubmit Title="Save" Class="bg-blue-600 hover:bg-blue-800 text-white" />   
                                 </div>
                             </form>
                         </div>

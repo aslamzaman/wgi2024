@@ -10,7 +10,6 @@ const Edit = ({ message, id, data }) => {
 
     const showEditForm =  () => {
         setShow(true);
-        message("Ready to edit");
         try {
            const { name, description } = data.find(item => item._id === id) || { name: '', description: '' };
            setName(name);
@@ -23,7 +22,6 @@ const Edit = ({ message, id, data }) => {
 
     const closeEditForm = () => {
         setShow(false);
-        message("Data ready.");
     };
 
 
@@ -47,7 +45,7 @@ const Edit = ({ message, id, data }) => {
             };
             const response = await fetch(apiUrl, requestOptions);
             if (response.ok) {
-                message("Updated successfully completed");
+                message(`Updated successfully completed at ${new Date().toISOString()}`);
             } else {
                 throw new Error("Failed to create item");
             } 

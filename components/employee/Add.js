@@ -1,26 +1,30 @@
 import React, { useState } from "react";
 import { TextEn, BtnSubmit, DropdownEn, TextNum, TextDt } from "@/components/Form";
+import { getItems } from "@/lib/utils/LocalDatabase";
+const date_format = dt => new Date(dt).toISOString().split('T')[0];
+
+
 
 
 const Add = ({ message }) => {
     const [name, setName] = useState('');
     const [address, setAddress] = useState('');
-    const [post_id, setPost_id] = useState('');
+    const [postId, setPostId] = useState('');
     const [salary, setSalary] = useState('');
-    const [join_dt, setJoin_dt] = useState('');
+    const [joinDt, setJoinDt] = useState('');
     const [contact, setContact] = useState('');
     const [show, setShow] = useState(false);
 
     const [posts, setPosts] = useState([]);
-  
+    const [postIdChange, setPostIdChange] = useState('');
+
 
     const resetVariables = () => {
-        message("Ready to make new additions");
         setName('');
         setAddress('');
-        setPost_id('');
+        setPostId('');
         setSalary('');
-        setJoin_dt('');
+        setJoinDt(date_format(new Date()));
         setContact('');
     }
 
@@ -28,30 +32,12 @@ const Add = ({ message }) => {
     const showAddForm = async () => {
         setShow(true);
         resetVariables();
-        try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/post`, {
-                method: "GET",
-                headers: { "Content-Type": "application/json" }
-            });
-
-            if (!response.ok) {
-                throw new Error("Failed to fetch data");
-            }
-
-            const data = await response.json();
-            console.log(data);
-            setPosts(data);
-        } catch (error) {
-            console.error("Error fetching data:", error);
-            setMsg("Failed to fetch data");
-        }
-
+        setPosts(getItems('post'));
     }
 
 
     const closeAddForm = () => {
         setShow(false);
-        message("Data ready");
     }
 
 
@@ -59,9 +45,9 @@ const Add = ({ message }) => {
         return {
             name: name,
             address: address,
-            post_id: post_id,
+            postId: postId,
             salary: salary,
-            join_dt: join_dt,
+            joinDt: joinDt,
             contact: contact
         }
     }
@@ -79,7 +65,7 @@ const Add = ({ message }) => {
             };
             const response = await fetch(apiUrl, requestOptions);
             if (response.ok) {
-                message("Employee is created!");
+                message(`Employee is created at ${new Date().toISOString()}`);
             } else {
                 throw new Error("Failed to create employee");
             }
@@ -90,6 +76,15 @@ const Add = ({ message }) => {
             setShow(false);
         }
     }
+
+
+    const postIdChangeHandler = (e) => {
+        const postIdValue = e.target.value;
+        setPostIdChange(postIdValue);
+        setPostId(postIdValue);
+    }
+
+
 
 
     return (
@@ -109,12 +104,14 @@ const Add = ({ message }) => {
                             <form onSubmit={saveHandler}>
                                 <div className="grid grid-cols-1 gap-4 my-4">
                                     <TextEn Title="Name" Id="name" Change={e => setName(e.target.value)} Value={name} Chr={50} />
-                                    <TextEn Title="Address" Id="address" Change={e => setAddress(e.target.value)} Value={address} Chr={50} />
-                                    <DropdownEn Title="Post" Id="post_id" Change={e => setPost_id(e.target.value)} Value={post_id}>
+                                    <TextEn Title="Address" Id="address" Change={e => setAddress(e.target.value)} Value={address} Chr={150} />
+
+                                    <DropdownEn Title="Post" Id="postIdChange" Change={postIdChangeHandler} Value={postIdChange}>
                                         {posts.length ? posts.map(post => <option value={post._id} key={post._id}>{post.name}</option>) : null}
                                     </DropdownEn>
+
                                     <TextNum Title="Salary" Id="salary" Change={e => setSalary(e.target.value)} Value={salary} />
-                                    <TextDt Title="Join_dt" Id="join_dt" Change={e => setJoin_dt(e.target.value)} Value={join_dt} />
+                                    <TextDt Title="Joining Date" Id="joinDt" Change={e => setJoinDt(e.target.value)} Value={joinDt} />
                                     <TextEn Title="Contact" Id="contact" Change={e => setContact(e.target.value)} Value={contact} Chr={50} />
                                 </div>
                                 <div className="w-full flex justify-start">

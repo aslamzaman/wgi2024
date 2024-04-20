@@ -11,7 +11,7 @@ const Delete = ({ message, id, data }) => {
         try {
            const { name } = data.find(customer => customer._id === id) || { name: "" };
            setName(name);
-           message("Ready to delete"); 
+
         }
         catch (err) {
             console.log(err);
@@ -20,8 +20,7 @@ const Delete = ({ message, id, data }) => {
 
 
     const closeDeleteForm = () => {
-        setShow(false);
-        message("Data ready");
+        setShow(false);           
     }
 
 
@@ -31,7 +30,7 @@ const Delete = ({ message, id, data }) => {
             const requestOptions = { method: "DELETE" };
             const response = await fetch(apiUrl, requestOptions);
             if (response.ok) {
-                message("Deleted successfully completed");
+                message(`Deleted successfully completed. id: ${id}`);
             } else {
                 throw new Error("Failed to delete customer");
             }         
@@ -77,8 +76,8 @@ const Delete = ({ message, id, data }) => {
                     </div>
                 </div>
             )}
-            <button onClick={showDeleteForm} title="Delete" className="px-1 py-1 bg-red-400 hover:bg-red-600 rounded-md transition duration-500">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-5 h-5 stroke-white hover:stroke-gray-100">
+            <button onClick={showDeleteForm} title="Delete" className="px-1 py-1 hover:bg-red-300 rounded-md transition duration-500">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5 stroke-black hover:stroke-blue-800 transition duration-500">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>

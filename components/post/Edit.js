@@ -1,20 +1,19 @@
 import React, { useState } from "react";
 import { TextEn, BtnSubmit } from "@/components/Form";
-      
+       
 
 const Edit = ({ message, id, data }) => {        
     const [name, setName] = useState('');
-    const [shortname, setShortname] = useState('');        
+    const [shortName, setShortName] = useState('');        
     const [show, setShow] = useState(false);
 
 
-    const showEditForm = async () => {
+    const showEditForm =  () => {
         setShow(true);
-        message("Ready to edit");
         try {
-           const { name, shortname } = data.find(post => post._id === id) || { name: '', shortname: '' };
+           const { name, shortName } = data.find(post => post._id === id) || { name: '', shortName: '' };
            setName(name);
-           setShortname(shortname);             
+           setShortName(shortName);             
         } catch (err) {
             console.log(err);
         }
@@ -23,14 +22,13 @@ const Edit = ({ message, id, data }) => {
 
     const closeEditForm = () => {
         setShow(false);
-        message("Data ready.");
     };
 
 
     const createObject = () => {
         return {
           name: name,
-          shortname: shortname                
+          shortName: shortName                
         }
     }
 
@@ -47,7 +45,7 @@ const Edit = ({ message, id, data }) => {
             };
             const response = await fetch(apiUrl, requestOptions);
             if (response.ok) {
-                message("Updated successfully completed");
+                message(`Updated successfully completed at ${new Date().toISOString()}`);
             } else {
                 throw new Error("Failed to create post");
             } 
@@ -79,11 +77,11 @@ const Edit = ({ message, id, data }) => {
                             <form onSubmit={saveHandler} >
                                 <div className="grid grid-cols-1 gap-4 my-4">
                                     <TextEn Title="Name" Id="name" Change={e => setName(e.target.value)} Value={name} Chr={50} />
-                                    <TextEn Title="Shortname" Id="shortname" Change={e => setShortname(e.target.value)} Value={shortname} Chr={50} />                                        
+                                    <TextEn Title="Shortname" Id="shortName" Change={e => setShortName(e.target.value)} Value={shortName} Chr={50} />                                        
                                 </div>
                                 <div className="w-full flex justify-start">
-                                    <input type="button" onClick={closeEditForm} value="Close" className="bg-pink-600 hover:bg-pink-800 text-white text-center mt-3 mx-0.5 px-4 py-2 font-semibold rounded-md focus:ring-1 ring-blue-200 ring-offset-2 duration-300 cursor-pointer" />
-                                    <BtnSubmit Title="Save Changes" Class="bg-blue-600 hover:bg-blue-800 text-white" />
+                                <input type="button" onClick={closeEditForm} value="Close" className="bg-pink-600 hover:bg-pink-800 text-white text-center mt-3 mx-0.5 px-4 py-2 font-semibold rounded-md focus:ring-1 ring-blue-200 ring-offset-2 duration-300 cursor-pointer" />
+                                <BtnSubmit Title="Save" Class="bg-blue-600 hover:bg-blue-800 text-white" />
                                 </div>
                             </form>
                         </div>
@@ -92,8 +90,8 @@ const Edit = ({ message, id, data }) => {
                     </div >
                 </div >
             )}
-            <button onClick={showEditForm} title="Edit" className="px-1 py-1 bg-teal-600 hover:bg-teal-700 rounded-md transition duration-500">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5 stroke-white hover:stroke-gray-100">
+            <button onClick={showEditForm} title="Edit" className="px-1 py-1 hover:bg-teal-300 rounded-md transition duration-500">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5 stroke-black hover:stroke-blue-800 transition duration-500">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
                 </svg>
             </button>

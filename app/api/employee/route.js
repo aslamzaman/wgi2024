@@ -6,7 +6,7 @@ import { EmployeeModel } from '@/lib/Models';
 export const GET = async () => {
   try {
     await Connect();
-    const employees = await EmployeeModel.find({}).populate("post_id").sort({_id:'desc'});
+    const employees = await EmployeeModel.find({}).populate('postId').sort({_id:'desc'});
     return NextResponse.json( employees );
   } catch (error) {
     console.error('GET Error:', error);
@@ -19,8 +19,8 @@ export const GET = async () => {
 export const POST = async (Request) => {
   try {
     await Connect();
-    const { name, address, post_id, salary, join_dt, contact } = await Request.json();
-    const employees = await EmployeeModel.create({ name, address, post_id, salary, join_dt, contact });
+    const { name, address, postId, salary, joinDt, contact } = await Request.json();
+    const employees = await EmployeeModel.create({ name, address, postId, salary, joinDt, contact });
     return NextResponse.json(employees);
   } catch (err) {
     console.error(err);

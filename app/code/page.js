@@ -210,21 +210,16 @@ const Code = () => {
 
 
 
-        let str = '    import { fetchData } from "@/lib/utils/FetchData";\n';
+        let str = 'import { getItems } from "@/lib/utils/LocalDatabase";\n';
         str = str + "\n";
         str = str + "\n";
-        str = str + `    const [${tbl[0]}s, set${titleCase(tbl[0])}s] = useState([]);\n`;
-        str = str + `    const [${tbl[1]}Change, set${FirstCap(tbl[1])}Change] = useState('');\n`;
+        str = str + `const [${tbl[0]}s, set${titleCase(tbl[0])}s] = useState([]);\n`;
+        str = str + `const [${tbl[1]}Change, set${FirstCap(tbl[1])}Change] = useState('');\n`;
 
         str = str + "\n";
         str = str + "\n";
     
-        str = str + "        try {\n";
-        str = str + "            const response"+titleCase(tbl[0])+" = await fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/"+tbl[0]+"`);\n";
-        str = str + "            set"+titleCase(tbl[0])+"s(response"+titleCase(tbl[0])+");\n";
-        str = str + "        } catch (error) {\n";
-        str = str + '            console.error("Error fetching data:", error);\n';
-        str = str + "        }\n";
+        str = str + "set"+titleCase(tbl[0])+"s(getItems('"+tbl[0]+"'));\n";
 
         str = str + "\n";
         str = str + "\n";

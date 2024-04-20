@@ -11,7 +11,7 @@ const Delete = ({ message, id, data }) => {
         try {
            const { name } = data.find(unittype => unittype._id === id) || { name: "" };
            setName(name);
-           message("Ready to delete"); 
+
         }
         catch (err) {
             console.log(err);
@@ -20,8 +20,7 @@ const Delete = ({ message, id, data }) => {
 
 
     const closeDeleteForm = () => {
-        setShow(false);
-        message("Data ready");
+        setShow(false);           
     }
 
 
@@ -31,7 +30,7 @@ const Delete = ({ message, id, data }) => {
             const requestOptions = { method: "DELETE" };
             const response = await fetch(apiUrl, requestOptions);
             if (response.ok) {
-                message("Deleted successfully completed");
+                message(`Deleted successfully completed. id: ${id}`);
             } else {
                 throw new Error("Failed to delete unittype");
             }         

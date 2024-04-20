@@ -7,6 +7,7 @@ import { inword } from "@/lib/Inword";
 const date_format = dt => new Date(dt).toISOString().split('T')[0];
 require("@/lib/fonts/Poppins-Bold-normal");
 require("@/lib/fonts/Poppins-Regular-normal");
+import { fetchLocalData } from "@/lib/utils/FetchData";
 
 const Delivery = () => {
     const [deliverys, setDeliverys] = useState([]);
@@ -18,18 +19,9 @@ const Delivery = () => {
     const fetchData = async () => {
         setWaitMsg('Please Wait...');
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/delivery`, {
-                method: "GET",
-                headers: { "Content-Type": "application/json" }
-            });
-
-            if (!response.ok) {
-                throw new Error("Failed to fetch data");
-            }
-
-            const data = await response.json();
-            console.log(data);
-            setDeliverys(data);
+            const response = await fetchLocalData('delivery');
+            console.log(response);
+            setDeliverys(response);
             setWaitMsg('');
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -161,7 +153,6 @@ const Delivery = () => {
 
     const refreshClickHandler = async () => {
         await fetchData();
-        setMsg("Data ready");
     }
 
     return (

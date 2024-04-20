@@ -40,13 +40,12 @@ const Page = (tbl, datas) => {
     loadMongo += '                    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/' + tbl + '`, {' + '\n';
     loadMongo += '                        method: "GET",' + '\n';
     loadMongo += '                        headers: { "Content-Type": "application/json" }' + '\n';
-    loadMongo += '                    });' + '\n\n';
+    loadMongo += '                    });' + '\n';
     loadMongo += '                    if (!response.ok) {' + '\n';
     loadMongo += '                        throw new Error("Failed to fetch data");' + '\n';
-    loadMongo += '                    }' + '\n\n';
-
+    loadMongo += '                    }' + '\n';
     loadMongo += '                    const data = await response.json();' + '\n';
-    loadMongo += '                    console.log(data);' + '\n';
+    loadMongo += '                    localStorage.setItem("'+tbl+'", JSON.stringify(data));\n';
     loadMongo += '                    set' + titleCase(tbl) + 's(data);';
     //-------------
    
@@ -71,7 +70,6 @@ ${loadMongo}
                 setWaitMsg('');
                 } catch (error) {
                     console.error("Error fetching data:", error);
-                    setMsg("Failed to fetch data");
                 }
             };
             fetchData();

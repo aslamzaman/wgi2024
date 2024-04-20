@@ -3,8 +3,7 @@ import React, { useState, useEffect } from "react";
 import Add from "@/components/order/Add";
 import Delete from "@/components/order/Delete";
 const date_format = dt => new Date(dt).toISOString().split('T')[0];
-import { fetchData } from "@/lib/utils/FetchData";
-
+import { fetchData, fetchLocalData } from "@/lib/utils/FetchData";
 
 
 const Order = () => {
@@ -20,8 +19,10 @@ const Order = () => {
 
                 const [responseOrder, responseDelivery] = await Promise.all([
                     fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/order`),
-                    fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/delivery`)
-                ]);
+                    fetchLocalData('delivery')
+                ]); 
+               
+                //----------------------------
                 const result = responseOrder.map(order => {
                     const matchDelivery = responseDelivery.find(delivery => delivery.orderNo === order.orderNo);
                     return {
@@ -82,11 +83,11 @@ const Order = () => {
                                             <td className="text-center py-2 px-4">{order.customerId.name}</td>
                                             <td className="text-center py-2 px-4">{tTaka}</td>
                                             <td className="flex justify-end items-center space-x-1 mt-1 mr-2">
-                                            {order.delivery === false ?(  
-                                                <>
-                                                <Delete message={messageHandler} id={order._id} data={orders} />
-                                                </>
-                                            ):null}
+                                                {order.delivery === false ? (
+                                                    <>
+                                                        <Delete message={messageHandler} id={order._id} data={orders} />
+                                                    </>
+                                                ) : null}
                                             </td>
                                         </tr>
                                     )

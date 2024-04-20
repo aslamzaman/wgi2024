@@ -1,43 +1,43 @@
 import React, { useState } from "react";
-import { BtnSubmit, TextDt, TextNum, DropdownEn } from "@/components/Form";
+import { TextEn, BtnSubmit, DropdownEn, TextDt, TextNum} from "@/components/Form";
+import { fetchData } from "@/lib/utils/FetchData";
+const date_format = dt => new Date(dt).toISOString().split('T')[0];
 
-const date_format = (dt) => new Date(dt).toISOString().split('T')[0];
 
 
-const Edit = ({ message, id, data }) => {
+const Edit = ({ message, id, data }) => {        
     const [dt, setDt] = useState('');
-    const [lcno, setLcno] = useState('');
+    const [lcNo, setLcNo] = useState('');
     const [qty, setQty] = useState('');
-    const [unittypeid, setUnittypeid] = useState('');
-    const [taka, setTaka] = useState('');
+    const [unittypeId, setUnittypeId] = useState('');
+    const [taka, setTaka] = useState('');        
     const [show, setShow] = useState(false);
 
+
     const [unittypes, setUnittypes] = useState([]);
+    const [unittypeIdChange, setUnittypeIdChange] = useState('');  
 
-    const showEditForm = async () => {
+    const showEditForm = async  () => {
         setShow(true);
-        message("Ready to edit");
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/unittype`, {
-                method: "GET",
-                headers: { "Content-Type": "application/json" }
-            });
-
-            if (!response.ok) {
-                throw new Error("Failed to fetch data");
+            const localUnittype = localStorage.getItem('unittype');
+            const unittypeData = localUnittype ? JSON.parse(localUnittype) : [];
+            if (unittypeData.length > 0) {
+               setUnittypes(unittypeData);
+            } else {
+               const responseUnittype = await fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/unittype`);
+               localStorage.setItem('unittype', JSON.stringify(responseUnittype));
+               setUnittypes(responseUnittype);
             }
-
-            const responseData = await response.json();
-            console.log(responseData);
-            setUnittypes(responseData);
-
-            //-----------------------------------------------------------------------------
-            const { dt, lcno, qty, unittypeid, taka } = data.find(lc => lc._id === id) || { dt: '', lcno: '', qty: '', unittypeid: '', taka: '' };
-            setDt(date_format(dt));
-            setLcno(lcno);
-            setQty(qty);
-            setUnittypeid(unittypeid._id);
-            setTaka(taka);
+            //------------------------------------------
+           const { dt, lcNo, qty, unittypeId, taka } = data.find(lc => lc._id === id) || { dt: '', lcNo: '', qty: '', unittypeId: '', taka: '' };
+           setDt(date_format(dt));
+           setLcNo(lcNo);
+           setQty(qty);
+           setUnittypeId(unittypeId._id);
+           setTaka(taka);        
+           //---------------------------
+           setUnittypeIdChange(unittypeId._id) ;    
         } catch (err) {
             console.log(err);
         }
@@ -46,17 +46,16 @@ const Edit = ({ message, id, data }) => {
 
     const closeEditForm = () => {
         setShow(false);
-        message("Data ready.");
     };
 
 
     const createObject = () => {
         return {
-            dt: dt,
-            lcno: lcno,
-            qty: qty,
-            unittypeid: unittypeid,
-            taka: taka
+          dt: dt,
+          lcNo: lcNo,
+          qty: qty,
+          unittypeId: unittypeId,
+          taka: taka                
         }
     }
 
@@ -73,17 +72,23 @@ const Edit = ({ message, id, data }) => {
             };
             const response = await fetch(apiUrl, requestOptions);
             if (response.ok) {
-                message("Updated successfully completed");
+                message(`Updated successfully completed at ${new Date().toISOString()}`);
             } else {
                 throw new Error("Failed to create lc");
-            }
+            } 
         } catch (error) {
             console.error("Error saving lc data:", error);
             message("Error saving lc data.");
-        } finally {
+        }finally {
             setShow(false);
         }
     }
+
+    const unittypeIdChangeHandler = (e) => {
+        const unittypeIdValue = e.target.value;
+        setUnittypeIdChange(unittypeIdValue);
+        setUnittypeId(unittypeIdValue);
+     }
 
 
     return (
@@ -94,27 +99,29 @@ const Edit = ({ message, id, data }) => {
                         <div className="px-6 md:px-6 py-2 flex justify-between items-center border-b border-gray-300">
                             <h1 className="text-xl font-bold text-blue-600">Edit Existing Data</h1>
                             <button onClick={closeEditForm} className="w-8 h-8 p-0.5 bg-gray-50 hover:bg-gray-300 rounded-md transition duration-500">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-full h-full stroke-black">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                            </button>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-full h-full stroke-black">
+                               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                           </svg>
+                          </button>
 
                         </div>
 
                         <div className="px-6 pb-6 text-black">
                             <form onSubmit={saveHandler} >
                                 <div className="grid grid-cols-1 gap-4 my-4">
-                                    <TextDt Title="Date" Id="dt" Change={e => setDt(e.target.value)} Value={dt} />
-                                    <TextNum Title="LC No" Id="lcno" Change={e => setLcno(e.target.value)} Value={lcno} />
-                                    <TextNum Title="Quantity" Id="qty" Change={e => setQty(e.target.value)} Value={qty} />
-                                    <DropdownEn Title="Unit Type" Id="unittypeid" Change={e => setUnittypeid(e.target.value)} Value={unittypeid}>
-                                        {unittypes.map(unit => <option value={unit._id} key={unit._id}>{unit.name}</option>)}
+                                <TextDt Title="Date" Id="dt" Change={e => setDt(e.target.value)} Value={dt} />
+                                    <TextEn Title="Lc No" Id="lcNo" Change={e => setLcNo(e.target.value)} Value={lcNo} Chr={50} />
+                                    <TextEn Title="Quantity" Id="qty" Change={e => setQty(e.target.value)} Value={qty} Chr={50} />
+
+                                    <DropdownEn Title="Unit Type" Id="unittypeIdChange" Change={unittypeIdChangeHandler} Value={unittypeIdChange}>
+                                        {unittypes.length?unittypes.map(unittype=><option value={unittype._id} key={unittype._id}>{unittype.name}</option>):null}
                                     </DropdownEn>
-                                    <TextNum Title="Taka" Id="taka" Change={e => setTaka(e.target.value)} Value={taka} />
+
+                                    <TextNum Title="Taka" Id="taka" Change={e => setTaka(e.target.value)} Value={taka} Chr={50} />                                       
                                 </div>
                                 <div className="w-full flex justify-start">
-                                    <input type="button" onClick={closeEditForm} value="Close" className="bg-pink-600 hover:bg-pink-800 text-white text-center mt-3 mx-0.5 px-4 py-2 font-semibold rounded-md focus:ring-1 ring-blue-200 ring-offset-2 duration-300 cursor-pointer" />
-                                    <BtnSubmit Title="Save" Class="bg-blue-600 hover:bg-blue-800 text-white" />
+                                <input type="button" onClick={closeEditForm} value="Close" className="bg-pink-600 hover:bg-pink-800 text-white text-center mt-3 mx-0.5 px-4 py-2 font-semibold rounded-md focus:ring-1 ring-blue-200 ring-offset-2 duration-300 cursor-pointer" />
+                                <BtnSubmit Title="Save" Class="bg-blue-600 hover:bg-blue-800 text-white" />
                                 </div>
                             </form>
                         </div>
@@ -125,7 +132,7 @@ const Edit = ({ message, id, data }) => {
             )}
             <button onClick={showEditForm} title="Edit" className="px-1 py-1 hover:bg-teal-300 rounded-md transition duration-500">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5 stroke-black hover:stroke-blue-800 transition duration-500">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
                 </svg>
             </button>
         </>
