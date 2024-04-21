@@ -23,17 +23,20 @@ const Order = () => {
                     fetchData('delivery')
                 ]);
 
-                //----------------------------
-                const result = responseOrder.map(order => {
-                    const matchDelivery = responseDelivery.find(delivery => delivery.orderNo === order.orderNo);
-                    return {
-                        ...order,
-                        delivery: matchDelivery ? true : false
-                    }
-                });
-                console.log("result", result)
-                localStorage.setItem("order", JSON.stringify(result));
-                setOrders(result);
+
+                //-----------------------------
+                const filterOrder = responseOrder
+                    .filter(order => order.customerId.isDeleted===false)
+                    .map(order => {
+                        const matchDelivery = responseDelivery.find(delivery => delivery.orderNo === order.orderNo);
+                        return {
+                            ...order,
+                            delivery: matchDelivery ? true : false
+                        }
+                    })
+
+                console.log(filterOrder)
+                setOrders(filterOrder);
                 setWaitMsg('');
             } catch (error) {
                 console.error("Error fetching data:", error);

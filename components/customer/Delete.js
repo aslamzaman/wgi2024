@@ -3,19 +3,50 @@ import { BtnEn } from "@/components/Form";
 
 
 const Delete = ({ message, id, data }) => {
-    const [name, setName] = useState("");
+    const [name, setName] = useState("");   
     const [show, setShow] = useState(false);
 
     const showDeleteForm = () => {
         setShow(true);
         const { name } = data.find(customer => customer._id === id) || { name: "" };
-        setName(name);
+        setName(name); 
     }
 
 
     const closeDeleteForm = () => {
-        setShow(false);
+        setShow(false);           
     }
+
+
+    const softDeleteHandler = async () => {
+        const custoers = data.find(customer => customer._id === id) ;
+        try {
+            const newObject = {
+                name: custoers.name,
+                address: custoers.address,
+                contact: custoers.contact,
+                isDeleted: true      
+            };
+            const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/customer/${id}`;
+            const requestOptions = {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(newObject)
+            };
+            const response = await fetch(apiUrl, requestOptions);
+            if (response.ok) {
+                message(`Deleted successfully completed. id: ${id}`);
+            } else {
+                throw new Error("Failed to create customer");
+            }
+        } catch (error) {
+            console.error("Error saving customer data:", error);
+            message("Error saving customer data.");
+        } finally {
+            setShow(false);
+        }
+    }
+
 
 
     const deleteYesClick = async () => {
@@ -27,13 +58,16 @@ const Delete = ({ message, id, data }) => {
                 message(`Deleted successfully completed. id: ${id}`);
             } else {
                 throw new Error("Failed to delete customer");
-            }
+            }         
         } catch (error) {
             console.log(error);
             message("Data deleting error");
         }
         setShow(false);
     }
+
+
+
 
 
     return (
@@ -45,13 +79,13 @@ const Delete = ({ message, id, data }) => {
                             <h1 className="text-xl font-bold text-blue-600">Delete Existing Data</h1>
                             <button onClick={closeDeleteForm} className="w-8 h-8 p-0.5 bg-gray-50 hover:bg-gray-300 rounded-md transition duration-500">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-full h-full stroke-black">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                                 </svg>
                             </button>
 
                         </div>
                         <div className="p-4 lg:p-6 flex flex-col space-y-4">
-                            <div className="w-full">
+                            <div className="w-full">    
                                 <svg height="60" width="60" xmlns="http://www.w3.org/2000/svg" className="bg-white-100 mx-auto">
                                     <path d="M30 3 L3 57 L57 57 Z" className="fill-none stroke-red-700 stroke-[5px]" />
                                     <path d="M30 23 L30 40" className="fill-none stroke-red-700 stroke-[5px]" />
@@ -64,7 +98,7 @@ const Delete = ({ message, id, data }) => {
                             </div>
                             <div className="w-full flex justify-start">
                                 <BtnEn Title="Close" Click={closeDeleteForm} Class="bg-pink-700 hover:bg-pink-900 text-white mr-1" />
-                                <BtnEn Title="Yes Delete" Click={deleteYesClick} Class="bg-blue-600 hover:bg-blue-800 text-white" />
+                                <BtnEn Title="Yes Delete" Click={softDeleteHandler} Class="bg-blue-600 hover:bg-blue-800 text-white" />
                             </div>
                         </div>
                     </div>

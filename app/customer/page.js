@@ -23,6 +23,7 @@ const Customer = () => {
                     throw new Error("Failed to fetch data");
                 }
                 const data = await response.json();
+                console.log(data)
                 localStorage.setItem("customer", JSON.stringify(data));
                 setCustomers(data);
                 setWaitMsg('');
@@ -37,6 +38,8 @@ const Customer = () => {
     const messageHandler = (data) => {
         setMsg(data);
     }
+
+   
 
 
     return (

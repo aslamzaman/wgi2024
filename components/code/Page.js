@@ -45,7 +45,7 @@ const Page = (tbl, datas) => {
     loadMongo += '                        throw new Error("Failed to fetch data");' + '\n';
     loadMongo += '                    }' + '\n';
     loadMongo += '                    const data = await response.json();' + '\n';
-    loadMongo += '                    localStorage.setItem("'+tbl+'", JSON.stringify(data));\n';
+    loadMongo += '                    // console.log(data);\n';
     loadMongo += '                    set' + titleCase(tbl) + 's(data);';
     //-------------
    
