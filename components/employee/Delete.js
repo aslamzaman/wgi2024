@@ -8,14 +8,8 @@ const Delete = ({ message, id, data }) => {
 
     const showDeleteForm = () => {
         setShow(true);
-        try {
-           const { name } = data.find(employee => employee._id === id) || { name: "" };
-           setName(name);
-
-        }
-        catch (err) {
-            console.log(err);
-        }
+        const { name } = data.find(employee => employee._id === id) || { name: "" };
+        setName(name); 
     }
 
 

@@ -11,14 +11,10 @@ const Edit = ({ message, id, data }) => {
 
     const showEditForm =  () => {
         setShow(true);
-        try {
-           const { name, address, contact } = data.find(supplier => supplier._id === id) || { name: '', address: '', contact: '' };
-           setName(name);
-           setAddress(address);
-           setContact(contact);             
-        } catch (err) {
-            console.log(err);
-        }
+         const { name, address, contact } = data.find(supplier => supplier._id === id) || { name: '', address: '', contact: '' };
+         setName(name);
+         setAddress(address);
+         setContact(contact);             
     };
 
 

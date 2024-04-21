@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-import { TextEn, BtnSubmit, DropdownEn, TextNum, TextDt } from "@/components/Form";
+import { TextEn, BtnSubmit, DropdownEn, TextDt, TextNum } from "@/components/Form";
 import { getItems } from "@/lib/utils/LocalDatabase";
 const date_format = dt => new Date(dt).toISOString().split('T')[0];
-
-
 
 
 const Add = ({ message }) => {
@@ -15,8 +13,8 @@ const Add = ({ message }) => {
     const [contact, setContact] = useState('');
     const [show, setShow] = useState(false);
 
+
     const [posts, setPosts] = useState([]);
-    const [postIdChange, setPostIdChange] = useState('');
 
 
     const resetVariables = () => {
@@ -29,10 +27,11 @@ const Add = ({ message }) => {
     }
 
 
-    const showAddForm = async () => {
+    const showAddForm = () => {
         setShow(true);
         resetVariables();
         setPosts(getItems('post'));
+
     }
 
 
@@ -78,15 +77,6 @@ const Add = ({ message }) => {
     }
 
 
-    const postIdChangeHandler = (e) => {
-        const postIdValue = e.target.value;
-        setPostIdChange(postIdValue);
-        setPostId(postIdValue);
-    }
-
-
-
-
     return (
         <>
             {show && (
@@ -104,14 +94,13 @@ const Add = ({ message }) => {
                             <form onSubmit={saveHandler}>
                                 <div className="grid grid-cols-1 gap-4 my-4">
                                     <TextEn Title="Name" Id="name" Change={e => setName(e.target.value)} Value={name} Chr={50} />
-                                    <TextEn Title="Address" Id="address" Change={e => setAddress(e.target.value)} Value={address} Chr={150} />
-
-                                    <DropdownEn Title="Post" Id="postIdChange" Change={postIdChangeHandler} Value={postIdChange}>
+                                    <TextEn Title="Address" Id="address" Change={e => setAddress(e.target.value)} Value={address} Chr={50} />
+                                    <DropdownEn Title="Post" Id="postId" Change={e => setPostId(e.target.value)} Value={postId}>
                                         {posts.length ? posts.map(post => <option value={post._id} key={post._id}>{post.name}</option>) : null}
                                     </DropdownEn>
 
                                     <TextNum Title="Salary" Id="salary" Change={e => setSalary(e.target.value)} Value={salary} />
-                                    <TextDt Title="Joining Date" Id="joinDt" Change={e => setJoinDt(e.target.value)} Value={joinDt} />
+                                    <TextDt Title="Joindt" Id="joinDt" Change={e => setJoinDt(e.target.value)} Value={joinDt} />
                                     <TextEn Title="Contact" Id="contact" Change={e => setContact(e.target.value)} Value={contact} Chr={50} />
                                 </div>
                                 <div className="w-full flex justify-start">

@@ -1,61 +1,38 @@
 import React, { useState } from "react";
 import { TextEn, BtnSubmit, DropdownEn, TextDt, TextNum } from "@/components/Form";
-import { fetchLocalData } from "@/lib/utils/FetchData";
-
-const date_format = (dt) =>  new Date(dt).toISOString().split('T')[0];
-
+import { getItems } from "@/lib/utils/LocalDatabase";
 
 
 const Add = ({ message }) => {
-    const [customer, setCustomer] = useState({});
+    const [customerObject, setCustomerObject] = useState('');
     const [dt, setDt] = useState('');
-    const [cashtype, setCashtype] = useState({});
+    const [cashtypeObject, setCashtypeObject] = useState('');
     const [bank, setBank] = useState('');
     const [taka, setTaka] = useState('');
-    const [show, setShow] = useState(false)
+    const [show, setShow] = useState(false);
 
 
     const [customers, setCustomers] = useState([]);
     const [cashtypes, setCashtypes] = useState([]);
-    const [cashtypeChange, setCashtypeChange] = useState('');
-    const [customerChange, setCustomerChange] = useState('');
 
-    const [isCheque, setIsCheque] = useState(false);
+    const [customerFullObject, setCustomerFullObject] = useState({});
+    const [cashTypeFullObject, setCashTypeFullObject] = useState({});
 
 
     const resetVariables = () => {
-        setCustomer('');
-        setDt(date_format(new Date()));
-        setCashtype('');
+        setCustomerObject('');
+        setDt('');
+        setCashtypeObject('');
         setBank('');
         setTaka('');
     }
 
 
-
-    const showAddForm = async () => {
+    const showAddForm = () => {
         setShow(true);
         resetVariables();
-        try {
-            const [responseCustomer, responseCashtype] = await Promise.all([
-                fetchLocalData('customer'),
-                fetchLocalData('cashtype')
-            ]);
-
-
-            //console.log(responseCustomer, responseCashtype);
-            const sortCustomer = responseCustomer.sort((a, b)=>(a.name).toUpperCase() < (b.name).toUpperCase()?-1:1);
-           // console.log(sortCustomer)
-            setCustomers(sortCustomer);
-            setCashtypes(responseCashtype);
-
-        } catch (error) {
-            console.error("Error fetching data:", error);
-            setMsg("Failed to fetch data");
-        }
-
-
-
+        setCustomers(getItems('customer'));
+        setCashtypes(getItems('cashtype'));
 
     }
 
@@ -66,10 +43,11 @@ const Add = ({ message }) => {
 
 
     const createObject = () => {
+       
         return {
-            customer: customer,
+            customerObject: {_id:customerFullObject._id, name: customerFullObject.name, contact: customerFullObject.contact},
             dt: dt,
-            cashtype: cashtype,
+            cashtypeObject:  {_id: cashTypeFullObject._id, name: cashTypeFullObject.name},
             bank: bank,
             taka: taka
         }
@@ -88,7 +66,7 @@ const Add = ({ message }) => {
             };
             const response = await fetch(apiUrl, requestOptions);
             if (response.ok) {
-                message("Payment is created!");
+                message(`Payment is created at ${new Date().toISOString()}`);
             } else {
                 throw new Error("Failed to create payment");
             }
@@ -102,31 +80,22 @@ const Add = ({ message }) => {
 
 
 
-    const cashtypeChangeHandler = (e) => {
-        const changeValue = e.target.value;
-        setCashtypeChange(changeValue);
-
-        const findCashTypeObject = cashtypes.find(cashtype => cashtype._id === changeValue);
-        setCashtype(findCashTypeObject);
-
-        if (changeValue === "65ede63629c4f0b23474c123") {
-            setIsCheque(true);
-            setBank("");
-        } else {
-            setIsCheque(false);
-            setBank(" ");
-        }
+    const customerObjectChangeHandler = (e)=>{
+        setCustomerObject(e.target.value);
+        const customerObj = customers.find(customer=> customer._id ===  e.target.value);
+        setCustomerFullObject(customerObj);
+        //console.log(customerObj);
     }
 
 
 
-    const customerChangeHandler = (e) => {
-        const changeValue = e.target.value;
-        setCustomerChange(changeValue);
-
-        const findCustomerObject = customers.find(customer => customer._id === changeValue);
-        setCustomer(findCustomerObject);
+    const cashtypeObjectChangeHandler = (e)=>{
+        setCashtypeObject(e.target.value);
+        const cashTypeObj = cashtypes.find(cashtype=> cashtype._id ===  e.target.value);
+       // console.log(cashTypeObj);
+        setCashTypeFullObject(cashTypeObj);
     }
+
 
 
     return (
@@ -145,20 +114,17 @@ const Add = ({ message }) => {
                         <div className="px-6 pb-6 text-black">
                             <form onSubmit={saveHandler}>
                                 <div className="grid grid-cols-1 gap-4 my-4">
-
-                                    <DropdownEn Title="Customer" Id="customerChange" Change={customerChangeHandler} Value={customerChange}>
+                                    <DropdownEn Title="Customer" Id="customerObject" Change={customerObjectChangeHandler} Value={customerObject}>
                                         {customers.length ? customers.map(customer => <option value={customer._id} key={customer._id}>{customer.name}</option>) : null}
                                     </DropdownEn>
 
-
                                     <TextDt Title="Date" Id="dt" Change={e => setDt(e.target.value)} Value={dt} />
 
-
-                                    <DropdownEn Title="Cash Type" Id="cashtypeChange" Change={cashtypeChangeHandler} Value={cashtypeChange}>
+                                    <DropdownEn Title="Cashtype" Id="cashtypeObject" Change={cashtypeObjectChangeHandler} Value={cashtypeObject}>
                                         {cashtypes.length ? cashtypes.map(cashtype => <option value={cashtype._id} key={cashtype._id}>{cashtype.name}</option>) : null}
                                     </DropdownEn>
 
-                                    {isCheque ? <TextEn Title="Bank" Id="bank" Change={e => setBank(e.target.value)} Value={bank} Chr={150} /> : null}
+                                    <TextEn Title="Bank" Id="bank" Change={e => setBank(e.target.value)} Value={bank} Chr={50} />
                                     <TextNum Title="Taka" Id="taka" Change={e => setTaka(e.target.value)} Value={taka} />
                                 </div>
                                 <div className="w-full flex justify-start">

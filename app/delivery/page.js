@@ -7,7 +7,7 @@ import { inword } from "@/lib/Inword";
 const date_format = dt => new Date(dt).toISOString().split('T')[0];
 require("@/lib/fonts/Poppins-Bold-normal");
 require("@/lib/fonts/Poppins-Regular-normal");
-import { fetchLocalData } from "@/lib/utils/FetchData";
+import { fetchLocalData } from "@/lib/utils/fetchInitialData";
 
 const Delivery = () => {
     const [deliverys, setDeliverys] = useState([]);

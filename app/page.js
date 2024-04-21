@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { BtnSubmit, TextEn, TextPw } from "@/components/Form";
 import { useRouter } from "next/navigation";
-import { loadInitialData } from "@/lib/utils/FetchData";
+import { fetchInitialData } from "@/lib/utils/fetchInitialData";
 
 export default function Home() {
   const [user, setUser] = useState("");
@@ -16,20 +16,20 @@ export default function Home() {
   const loadAllData = async () => {
     try {
       await Promise.all([
-        loadInitialData('cashtype'),
-        loadInitialData('customer'),
-        loadInitialData('delivery'),
-        loadInitialData('employee'),
-        loadInitialData('item'),
-        loadInitialData('lc'),
-        loadInitialData('moneyreceipt'),
-        loadInitialData('order'),
-        loadInitialData('payment'),
-        loadInitialData('post'),
-        loadInitialData('salary'),
-        loadInitialData('shipment'),
-        loadInitialData('supplier'),
-        loadInitialData('unittype')
+        fetchInitialData('cashtype'),
+        fetchInitialData('customer'),
+        fetchInitialData('delivery'),
+        fetchInitialData('employee'),
+        fetchInitialData('item'),
+        fetchInitialData('lc'),
+        fetchInitialData('moneyreceipt'),
+        fetchInitialData('order'),
+        fetchInitialData('payment'),
+        fetchInitialData('post'),
+        fetchInitialData('salary'),
+        fetchInitialData('shipment'),
+        fetchInitialData('supplier'),
+        fetchInitialData('unittype')
       ]);
     } catch (error) {
       console.error("Error fetching data:", error);

@@ -6,7 +6,6 @@ import Delete from "@/components/lc/Delete";
 const date_format = dt => new Date(dt).toISOString().split('T')[0];
 
 
-
 const Lc = () => {
     const [lcs, setLcs] = useState([]);
     const [msg, setMsg] = useState("Data ready");
@@ -25,7 +24,6 @@ const Lc = () => {
                     throw new Error("Failed to fetch data");
                 }
                 const data = await response.json();
-                console.log(data)
                 localStorage.setItem("lc", JSON.stringify(data));
                 setLcs(data);
             setWaitMsg('');
@@ -56,7 +54,7 @@ const Lc = () => {
                             <tr className="w-full bg-gray-200">                           
                                   <th className="text-center border-b border-gray-200 px-4 py-2">Date</th>
                                   <th className="text-center border-b border-gray-200 px-4 py-2">LC No</th>
-                                  <th className="text-center border-b border-gray-200 px-4 py-2">Quantity</th>
+                                  <th className="text-center border-b border-gray-200 px-4 py-2">Quanity</th>
                                   <th className="text-center border-b border-gray-200 px-4 py-2">Unit Type</th>
                                   <th className="text-center border-b border-gray-200 px-4 py-2">Taka</th>                                
                                 <th className="w-[100px] font-normal">

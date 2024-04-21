@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-import { TextEn, BtnEn, BtnSubmit, DropdownEn } from "../Form";
+import React, { useEffect, useState } from "react";
+import { TextEn, BtnEn, BtnSubmit, DropdownEn, TextNum } from "../Form";
 import { Close } from "../Icons";
-import { addItem } from "@/lib/utils/LocalDatabase";
-import { fetchLocalData } from "@/lib/utils/FetchData";
+import { addItem, getItems } from "@/lib/utils/LocalDatabase";
+
 
 
 const AddLocal = ({ Msg }) => {
+
     const [name, setName] = useState("");
-    const [namePart, setNamePart] = useState("");
     const [description, setDescription] = useState("");
     const [qty, setQty] = useState("");
     const [unit, setUnit] = useState("");
@@ -15,11 +15,12 @@ const AddLocal = ({ Msg }) => {
 
     const [show, setShow] = useState(false);
 
+
     const [items, setItems] = useState([]);
     const [unittypes, setUnittypes] = useState([]);
 
+
     const resetStateVariables = () => {
-        Msg("Ready to add new");
         setName("");
         setDescription("");
         setQty("");
@@ -31,7 +32,7 @@ const AddLocal = ({ Msg }) => {
     const createLocalitemObject = () => {
         return {
             id: Date.now(),
-            name: namePart,
+            name: name,
             description: description,
             qty: qty,
             unit: unit,
@@ -40,24 +41,14 @@ const AddLocal = ({ Msg }) => {
     }
 
 
-    const addtHandler = async () => {
+    const addtHandler = () => {
         setShow(true);
         resetStateVariables();
-        try {
-            const [responseItem, responseUnit] = await Promise.all([
-                fetchLocalData('item'),
-                fetchLocalData('unittype')
-            ]);
-
-            const sortIems = responseItem.sort((a, b)=>(a.name).toUpperCase() < (b.name).toUpperCase()?-1:1);
-console.log(sortIems)
-            setItems(sortIems);
-            setUnittypes(responseUnit);
-        } catch (error) {
-            console.error("Error fetching data:", error);
-            setMsg("Failed to fetch data");
-        }
+        setItems(getItems('item'));
+        setUnittypes(getItems('unittype'));
     }
+
+
 
     const saveHandler = (e) => {
         e.preventDefault();
@@ -73,13 +64,6 @@ console.log(sortIems)
     }
 
 
-    const itemChangeHandler = (e) => {
-        const itemValue = e.target.value;
-        setName(itemValue);
-        const splitValue = itemValue.split(";");
-        setNamePart(splitValue[0]);
-        setDescription(splitValue[1]);
-    }
 
     return (
         <>
@@ -93,17 +77,16 @@ console.log(sortIems)
                     <div className="px-6 pb-6 text-black overflow-hidden">
                         <form onSubmit={saveHandler}>
                             <div className="grid grid-cols-2 gap-4 my-4">
-                                <DropdownEn Title="Name" Id="name" Change={itemChangeHandler} Value={name}>
-                                    {items.length ? items.map(item => <option value={`${item.name};${item.description}`} key={item._id}>{item.name}</option>) : null}
+                                <DropdownEn Title="Item" Id="name" Change={e => setName(e.target.value)} Value={name}>
+                                    {items.length ? items.map(item => <option value={item.name} key={item._id}>{item.name}</option>) : null}
                                 </DropdownEn>
-                                <TextEn Title="Quantity" Id="qty" Change={e => setQty(e.target.value)} Value={qty} Chr="50" />
-                                <DropdownEn Title="Unit" Id="unit" Change={e => setUnit(e.target.value)} Value={unit}>
+
+                                <TextEn Title="Taka" Id="description" Change={e => setDescription(e.target.value)} Value={description} Chr={100} />
+                                <TextNum Title="Quantity" Id="qty" Change={e => setQty(e.target.value)} Value={qty} />
+                                <DropdownEn Title="Unittype" Id="unit" Change={e => setUnit(e.target.value)} Value={unit}>
                                     {unittypes.length ? unittypes.map(unittype => <option value={unittype.name} key={unittype._id}>{unittype.name}</option>) : null}
                                 </DropdownEn>
-
-
-                                <TextEn Title="Taka" Id="taka" Change={e => setTaka(e.target.value)} Value={taka} Chr="50" />
-
+                                <TextNum Title="Taka" Id="taka" Change={e => setTaka(e.target.value)} Value={taka} />
                             </div>
                             <div className="flex justify-start">
                                 <BtnEn Title="Close" Click={() => { setShow(false); Msg("Data ready") }} Class="bg-red-600 hover:bg-red-800 text-white" />

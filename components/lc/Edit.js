@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { TextEn, BtnSubmit, DropdownEn, TextDt, TextNum} from "@/components/Form";
-import { fetchData } from "@/lib/utils/FetchData";
+import { TextEn, BtnSubmit, DropdownEn, TextDt, TextNum } from "@/components/Form";
+import { getItems } from "@/lib/utils/LocalDatabase";
 const date_format = dt => new Date(dt).toISOString().split('T')[0];
-
-
+       
 
 const Edit = ({ message, id, data }) => {        
     const [dt, setDt] = useState('');
@@ -13,34 +12,19 @@ const Edit = ({ message, id, data }) => {
     const [taka, setTaka] = useState('');        
     const [show, setShow] = useState(false);
 
-
     const [unittypes, setUnittypes] = useState([]);
-    const [unittypeIdChange, setUnittypeIdChange] = useState('');  
 
-    const showEditForm = async  () => {
+
+    const showEditForm =  () => {
         setShow(true);
-        try {
-            const localUnittype = localStorage.getItem('unittype');
-            const unittypeData = localUnittype ? JSON.parse(localUnittype) : [];
-            if (unittypeData.length > 0) {
-               setUnittypes(unittypeData);
-            } else {
-               const responseUnittype = await fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/unittype`);
-               localStorage.setItem('unittype', JSON.stringify(responseUnittype));
-               setUnittypes(responseUnittype);
-            }
-            //------------------------------------------
-           const { dt, lcNo, qty, unittypeId, taka } = data.find(lc => lc._id === id) || { dt: '', lcNo: '', qty: '', unittypeId: '', taka: '' };
-           setDt(date_format(dt));
-           setLcNo(lcNo);
-           setQty(qty);
-           setUnittypeId(unittypeId._id);
-           setTaka(taka);        
-           //---------------------------
-           setUnittypeIdChange(unittypeId._id) ;    
-        } catch (err) {
-            console.log(err);
-        }
+        setUnittypes(getItems('unittype'));
+        //--------------------------------
+         const { dt, lcNo, qty, unittypeId, taka } = data.find(lc => lc._id === id) || { dt: '', lcNo: '', qty: '', unittypeId: '', taka: '' };
+         setDt(date_format(dt));
+         setLcNo(lcNo);
+         setQty(qty);
+         setUnittypeId(unittypeId._id);
+         setTaka(taka);             
     };
 
 
@@ -84,12 +68,6 @@ const Edit = ({ message, id, data }) => {
         }
     }
 
-    const unittypeIdChangeHandler = (e) => {
-        const unittypeIdValue = e.target.value;
-        setUnittypeIdChange(unittypeIdValue);
-        setUnittypeId(unittypeIdValue);
-     }
-
 
     return (
         <>
@@ -110,14 +88,12 @@ const Edit = ({ message, id, data }) => {
                             <form onSubmit={saveHandler} >
                                 <div className="grid grid-cols-1 gap-4 my-4">
                                 <TextDt Title="Date" Id="dt" Change={e => setDt(e.target.value)} Value={dt} />
-                                    <TextEn Title="Lc No" Id="lcNo" Change={e => setLcNo(e.target.value)} Value={lcNo} Chr={50} />
-                                    <TextEn Title="Quantity" Id="qty" Change={e => setQty(e.target.value)} Value={qty} Chr={50} />
-
-                                    <DropdownEn Title="Unit Type" Id="unittypeIdChange" Change={unittypeIdChangeHandler} Value={unittypeIdChange}>
-                                        {unittypes.length?unittypes.map(unittype=><option value={unittype._id} key={unittype._id}>{unittype.name}</option>):null}
+                                    <TextEn Title="LC No" Id="lcNo" Change={e => setLcNo(e.target.value)} Value={lcNo} Chr={50} />
+                                    <TextNum Title="Quantity" Id="qty" Change={e => setQty(e.target.value)} Value={qty} />
+                                    <DropdownEn Title="Unit" Id="unittypeId" Change={e => setUnittypeId(e.target.value)} Value={unittypeId}>
+                                        {unittypes.length ? unittypes.map(unittype => <option value={unittype._id} key={unittype._id}>{unittype.name}</option>) : null}
                                     </DropdownEn>
-
-                                    <TextNum Title="Taka" Id="taka" Change={e => setTaka(e.target.value)} Value={taka} Chr={50} />                                       
+                                    <TextNum Title="Taka" Id="taka" Change={e => setTaka(e.target.value)} Value={taka} />
                                 </div>
                                 <div className="w-full flex justify-start">
                                 <input type="button" onClick={closeEditForm} value="Close" className="bg-pink-600 hover:bg-pink-800 text-white text-center mt-3 mx-0.5 px-4 py-2 font-semibold rounded-md focus:ring-1 ring-blue-200 ring-offset-2 duration-300 cursor-pointer" />

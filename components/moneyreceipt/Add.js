@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { TextEn, BtnSubmit, TextDt, DropdownEn, TextEnDisabled } from "@/components/Form";
-import { fetchData } from "@/lib/utils/FetchData";
+import { fetchData } from "@/lib/utils/fetchInitialData";
 const date_format = dt => new Date(dt).toISOString().split('T')[0];
 
 

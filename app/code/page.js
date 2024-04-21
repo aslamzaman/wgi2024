@@ -209,13 +209,11 @@ const Code = () => {
         console.log(tbl.length);
 
 
-
-        let str = 'import { getItems } from "@/lib/utils/LocalDatabase";\n';
+        let str = 'import { TextEn, BtnSubmit, DropdownEn } from "@/components/Form";\n';
+        str = str + 'import { getItems } from "@/lib/utils/LocalDatabase";\n';
         str = str + "\n";
         str = str + "\n";
         str = str + `const [${tbl[0]}s, set${titleCase(tbl[0])}s] = useState([]);\n`;
-        str = str + `const [${tbl[1]}Change, set${FirstCap(tbl[1])}Change] = useState('');\n`;
-
         str = str + "\n";
         str = str + "\n";
     
@@ -223,17 +221,9 @@ const Code = () => {
 
         str = str + "\n";
         str = str + "\n";
+        
 
-        str = str + "const "+tbl[1]+"ChangeHandler = (e) => {\n";
-            str = str + "   const "+tbl[1]+"Value = e.target.value;\n";
-            str = str + `   set${FirstCap(tbl[1])}Change(${tbl[1]}Value);\n`;
-            str = str + "   set"+FirstCap(tbl[1])+"("+tbl[1]+"Value);\n";
-        str = str + "}\n";
-
-        str = str + "\n";
-        str = str + "\n";
-
-        str = str + `                                    <DropdownEn Title="${titleCase(tbl[0])}" Id="${tbl[1]}Change" Change={${tbl[1]}ChangeHandler} Value={${tbl[1]}Change}>\n`;
+        str = str + `                                    <DropdownEn Title="${titleCase(tbl[0])}" Id="${tbl[1]}" Change={e=> set${FirstCap(tbl[1])}(e.target.value)} Value={${tbl[1]}}>\n`;
         str = str + `                                        {${tbl[0]}s.length?${tbl[0]}s.map(${tbl[0]}=><option value={${tbl[0]}._id} key={${tbl[0]}._id}>{${tbl[0]}._id}</option>):null}\n`;
 
         str = str + `                                    </DropdownEn>\n`;

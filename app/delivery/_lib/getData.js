@@ -1,5 +1,5 @@
 
-import { fetchData } from "@/lib/utils/FetchData";
+import { fetchData } from "@/lib/utils/fetchInitialData";
 export const getData = async () => {
         try {
             const [responseDelivery, responseOrder] = await Promise.all([

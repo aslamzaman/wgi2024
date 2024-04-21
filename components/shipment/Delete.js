@@ -8,14 +8,8 @@ const Delete = ({ message, id, data }) => {
 
     const showDeleteForm = () => {
         setShow(true);
-        try {
-           const { dt } = data.find(shipment => shipment._id === id) || { dt: "" };
-           setDt(dt);
-
-        }
-        catch (err) {
-            console.log(err);
-        }
+        const { dt } = data.find(shipment => shipment._id === id) || { dt: "" };
+        setDt(dt); 
     }
 
 

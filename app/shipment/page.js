@@ -53,7 +53,7 @@ const Shipment = () => {
                         <thead>
                             <tr className="w-full bg-gray-200">                           
                                   <th className="text-center border-b border-gray-200 px-4 py-2">Date</th>
-                                  <th className="text-center border-b border-gray-200 px-4 py-2">Shipment No</th>
+                                  <th className="text-center border-b border-gray-200 px-4 py-2">Shipment</th>
                                   <th className="text-center border-b border-gray-200 px-4 py-2">LC</th>
                                   <th className="text-center border-b border-gray-200 px-4 py-2">Supplier</th>
                                   <th className="text-center border-b border-gray-200 px-4 py-2">Item</th>
@@ -74,7 +74,7 @@ const Shipment = () => {
                                           <td className="text-center py-2 px-4">{date_format(shipment.dt)}</td>
                                           <td className="text-center py-2 px-4">{shipment.shipmentNo}</td>
                                           <td className="text-center py-2 px-4">{shipment.lcId.lcNo}</td>
-                                          <td className="text-center py-2 px-4">{shipment.supplierId.name}</td>
+                                           <td className="text-center py-2 px-4">{shipment.supplierId?shipment.supplierId.name:'err'}</td> 
                                           <td className="text-center py-2 px-4">{shipment.itemId.name}</td>
                                           <td className="text-center py-2 px-4">{shipment.unittypeId.name}</td>
                                           <td className="text-center py-2 px-4">{shipment.qty}</td>

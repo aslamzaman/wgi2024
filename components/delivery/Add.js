@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { TextEn, BtnSubmit, TextDt, TextEnDisabled, DropdownEn } from "@/components/Form";
 const date_format = dt => new Date(dt).toISOString().split('T')[0];
-import { fetchLocalData } from "@/lib/utils/FetchData";
+import { fetchLocalData } from "@/lib/utils/fetchInitialData";
 
 
 const Add = ({ message }) => {

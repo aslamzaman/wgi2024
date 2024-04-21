@@ -1,10 +1,7 @@
 import React, { useState } from "react";
-import { TextEn, BtnSubmit, TextNum, DropdownEn, TextDt } from "@/components/Form";
-
-const date_format = dt => new Date(dt).toISOString().split('T')[0];
+import { TextEn, BtnSubmit, DropdownEn, TextDt, TextNum } from "@/components/Form";
 import { getItems } from "@/lib/utils/LocalDatabase";
-
-
+const date_format = dt => new Date(dt).toISOString().split('T')[0];
 
 
 
@@ -21,14 +18,9 @@ const Add = ({ message }) => {
 
 
     const [lcs, setLcs] = useState([]);
-    const [lcIdChange, setLcIdChange] = useState('');
-
     const [suppliers, setSuppliers] = useState([]);
-    const [supplierIdChange, setSupplierIdChange] = useState('');
     const [items, setItems] = useState([]);
-    const [itemIdChange, setItemIdChange] = useState('');
     const [unittypes, setUnittypes] = useState([]);
-    const [unittypeIdChange, setUnittypeIdChange] = useState('');
 
 
     const resetVariables = () => {
@@ -43,7 +35,7 @@ const Add = ({ message }) => {
     }
 
 
-    const showAddForm = async () => {
+    const showAddForm = () => {
         setShow(true);
         resetVariables();
         setLcs(getItems('lc'));
@@ -97,32 +89,6 @@ const Add = ({ message }) => {
     }
 
 
-    const lcIdChangeHandler = (e) => {
-        const lcIdValue = e.target.value;
-        setLcIdChange(lcIdValue);
-        setLcId(lcIdValue);
-    }
-
-
-    const supplierIdChangeHandler = (e) => {
-        const supplierIdValue = e.target.value;
-        setSupplierIdChange(supplierIdValue);
-        setSupplierId(supplierIdValue);
-    }
-
-    const itemIdChangeHandler = (e) => {
-        const itemIdValue = e.target.value;
-        setItemIdChange(itemIdValue);
-        setItemId(itemIdValue);
-    }
-
-    const unittypeIdChangeHandler = (e) => {
-        const unittypeIdValue = e.target.value;
-        setUnittypeIdChange(unittypeIdValue);
-        setUnittypeId(unittypeIdValue);
-    }
-
-
     return (
         <>
             {show && (
@@ -138,27 +104,23 @@ const Add = ({ message }) => {
                         </div>
                         <div className="px-6 pb-6 text-black">
                             <form onSubmit={saveHandler}>
-                                <div className="grid grid-cols-2 gap-4 my-4">
+                                <div className="grid grid-cols-1 gap-4 my-4">
                                     <TextDt Title="Date" Id="dt" Change={e => setDt(e.target.value)} Value={dt} />
-                                    <TextEn Title="Shipmentno" Id="shipmentNo" Change={e => setShipmentNo(e.target.value)} Value={shipmentNo} Chr={50} />
-
-                                    <DropdownEn Title="LC No" Id="lcIdChange" Change={lcIdChangeHandler} Value={lcIdChange}>
+                                    <TextEn Title="Shipment" Id="shipmentNo" Change={e => setShipmentNo(e.target.value)} Value={shipmentNo} Chr={50} />
+                                    <DropdownEn Title="LC" Id="lcId" Change={e => setLcId(e.target.value)} Value={lcId}>
                                         {lcs.length ? lcs.map(lc => <option value={lc._id} key={lc._id}>{lc.lcNo}</option>) : null}
                                     </DropdownEn>
-
-                                    <DropdownEn Title="Supplier" Id="supplierIdChange" Change={supplierIdChangeHandler} Value={supplierIdChange}>
+                                    <DropdownEn Title="Supplier" Id="supplierId" Change={e => setSupplierId(e.target.value)} Value={supplierId}>
                                         {suppliers.length ? suppliers.map(supplier => <option value={supplier._id} key={supplier._id}>{supplier.name}</option>) : null}
                                     </DropdownEn>
 
-                                    <DropdownEn Title="Item" Id="itemIdChange" Change={itemIdChangeHandler} Value={itemIdChange}>
+                                    <DropdownEn Title="Item" Id="itemId" Change={e => setItemId(e.target.value)} Value={itemId}>
                                         {items.length ? items.map(item => <option value={item._id} key={item._id}>{item.name}</option>) : null}
                                     </DropdownEn>
 
-                                    <DropdownEn Title="Unit Type" Id="unittypeIdChange" Change={unittypeIdChangeHandler} Value={unittypeIdChange}>
+                                    <DropdownEn Title="Unit Type" Id="unittypeId" Change={e => setUnittypeId(e.target.value)} Value={unittypeId}>
                                         {unittypes.length ? unittypes.map(unittype => <option value={unittype._id} key={unittype._id}>{unittype.name}</option>) : null}
                                     </DropdownEn>
-
-
                                     <TextNum Title="Quantity" Id="qty" Change={e => setQty(e.target.value)} Value={qty} />
                                     <TextNum Title="Taka" Id="taka" Change={e => setTaka(e.target.value)} Value={taka} />
                                 </div>

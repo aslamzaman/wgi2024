@@ -3,24 +3,18 @@ import { BtnEn } from "@/components/Form";
 
 
 const Delete = ({ message, id, data }) => {
-    const [name, setName] = useState("");   
+    const [name, setName] = useState("");
     const [show, setShow] = useState(false);
 
     const showDeleteForm = () => {
         setShow(true);
-        try {
-           const { name } = data.find(item => item._id === id) || { name: "" };
-           setName(name);
-
-        }
-        catch (err) {
-            console.log(err);
-        }
+        const { name } = data.find(item => item._id === id) || { name: "" };
+        setName(name);
     }
 
 
     const closeDeleteForm = () => {
-        setShow(false);           
+        setShow(false);
     }
 
 
@@ -33,7 +27,7 @@ const Delete = ({ message, id, data }) => {
                 message(`Deleted successfully completed. id: ${id}`);
             } else {
                 throw new Error("Failed to delete item");
-            }         
+            }
         } catch (error) {
             console.log(error);
             message("Data deleting error");
@@ -51,13 +45,13 @@ const Delete = ({ message, id, data }) => {
                             <h1 className="text-xl font-bold text-blue-600">Delete Existing Data</h1>
                             <button onClick={closeDeleteForm} className="w-8 h-8 p-0.5 bg-gray-50 hover:bg-gray-300 rounded-md transition duration-500">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-full h-full stroke-black">
-                                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                                 </svg>
                             </button>
 
                         </div>
                         <div className="p-4 lg:p-6 flex flex-col space-y-4">
-                            <div className="w-full">    
+                            <div className="w-full">
                                 <svg height="60" width="60" xmlns="http://www.w3.org/2000/svg" className="bg-white-100 mx-auto">
                                     <path d="M30 3 L3 57 L57 57 Z" className="fill-none stroke-red-700 stroke-[5px]" />
                                     <path d="M30 23 L30 40" className="fill-none stroke-red-700 stroke-[5px]" />

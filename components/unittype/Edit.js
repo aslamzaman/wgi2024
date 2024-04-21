@@ -9,12 +9,8 @@ const Edit = ({ message, id, data }) => {
 
     const showEditForm =  () => {
         setShow(true);
-        try {
-           const { name } = data.find(unittype => unittype._id === id) || { name: '' };
-           setName(name);             
-        } catch (err) {
-            console.log(err);
-        }
+         const { name } = data.find(unittype => unittype._id === id) || { name: '' };
+         setName(name);             
     };
 
 

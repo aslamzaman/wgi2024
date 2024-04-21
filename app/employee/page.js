@@ -6,7 +6,6 @@ import Delete from "@/components/employee/Delete";
 const date_format = dt => new Date(dt).toISOString().split('T')[0];
 
 
-
 const Employee = () => {
     const [employees, setEmployees] = useState([]);
     const [msg, setMsg] = useState("Data ready");
@@ -25,7 +24,6 @@ const Employee = () => {
                     throw new Error("Failed to fetch data");
                 }
                 const data = await response.json();
-                //console.log(data);
                 localStorage.setItem("employee", JSON.stringify(data));
                 setEmployees(data);
             setWaitMsg('');

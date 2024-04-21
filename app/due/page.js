@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 // import Details from "@/components/due/Details";
-import { fetchData } from "@/lib/utils/FetchData";
+import { fetchData } from "@/lib/utils/fetchInitialData";
 
 
 const Customer = () => {
