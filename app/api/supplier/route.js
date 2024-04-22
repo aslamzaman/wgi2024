@@ -6,7 +6,7 @@ import { SupplierModel } from '@/lib/Models';
 export const GET = async () => {
   try {
     await Connect();
-    const suppliers = await SupplierModel.find({isDeleted:false}).sort({_id:'desc'});
+    const suppliers = await SupplierModel.find({isDeleted: false}).sort({_id:'desc'});
     return NextResponse.json( suppliers );
   } catch (error) {
     console.error('GET Error:', error);
@@ -19,8 +19,8 @@ export const GET = async () => {
 export const POST = async (Request) => {
   try {
     await Connect();
-    const { name, address, contact, isDeleted } = await Request.json();
-    const suppliers = await SupplierModel.create({ name, address, contact, isDeleted });
+    const { name, address, contact } = await Request.json();
+    const suppliers = await SupplierModel.create({ name, address, contact });
     return NextResponse.json(suppliers);
   } catch (err) {
     console.error(err);

@@ -6,6 +6,7 @@ import Delete from "@/components/lc/Delete";
 const date_format = dt => new Date(dt).toISOString().split('T')[0];
 
 
+
 const Lc = () => {
     const [lcs, setLcs] = useState([]);
     const [msg, setMsg] = useState("Data ready");
@@ -13,7 +14,7 @@ const Lc = () => {
 
 
     useEffect(() => {
-        const fetchData = async () => {
+        const getData = async () => {
             setWaitMsg('Please Wait...');
             try {
                 const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/lc`, {
@@ -24,14 +25,14 @@ const Lc = () => {
                     throw new Error("Failed to fetch data");
                 }
                 const data = await response.json();
-                localStorage.setItem("lc", JSON.stringify(data));
+                // console.log(data);
                 setLcs(data);
             setWaitMsg('');
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
         };
-        fetchData();
+        getData();
     }, [msg]);
 
 
@@ -54,9 +55,9 @@ const Lc = () => {
                             <tr className="w-full bg-gray-200">                           
                                   <th className="text-center border-b border-gray-200 px-4 py-2">Date</th>
                                   <th className="text-center border-b border-gray-200 px-4 py-2">LC No</th>
-                                  <th className="text-center border-b border-gray-200 px-4 py-2">Quanity</th>
-                                  <th className="text-center border-b border-gray-200 px-4 py-2">Unit Type</th>
-                                  <th className="text-center border-b border-gray-200 px-4 py-2">Taka</th>                                
+                                  <th className="text-center border-b border-gray-200 px-4 py-2">Quantity</th>
+                                  <th className="text-center border-b border-gray-200 px-4 py-2">Unit</th>
+                                  <th className="text-center border-b border-gray-200 px-4 py-2">Taka</th>
                                 <th className="w-[100px] font-normal">
                                     <div className="w-full flex justify-end py-0.5 pr-4">
                                         <Add message={messageHandler} />
@@ -72,7 +73,7 @@ const Lc = () => {
                                           <td className="text-center py-2 px-4">{lc.lcNo}</td>
                                           <td className="text-center py-2 px-4">{lc.qty}</td>
                                           <td className="text-center py-2 px-4">{lc.unittypeId.name}</td>
-                                          <td className="text-center py-2 px-4">{lc.taka}</td>                                            
+                                          <td className="text-center py-2 px-4">{lc.taka}</td>
                                         <td className="h-8 flex justify-end items-center space-x-1 mt-1 mr-2">
                                             <Edit message={messageHandler} id={lc._id} data={lcs} />
                                             <Delete message={messageHandler} id={lc._id} data={lcs} />
@@ -81,7 +82,7 @@ const Lc = () => {
                                 ))
                             ): (
                                 <tr>
-                                    <td colSpan={6} className="text-center py-10 px-4">
+                                    <td colSpan={7} className="text-center py-10 px-4">
                                         Data not available.
                                     </td>
                                 </tr>

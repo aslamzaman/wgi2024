@@ -6,7 +6,7 @@ import { ItemModel } from '@/lib/Models';
 export const GET = async () => {
   try {
     await Connect();
-    const items = await ItemModel.find({}).sort({_id:'desc'});
+    const items = await ItemModel.find({isDeleted: false}).sort({_id:'desc'});
     return NextResponse.json( items );
   } catch (error) {
     console.error('GET Error:', error);
@@ -27,4 +27,3 @@ export const POST = async (Request) => {
     return NextResponse.json({ message: "POST Error", err }, { status: 500 });
   }
 }
-

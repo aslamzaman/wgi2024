@@ -5,7 +5,7 @@ import { TextEn, BtnSubmit } from "@/components/Form";
 const Edit = ({ message, id, data }) => {        
     const [name, setName] = useState('');
     const [address, setAddress] = useState('');
-    const [contact, setContact] = useState('');
+    const [contact, setContact] = useState('');        
     const [show, setShow] = useState(false);
 
 
@@ -14,7 +14,7 @@ const Edit = ({ message, id, data }) => {
          const { name, address, contact } = data.find(supplier => supplier._id === id) || { name: '', address: '', contact: '' };
          setName(name);
          setAddress(address);
-         setContact(contact);
+         setContact(contact);             
     };
 
 
@@ -27,7 +27,7 @@ const Edit = ({ message, id, data }) => {
         return {
           name: name,
           address: address,
-          contact: contact             
+          contact: contact                
         }
     }
 
@@ -77,7 +77,7 @@ const Edit = ({ message, id, data }) => {
                                 <div className="grid grid-cols-1 gap-4 my-4">
                                     <TextEn Title="Name" Id="name" Change={e => setName(e.target.value)} Value={name} Chr={50} />
                                     <TextEn Title="Address" Id="address" Change={e => setAddress(e.target.value)} Value={address} Chr={50} />
-                                    <TextEn Title="Contact" Id="contact" Change={e => setContact(e.target.value)} Value={contact} Chr={50} />
+                                    <TextEn Title="Contact" Id="contact" Change={e => setContact(e.target.value)} Value={contact} Chr={50} />                                        
                                 </div>
                                 <div className="w-full flex justify-start">
                                 <input type="button" onClick={closeEditForm} value="Close" className="bg-pink-600 hover:bg-pink-800 text-white text-center mt-3 mx-0.5 px-4 py-2 font-semibold rounded-md focus:ring-1 ring-blue-200 ring-offset-2 duration-300 cursor-pointer" />

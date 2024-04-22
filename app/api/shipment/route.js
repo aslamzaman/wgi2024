@@ -6,7 +6,7 @@ import { ShipmentModel } from '@/lib/Models';
 export const GET = async () => {
   try {
     await Connect();
-    const shipments = await ShipmentModel.find({}).populate('lcId').populate('supplierId').populate('itemId').populate('unittypeId').sort({_id:'desc'});
+    const shipments = await ShipmentModel.find({isDeleted: false}).populate('lcId').populate('supplierId').populate('itemId').populate('unittypeId').sort({_id:'desc'});
     return NextResponse.json( shipments );
   } catch (error) {
     console.error('GET Error:', error);

@@ -13,7 +13,7 @@ const Shipment = () => {
 
 
     useEffect(() => {
-        const fetchData = async () => {
+        const getData = async () => {
             setWaitMsg('Please Wait...');
             try {
                 const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/shipment`, {
@@ -24,14 +24,14 @@ const Shipment = () => {
                     throw new Error("Failed to fetch data");
                 }
                 const data = await response.json();
-                localStorage.setItem("shipment", JSON.stringify(data));
+                // console.log(data);
                 setShipments(data);
             setWaitMsg('');
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
         };
-        fetchData();
+        getData();
     }, [msg]);
 
 
@@ -54,12 +54,12 @@ const Shipment = () => {
                             <tr className="w-full bg-gray-200">                           
                                   <th className="text-center border-b border-gray-200 px-4 py-2">Date</th>
                                   <th className="text-center border-b border-gray-200 px-4 py-2">Shipment</th>
-                                  <th className="text-center border-b border-gray-200 px-4 py-2">LC</th>
+                                  <th className="text-center border-b border-gray-200 px-4 py-2">LC No</th>
                                   <th className="text-center border-b border-gray-200 px-4 py-2">Supplier</th>
                                   <th className="text-center border-b border-gray-200 px-4 py-2">Item</th>
-                                  <th className="text-center border-b border-gray-200 px-4 py-2">Unit Type</th>
+                                  <th className="text-center border-b border-gray-200 px-4 py-2">Unit</th>
                                   <th className="text-center border-b border-gray-200 px-4 py-2">Quantity</th>
-                                  <th className="text-center border-b border-gray-200 px-4 py-2">Taka</th>                                
+                                  <th className="text-center border-b border-gray-200 px-4 py-2">Taka</th>
                                 <th className="w-[100px] font-normal">
                                     <div className="w-full flex justify-end py-0.5 pr-4">
                                         <Add message={messageHandler} />
@@ -74,11 +74,11 @@ const Shipment = () => {
                                           <td className="text-center py-2 px-4">{date_format(shipment.dt)}</td>
                                           <td className="text-center py-2 px-4">{shipment.shipmentNo}</td>
                                           <td className="text-center py-2 px-4">{shipment.lcId.lcNo}</td>
-                                           <td className="text-center py-2 px-4">{shipment.supplierId?shipment.supplierId.name:'err'}</td> 
+                                          <td className="text-center py-2 px-4">{shipment.supplierId.name}</td>
                                           <td className="text-center py-2 px-4">{shipment.itemId.name}</td>
                                           <td className="text-center py-2 px-4">{shipment.unittypeId.name}</td>
                                           <td className="text-center py-2 px-4">{shipment.qty}</td>
-                                          <td className="text-center py-2 px-4">{shipment.taka}</td>                                            
+                                          <td className="text-center py-2 px-4">{shipment.taka}</td>
                                         <td className="h-8 flex justify-end items-center space-x-1 mt-1 mr-2">
                                             <Edit message={messageHandler} id={shipment._id} data={shipments} />
                                             <Delete message={messageHandler} id={shipment._id} data={shipments} />
@@ -87,7 +87,7 @@ const Shipment = () => {
                                 ))
                             ): (
                                 <tr>
-                                    <td colSpan={9} className="text-center py-10 px-4">
+                                    <td colSpan={10} className="text-center py-10 px-4">
                                         Data not available.
                                     </td>
                                 </tr>

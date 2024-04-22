@@ -12,7 +12,7 @@ const Supplier = () => {
 
 
     useEffect(() => {
-        const fetchData = async () => {
+        const getData = async () => {
             setWaitMsg('Please Wait...');
             try {
                 const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/supplier`, {
@@ -30,7 +30,7 @@ const Supplier = () => {
                 console.error("Error fetching data:", error);
             }
         };
-        fetchData();
+        getData();
     }, [msg]);
 
 

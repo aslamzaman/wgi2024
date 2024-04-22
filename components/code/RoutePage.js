@@ -1,27 +1,29 @@
 
 const RoutePage = (tbl, datas) => {
 
-    const titleCase = (str) => {
-        return str
-            .split(' ')
-            .map((word) => word[0].toUpperCase() + word.slice(1).toLowerCase())
-            .join(' ');
+  const titleCase = (str) => {
+    return str
+      .split(' ')
+      .map((word) => word[0].toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');
+  }
+
+  const replaceQutation = datas.replaceAll('`', '');
+  const splitData = replaceQutation.split(",");
+  const data = splitData.map(s => s.trim());
+
+  let obj = "";
+  data.map((d, i) => {
+    if (i < data.length - 1) {
+      if (i > 0) {
+        i === (data.length - 2)
+          ? obj += `${d}`
+          : obj += `${d}, `
+      }
     }
+  });
 
-    const replaceQutation = datas.replaceAll('`', '');
-    const splitData = replaceQutation.split(",");
-    const data = splitData.map(s => s.trim());
-
-    let obj = "";
-    data.map((d, i) => {
-        if (i > 0) {
-            i === (data.length - 1)
-                ? obj +=  `${d}`
-                : obj +=  `${d}, `
-        }
-    });
-
-    let str = `    import { NextResponse } from 'next/server';
+  let str = `    import { NextResponse } from 'next/server';
     import { Connect } from '@/lib/utils/Db';
     import { ${titleCase(tbl)}Model } from '@/lib/Models';
     
@@ -29,7 +31,7 @@ const RoutePage = (tbl, datas) => {
     export const GET = async () => {
       try {
         await Connect();
-        const ${tbl}s = await ${titleCase(tbl)}Model.find({isDeleted:false}).sort({_id:'desc'});
+        const ${tbl}s = await ${titleCase(tbl)}Model.find({isDeleted: false}).sort({_id:'desc'});
         return NextResponse.json( ${tbl}s );
       } catch (error) {
         console.error('GET Error:', error);
@@ -51,7 +53,7 @@ const RoutePage = (tbl, datas) => {
       }
     }`;
 
-    return str;
+  return str;
 
 }
 

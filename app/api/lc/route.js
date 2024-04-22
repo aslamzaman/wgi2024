@@ -6,7 +6,7 @@ import { LcModel } from '@/lib/Models';
 export const GET = async () => {
   try {
     await Connect();
-    const lcs = await LcModel.find({}).populate('unittypeId').sort({_id:'desc'});
+    const lcs = await LcModel.find({isDeleted: false}).populate('unittypeId').sort({_id:'desc'});
     return NextResponse.json( lcs );
   } catch (error) {
     console.error('GET Error:', error);

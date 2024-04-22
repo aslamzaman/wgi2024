@@ -12,7 +12,7 @@ const Employee = () => {
 
 
     useEffect(() => {
-        const loadData = async () => {
+        const getData = async () => {
             setWaitMsg('Please Wait...');
             try {
                 const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/employee`, {
@@ -30,7 +30,7 @@ const Employee = () => {
                 console.error("Error fetching data:", error);
             }
         };
-        loadData();
+        getData();
     }, [msg]);
 
 
@@ -53,7 +53,7 @@ const Employee = () => {
                             <tr className="w-full bg-gray-200">                           
                                   <th className="text-center border-b border-gray-200 px-4 py-2">Name</th>
                                   <th className="text-center border-b border-gray-200 px-4 py-2">Address</th>
-                                  <th className="text-center border-b border-gray-200 px-4 py-2">Postid</th>
+                                  <th className="text-center border-b border-gray-200 px-4 py-2">Post</th>
                                   <th className="text-center border-b border-gray-200 px-4 py-2">Salary</th>
                                   <th className="text-center border-b border-gray-200 px-4 py-2">Joindt</th>
                                   <th className="text-center border-b border-gray-200 px-4 py-2">Contact</th>

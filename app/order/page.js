@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import Add from "@/components/order/Add";
 import Delete from "@/components/order/Delete";
 const date_format = dt => new Date(dt).toISOString().split('T')[0];
-import { fetchData } from "@/lib/utils/fetchData";
+import { GetRemoteData } from "@/lib/utils/GetRemoteData";
 
 
 
@@ -19,14 +19,13 @@ const Order = () => {
             try {
 
                 const [responseOrder, responseDelivery] = await Promise.all([
-                    fetchData('order'),
-                    fetchData('delivery')
+                    GetRemoteData('order'),
+                    GetRemoteData('delivery')
                 ]);
-
 
                 //-----------------------------
                 const filterOrder = responseOrder
-                    .filter(order => order.customerId.isDeleted===false)
+                    .filter(order => order.customerId.isDeleted === false)
                     .map(order => {
                         const matchDelivery = responseDelivery.find(delivery => delivery.orderNo === order.orderNo);
                         return {

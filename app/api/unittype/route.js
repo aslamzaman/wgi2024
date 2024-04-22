@@ -6,7 +6,7 @@ import { UnittypeModel } from '@/lib/Models';
 export const GET = async () => {
   try {
     await Connect();
-    const unittypes = await UnittypeModel.find({}).sort({_id:'desc'});
+    const unittypes = await UnittypeModel.find({isDeleted: false}).sort({_id:'desc'});
     return NextResponse.json( unittypes );
   } catch (error) {
     console.error('GET Error:', error);

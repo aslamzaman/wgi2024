@@ -12,7 +12,7 @@ const Salary = () => {
 
 
     useEffect(() => {
-        const fetchData = async () => {
+        const getData = async () => {
             setWaitMsg('Please Wait...');
             try {
                 const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/salary`, {
@@ -23,14 +23,14 @@ const Salary = () => {
                     throw new Error("Failed to fetch data");
                 }
                 const data = await response.json();
-                localStorage.setItem("salary", JSON.stringify(data));
+                // console.log(data);
                 setSalarys(data);
             setWaitMsg('');
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
         };
-        fetchData();
+        getData();
     }, [msg]);
 
 
@@ -56,7 +56,7 @@ const Salary = () => {
                                   <th className="text-center border-b border-gray-200 px-4 py-2">Taka</th>
                                   <th className="text-center border-b border-gray-200 px-4 py-2">Deduct</th>
                                   <th className="text-center border-b border-gray-200 px-4 py-2">Arear</th>
-                                  <th className="text-center border-b border-gray-200 px-4 py-2">Note</th>                                
+                                  <th className="text-center border-b border-gray-200 px-4 py-2">Note</th>
                                 <th className="w-[100px] font-normal">
                                     <div className="w-full flex justify-end py-0.5 pr-4">
                                         <Add message={messageHandler} />
@@ -73,7 +73,7 @@ const Salary = () => {
                                           <td className="text-center py-2 px-4">{salary.taka}</td>
                                           <td className="text-center py-2 px-4">{salary.deduct}</td>
                                           <td className="text-center py-2 px-4">{salary.arear}</td>
-                                          <td className="text-center py-2 px-4">{salary.note}</td>                                            
+                                          <td className="text-center py-2 px-4">{salary.note}</td>
                                         <td className="h-8 flex justify-end items-center space-x-1 mt-1 mr-2">
                                             <Edit message={messageHandler} id={salary._id} data={salarys} />
                                             <Delete message={messageHandler} id={salary._id} data={salarys} />
@@ -82,7 +82,7 @@ const Salary = () => {
                                 ))
                             ): (
                                 <tr>
-                                    <td colSpan={7} className="text-center py-10 px-4">
+                                    <td colSpan={8} className="text-center py-10 px-4">
                                         Data not available.
                                     </td>
                                 </tr>

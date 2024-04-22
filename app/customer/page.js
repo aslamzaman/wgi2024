@@ -12,7 +12,7 @@ const Customer = () => {
 
 
     useEffect(() => {
-        const fetchData = async () => {
+        const getData = async () => {
             setWaitMsg('Please Wait...');
             try {
                 const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/customer`, {
@@ -30,7 +30,7 @@ const Customer = () => {
                 console.error("Error fetching data:", error);
             }
         };
-        fetchData();
+        getData();
     }, [msg]);
 
 
@@ -54,7 +54,6 @@ const Customer = () => {
                                   <th className="text-center border-b border-gray-200 px-4 py-2">Name</th>
                                   <th className="text-center border-b border-gray-200 px-4 py-2">Address</th>
                                   <th className="text-center border-b border-gray-200 px-4 py-2">Contact</th>
-                                                               
                                 <th className="w-[100px] font-normal">
                                     <div className="w-full flex justify-end py-0.5 pr-4">
                                         <Add message={messageHandler} />

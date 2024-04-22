@@ -9,8 +9,8 @@ const Edit = (tbl, datas) => {
     }
 
     const FirstCap = (str) => {
-        const firstLetter = str.substr(0,1);
-        const restLetter = str.substr(1, str.length-1);
+        const firstLetter = str.substr(0, 1);
+        const restLetter = str.substr(1, str.length - 1);
         const firstLetterCap = firstLetter.toUpperCase();
         const joinToOne = firstLetterCap + restLetter;
         return joinToOne
@@ -24,10 +24,12 @@ const Edit = (tbl, datas) => {
 
     let dd = "";
     data.map((d, i) => {
-        if (i > 0) {
-            i === (data.length - 1)
-                ? dd = dd + `                                        <TextEn Title="${titleCase(d)}" Id="${d}" Change={e => set${FirstCap(d)}(e.target.value)} Value={${d}} Chr={50} />`
-                : dd = dd + `                                        <TextEn Title="${titleCase(d)}" Id="${d}" Change={e => set${FirstCap(d)}(e.target.value)} Value={${d}} Chr={50} />\n`;
+        if (i < data.length - 1) {
+            if (i > 0) {
+                i === (data.length - 2)
+                    ? dd = dd + `                                        <TextEn Title="${titleCase(d)}" Id="${d}" Change={e => set${FirstCap(d)}(e.target.value)} Value={${d}} Chr={50} />`
+                    : dd = dd + `                                        <TextEn Title="${titleCase(d)}" Id="${d}" Change={e => set${FirstCap(d)}(e.target.value)} Value={${d}} Chr={50} />\n`;
+            }
         }
     }
     );
@@ -35,10 +37,12 @@ const Edit = (tbl, datas) => {
 
     let stateVar = "";
     data.map((d, i) => {
-        if (i > 0) {
-            i === (data.length - 1)
-                ? stateVar = stateVar + `        const [${d}, set${FirstCap(d)}] = useState('');`
-                : stateVar = stateVar + `        const [${d}, set${FirstCap(d)}] = useState('');\n`
+        if (i < data.length - 1) {
+            if (i > 0) {
+                i === (data.length - 2)
+                    ? stateVar = stateVar + `        const [${d}, set${FirstCap(d)}] = useState('');`
+                    : stateVar = stateVar + `        const [${d}, set${FirstCap(d)}] = useState('');\n`
+            }
         }
     }
     );
@@ -68,10 +72,12 @@ const Edit = (tbl, datas) => {
 
     let getValue = "";
     data.map((d, i) => {
-        if (i > 0) {
-            i === (data.length - 1)
-                ? getValue = getValue + `              ${d}: ${d}`
-                : getValue = getValue + `              ${d}: ${d},\n`
+        if (i < data.length - 1) {
+            if (i > 0) {
+                i === (data.length - 2)
+                    ? getValue = getValue + `              ${d}: ${d}`
+                    : getValue = getValue + `              ${d}: ${d},\n`
+            }
         }
     }
     );
@@ -80,64 +86,70 @@ const Edit = (tbl, datas) => {
     let sowFormMongoData = '';
     let sowFormMongo = "";
     data.map((d, i) => {
-        if (i > 0) {
-            i === (data.length - 1)
-                ? sowFormMongo += `${d}`
-                : sowFormMongo += `${d}, `
+        if (i < data.length - 1) {
+            if (i > 0) {
+                i === (data.length - 2)
+                    ? sowFormMongo += `${d}`
+                    : sowFormMongo += `${d}, `
+            }
         }
     }
     );
 
     let sowFormMongop = "";
     data.map((d, i) => {
-        if (i > 0) {
-            i === (data.length - 1)
-                ? sowFormMongop += `${d}: ''`
-                : sowFormMongop += `${d}: '', `
+        if (i < data.length - 1) {
+            if (i > 0) {
+                i === (data.length - 2)
+                    ? sowFormMongop += `${d}: ''`
+                    : sowFormMongop += `${d}: '', `
+            }
         }
     }
     );
 
-    sowFormMongoData = '             const { ' + sowFormMongo + ' } = data.find(' + tbl + ' => ' + tbl + '._id === id) || { ' + sowFormMongop + ' };'+'\n'
-  
+    sowFormMongoData = '             const { ' + sowFormMongo + ' } = data.find(' + tbl + ' => ' + tbl + '._id === id) || { ' + sowFormMongop + ' };' + '\n'
+
     let sowFormMongo2 = "";
     data.map((d, i) => {
-        if (i > 0) {
-            i === (data.length - 1)
-                ? sowFormMongo2 += `             set${FirstCap(d)}(${d});`
-                : sowFormMongo2 += `             set${FirstCap(d)}(${d});` + `\n`
+        if (i < data.length - 1) {
+            if (i > 0) {
+                i === (data.length - 2)
+                    ? sowFormMongo2 += `             set${FirstCap(d)}(${d});`
+                    : sowFormMongo2 += `             set${FirstCap(d)}(${d});` + `\n`
+            }
         }
     }
     );
     sowFormMongoData += sowFormMongo2;
 
     //------------------------------------------------------------------------------
- 
-  
- //----------------------------------------------------------------
- let saveStr = '';
- saveStr += 'const newObject = createObject();' + '\n';
- saveStr += '                const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/'+tbl+'/${id}`;' + '\n';
- saveStr += '                const requestOptions = {' + '\n';
- saveStr += '                    method: "PUT",' + '\n';
- saveStr += '                    headers: { "Content-Type": "application/json" },' + '\n';
- saveStr += '                    body: JSON.stringify(newObject)' + '\n';
- saveStr += '                };' + '\n';
-
- saveStr += '                const response = await fetch(apiUrl, requestOptions);' + '\n';
- saveStr += '                if (response.ok) {' + '\n';
- saveStr += '                    message(`Updated successfully completed at ${new Date().toISOString()}`);' + '\n';
- saveStr += '                } else {' + '\n';
- saveStr += '                    throw new Error("Failed to create '+tbl+'");' + '\n';
- saveStr += '                }';
 
 
- let localSave = '';
- localSave += '              const newObject = createObject();' + '\n';
- localSave += '              const response = addItem("'+tbl+'", newObject);' + '\n';
- localSave += '              message(response.message);'+'\n';
+    //----------------------------------------------------------------
+    let saveStr = '';
+    saveStr += 'const newObject = createObject();' + '\n';
+    saveStr += '                const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/' + tbl + '/${id}`;' + '\n';
+    saveStr += '                const requestOptions = {' + '\n';
+    saveStr += '                    method: "PUT",' + '\n';
+    saveStr += '                    headers: { "Content-Type": "application/json" },' + '\n';
+    saveStr += '                    body: JSON.stringify(newObject)' + '\n';
+    saveStr += '                };' + '\n';
 
- //----------------------------------------------------------------
+    saveStr += '                const response = await fetch(apiUrl, requestOptions);' + '\n';
+    saveStr += '                if (response.ok) {' + '\n';
+    saveStr += '                    message(`Updated successfully completed at ${new Date().toISOString()}`);' + '\n';
+    saveStr += '                } else {' + '\n';
+    saveStr += '                    throw new Error("Failed to create ' + tbl + '");' + '\n';
+    saveStr += '                }';
+
+
+    let localSave = '';
+    localSave += '              const newObject = createObject();' + '\n';
+    localSave += '              const response = addItem("' + tbl + '", newObject);' + '\n';
+    localSave += '              message(response.message);' + '\n';
+
+    //----------------------------------------------------------------
 
 
     const str = `    import React, { useState } from "react";

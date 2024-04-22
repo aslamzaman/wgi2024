@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { TextEn, BtnSubmit, DropdownEn, TextNum } from "@/components/Form";
-import { getItems } from "@/lib/utils/LocalDatabase";
+import { GetRemoteData } from "@/lib/utils/GetRemoteData";
 import { monthArray } from "@/lib/SalaryMonths";
 
 
@@ -12,21 +12,24 @@ const Edit = ({ message, id, data }) => {
     const [arear, setArear] = useState('');
     const [note, setNote] = useState('');
     const [show, setShow] = useState(false);
-
     const [employees, setEmployees] = useState([]);
 
-
-    const showEditForm = () => {
+    const showEditForm = async () => {
         setShow(true);
-        setEmployees(getItems('employee'));
-        //----------------------------------
-        const { employeeId, month, taka, deduct, arear, note } = data.find(salary => salary._id === id) || { employeeId: '', month: '', taka: '', deduct: '', arear: '', note: '' };
-        setEmployeeId(employeeId._id);
-        setMonth(month);
-        setTaka(taka);
-        setDeduct(deduct);
-        setArear(arear);
-        setNote(note);
+        try {
+            const responseEmployee = await GetRemoteData('employee');
+            setEmployees(responseEmployee);
+            const { employeeId, month, taka, deduct, arear, note } = data.find(salary => salary._id === id) || { employeeId: '', month: '', taka: '', deduct: '', arear: '', note: '' };
+            setEmployeeId(employeeId._id);
+            setMonth(month);
+            setTaka(taka);
+            setDeduct(deduct);
+            setArear(arear);
+            setNote(note);
+        } catch (error) {
+            console.error('Failed to fetch delivery data:', error);
+        }
+
     };
 
 
@@ -90,17 +93,17 @@ const Edit = ({ message, id, data }) => {
                         <div className="px-6 pb-6 text-black">
                             <form onSubmit={saveHandler} >
                                 <div className="grid grid-cols-1 gap-4 my-4">
-                                    <DropdownEn Title="Employee" Id="employeeId" Change={e => setEmployeeId(e.target.value)} Value={employeeId}>
-                                        {employees.length ? employees.map(employee => <option value={employee._id} key={employee._id}>{employee.name}</option>) : null}
+                                <DropdownEn Title="Employee" Id="employeeId" Change={e=> setEmployeeId(e.target.value)} Value={employeeId}>
+                                        {employees.length?employees.map(employee=><option value={employee._id} key={employee._id}>{employee.name}</option>):null}
                                     </DropdownEn>
 
                                     <DropdownEn Title="Month" Id="month" Change={e => setMonth(e.target.value)} Value={month}>
-                                        {monthArray.map((mn, i) => <option value={mn.opt} key={i}>{mn.nm}</option>)}
+                                        {monthArray.length?monthArray.map((mn,i)=><option value={mn.opt} key={i}>{mn.nm}</option>):null}
                                     </DropdownEn>
                                     <TextNum Title="Taka" Id="taka" Change={e => setTaka(e.target.value)} Value={taka} />
                                     <TextNum Title="Deduct" Id="deduct" Change={e => setDeduct(e.target.value)} Value={deduct} />
                                     <TextNum Title="Arear" Id="arear" Change={e => setArear(e.target.value)} Value={arear} />
-                                    <TextEn Title="Note" Id="note" Change={e => setNote(e.target.value)} Value={note} Chr={50} />
+                                    <TextEn Title="Note" Id="note" Change={e => setNote(e.target.value)} Value={note} Chr={50}  />  
                                 </div>
                                 <div className="w-full flex justify-start">
                                     <input type="button" onClick={closeEditForm} value="Close" className="bg-pink-600 hover:bg-pink-800 text-white text-center mt-3 mx-0.5 px-4 py-2 font-semibold rounded-md focus:ring-1 ring-blue-200 ring-offset-2 duration-300 cursor-pointer" />

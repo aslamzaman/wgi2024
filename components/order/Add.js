@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { BtnSubmit, TextDt, TextEnDisabled, DropdownEn } from "@/components/Form";
 const date_format = dt => new Date(dt).toISOString().split('T')[0];
-import { fetchData } from "@/lib/utils/fetchData";
+import { GetRemoteData } from "@/lib/utils/GetRemoteData";
 import AddLocal from "./AddLocal";
 import DeleteLocal from "./DeleteLocal";
 import { getItems } from "@/lib/utils/LocalDatabase";
@@ -34,10 +34,17 @@ const Add = ({ message }) => {
     }
 
 
-    const showAddForm = () => {
+    const showAddForm = async () => {
         setShow(true);
         resetVariables();
-        setCustomers(getItems('customer'));
+        try {
+            const responseCustomer = await GetRemoteData('customer');
+            const sortCustomer = responseCustomer.sort((a, b) => (a.name).toUpperCase() < (b.name).toUpperCase() ? -1 : 1);
+            setCustomers(sortCustomer);
+        } catch (err) {
+            console.log(err);
+        }
+
         let localitem = getItems("localitem");
         setLocalitems(localitem);
     }

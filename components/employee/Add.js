@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { TextEn, BtnSubmit, DropdownEn, TextNum, TextDt } from "@/components/Form";
-import { FetchData } from "@/lib/utils/FetchData";
+import { GetRemoteData } from "@/lib/utils/GetRemoteData";
 const date_format = dt => new Date(dt).toISOString().split('T')[0];
 
 const Add = ({ message }) => {
@@ -10,10 +10,9 @@ const Add = ({ message }) => {
     const [salary, setSalary] = useState('');
     const [joinDt, setJoinDt] = useState('');
     const [contact, setContact] = useState('');
+
     const [show, setShow] = useState(false);
-
     const [posts, setPosts] = useState([]);
-
 
     const resetVariables = () => {
         setName('');
@@ -29,8 +28,8 @@ const Add = ({ message }) => {
         setShow(true);
         resetVariables();
         try {
-            const responsePost = await FetchData('post');
-           setPosts(responsePost);
+            const responsePost = await GetRemoteData('post');
+            setPosts(responsePost);
         } catch (error) {
             console.error('Failed to fetch delivery data:', error);
         }
@@ -58,7 +57,6 @@ const Add = ({ message }) => {
         e.preventDefault();
         try {
             const newObject = createObject();
-
             const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/employee`;
             const requestOptions = {
                 method: "POST",
@@ -98,14 +96,12 @@ const Add = ({ message }) => {
                                 <div className="grid grid-cols-1 gap-4 my-4">
                                     <TextEn Title="Name" Id="name" Change={e => setName(e.target.value)} Value={name} Chr={50} />
                                     <TextEn Title="Address" Id="address" Change={e => setAddress(e.target.value)} Value={address} Chr={50} />
-                                  
                                     <DropdownEn Title="Post" Id="postId" Change={e => setPostId(e.target.value)} Value={postId}>
                                         {posts.length ? posts.map(post => <option value={post._id} key={post._id}>{post.name}</option>) : null}
                                     </DropdownEn>
 
-
                                     <TextNum Title="Salary" Id="salary" Change={e => setSalary(e.target.value)} Value={salary} />
-                                    <TextDt Title="Joindt" Id="joinDt" Change={e => setJoinDt(e.target.value)} Value={joinDt} />
+                                    <TextDt Title="Joining Date" Id="joinDt" Change={e => setJoinDt(e.target.value)} Value={joinDt} />
                                     <TextEn Title="Contact" Id="contact" Change={e => setContact(e.target.value)} Value={contact} Chr={50} />
                                 </div>
                                 <div className="w-full flex justify-start">

@@ -15,10 +15,12 @@ const Page = (tbl, datas) => {
 
     let thead_string = "";
     data.map((d, i) => {
-        if (i > 0) {
-            i === (data.length - 1)
-                ? thead_string = thead_string + `                                      <th className="text-center border-b border-gray-200 px-4 py-2">${titleCase(d)}</th>`
-                : thead_string = thead_string + `                                      <th className="text-center border-b border-gray-200 px-4 py-2">${titleCase(d)}</th>\n`;
+        if (i < data.length - 1) {
+            if (i > 0) {
+                i === (data.length - 1)
+                    ? thead_string = thead_string + `                                      <th className="text-center border-b border-gray-200 px-4 py-2">${titleCase(d)}</th>`
+                    : thead_string = thead_string + `                                      <th className="text-center border-b border-gray-200 px-4 py-2">${titleCase(d)}</th>\n`;
+            }
         }
     }
     );
@@ -26,15 +28,17 @@ const Page = (tbl, datas) => {
 
     let td_string = "";
     data.map((d, i) => {
-        if (i > 0) {
-            i === (data.length - 1)
-                ? td_string = td_string + `                                              <td className="text-center py-2 px-4">{${tbl}.${d}}</td>`
-                : td_string = td_string + `                                              <td className="text-center py-2 px-4">{${tbl}.${d}}</td>\n`;
+        if (i < data.length - 1) {
+            if (i > 0) {
+                i === (data.length - 1)
+                    ? td_string = td_string + `                                              <td className="text-center py-2 px-4">{${tbl}.${d}}</td>`
+                    : td_string = td_string + `                                              <td className="text-center py-2 px-4">{${tbl}.${d}}</td>\n`;
+            }
         }
     }
     );
 
-   
+
     //-------------------------------
     let loadMongo = "";
     loadMongo += '                    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/' + tbl + '`, {' + '\n';
@@ -48,7 +52,7 @@ const Page = (tbl, datas) => {
     loadMongo += '                    // console.log(data);\n';
     loadMongo += '                    set' + titleCase(tbl) + 's(data);';
     //-------------
-   
+
     const str = `    "use client";
     import React, { useState, useEffect } from "react";
     import Add from "@/components/${tbl}/Add";
@@ -93,8 +97,7 @@ ${loadMongo}
                         <table className="w-full border border-gray-200">
                             <thead>
                                 <tr className="w-full bg-gray-200">                           
-${thead_string}                                
-                                    <th className="w-[100px] font-normal">
+${thead_string}                                    <th className="w-[100px] font-normal">
                                         <div className="w-full flex justify-end py-0.5 pr-4">
                                             <Add message={messageHandler} />
                                         </div>
@@ -105,8 +108,7 @@ ${thead_string}
                                 {${tbl}s.length ?(
                                     ${tbl}s.map(${tbl} => (
                                         <tr className="border-b border-gray-200 hover:bg-gray-100" key={${tbl}._id}>                                           
-${td_string}                                            
-                                            <td className="h-8 flex justify-end items-center space-x-1 mt-1 mr-2">
+${td_string}                                            <td className="h-8 flex justify-end items-center space-x-1 mt-1 mr-2">
                                                 <Edit message={messageHandler} id={${tbl}._id} data={${tbl}s} />
                                                 <Delete message={messageHandler} id={${tbl}._id} data={${tbl}s} />
                                             </td>

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { TextEn, BtnSubmit, DropdownEn, TextDt, TextNum } from "@/components/Form";
-import { getItems } from "@/lib/utils/LocalDatabase";
+import { TextEn, BtnSubmit, DropdownEn, TextDt } from "@/components/Form";
+import { GetRemoteData } from "@/lib/utils/GetRemoteData";
 const date_format = dt => new Date(dt).toISOString().split('T')[0];
 
 
@@ -15,29 +15,38 @@ const Edit = ({ message, id, data }) => {
     const [taka, setTaka] = useState('');
     const [show, setShow] = useState(false);
 
-
     const [lcs, setLcs] = useState([]);
     const [suppliers, setSuppliers] = useState([]);
     const [items, setItems] = useState([]);
     const [unittypes, setUnittypes] = useState([]);
 
 
-    const showEditForm = () => {
+
+    const showEditForm = async () => {
         setShow(true);
-        setLcs(getItems('lc'));
-        setSuppliers(getItems('supplier'));
-        setItems(getItems('item'));
-        setUnittypes(getItems('unittype'));
-        //--------------------------------------------------
-        const { dt, shipmentNo, lcId, supplierId, itemId, unittypeId, qty, taka } = data.find(shipment => shipment._id === id) || { dt: '', shipmentNo: '', lcId: '', supplierId: '', itemId: '', unittypeId: '', qty: '', taka: '' };
-        setDt(date_format(dt));
-        setShipmentNo(shipmentNo);
-        setLcId(lcId._id);
-        setSupplierId(supplierId._id);
-        setItemId(itemId._id);
-        setUnittypeId(unittypeId._id);
-        setQty(qty);
-        setTaka(taka);
+
+        try {
+            const responseLc = await GetRemoteData('lc');
+            setLcs(responseLc);
+            const responseSupplier = await GetRemoteData('supplier');
+            setSuppliers(responseSupplier);
+            const responseItem = await GetRemoteData('item');
+            setItems(responseItem);
+            const responseUnittype = await GetRemoteData('unittype');
+            setUnittypes(responseUnittype);
+            //-------------------------------------------------------------------
+            const { dt, shipmentNo, lcId, supplierId, itemId, unittypeId, qty, taka } = data.find(shipment => shipment._id === id) || { dt: '', shipmentNo: '', lcId: '', supplierId: '', itemId: '', unittypeId: '', qty: '', taka: '' };
+            setDt(date_format(dt));
+            setShipmentNo(shipmentNo);
+            setLcId(lcId._id);
+            setSupplierId(supplierId._id);
+            setItemId(itemId._id);
+            setUnittypeId(unittypeId._id);
+            setQty(qty);
+            setTaka(taka);
+        } catch (error) {
+            console.error('Failed to fetch delivery data:', error);
+        }
     };
 
 
@@ -104,23 +113,21 @@ const Edit = ({ message, id, data }) => {
                             <form onSubmit={saveHandler} >
                                 <div className="grid grid-cols-1 gap-4 my-4">
                                     <TextDt Title="Date" Id="dt" Change={e => setDt(e.target.value)} Value={dt} />
-                                    <TextEn Title="Shipment" Id="shipmentNo" Change={e => setShipmentNo(e.target.value)} Value={shipmentNo} Chr={50} />
+                                    <TextEn Title="Shipment No" Id="shipmentNo" Change={e => setShipmentNo(e.target.value)} Value={shipmentNo} Chr={50} />
                                     <DropdownEn Title="LC" Id="lcId" Change={e => setLcId(e.target.value)} Value={lcId}>
                                         {lcs.length ? lcs.map(lc => <option value={lc._id} key={lc._id}>{lc.lcNo}</option>) : null}
                                     </DropdownEn>
                                     <DropdownEn Title="Supplier" Id="supplierId" Change={e => setSupplierId(e.target.value)} Value={supplierId}>
                                         {suppliers.length ? suppliers.map(supplier => <option value={supplier._id} key={supplier._id}>{supplier.name}</option>) : null}
                                     </DropdownEn>
-
                                     <DropdownEn Title="Item" Id="itemId" Change={e => setItemId(e.target.value)} Value={itemId}>
                                         {items.length ? items.map(item => <option value={item._id} key={item._id}>{item.name}</option>) : null}
                                     </DropdownEn>
-
-                                    <DropdownEn Title="Unit Type" Id="unittypeId" Change={e => setUnittypeId(e.target.value)} Value={unittypeId}>
+                                    <DropdownEn Title="Unit" Id="unittypeId" Change={e => setUnittypeId(e.target.value)} Value={unittypeId}>
                                         {unittypes.length ? unittypes.map(unittype => <option value={unittype._id} key={unittype._id}>{unittype.name}</option>) : null}
                                     </DropdownEn>
-                                    <TextNum Title="Quantity" Id="qty" Change={e => setQty(e.target.value)} Value={qty} />
-                                    <TextNum Title="Taka" Id="taka" Change={e => setTaka(e.target.value)} Value={taka} />
+                                    <TextEn Title="Quantity" Id="qty" Change={e => setQty(e.target.value)} Value={qty} Chr={50} />
+                                    <TextEn Title="Taka" Id="taka" Change={e => setTaka(e.target.value)} Value={taka} Chr={50} />
                                 </div>
                                 <div className="w-full flex justify-start">
                                     <input type="button" onClick={closeEditForm} value="Close" className="bg-pink-600 hover:bg-pink-800 text-white text-center mt-3 mx-0.5 px-4 py-2 font-semibold rounded-md focus:ring-1 ring-blue-200 ring-offset-2 duration-300 cursor-pointer" />

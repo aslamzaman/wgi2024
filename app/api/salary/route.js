@@ -6,7 +6,7 @@ import { SalaryModel } from '@/lib/Models';
 export const GET = async () => {
   try {
     await Connect();
-    const salarys = await SalaryModel.find({}).populate('employeeId').sort({_id:'desc'});
+    const salarys = await SalaryModel.find({isDeleted: false}).populate('employeeId').sort({_id:'desc'});
     return NextResponse.json( salarys );
   } catch (error) {
     console.error('GET Error:', error);

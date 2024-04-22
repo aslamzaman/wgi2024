@@ -6,7 +6,7 @@ import { PostModel } from '@/lib/Models';
 export const GET = async () => {
   try {
     await Connect();
-    const posts = await PostModel.find({}).sort({_id:'desc'});
+    const posts = await PostModel.find({isDeleted: false}).sort({_id:'desc'});
     return NextResponse.json( posts );
   } catch (error) {
     console.error('GET Error:', error);

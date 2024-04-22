@@ -21,8 +21,8 @@ export const PUT = async (Request,{ params }) => {
   try {
     await Connect();
     const {id} = params;
-    const { name, address, postId, salary, joinDt, contact, isDeleted } = await Request.json();
-    const employees = await EmployeeModel.findOneAndUpdate({ _id: id }, { name, address, postId, salary, joinDt, contact, isDeleted });
+    const { name, address, postId, salary, joinDt, contact } = await Request.json();
+    const employees = await EmployeeModel.findOneAndUpdate({ _id: id }, { name, address, postId, salary, joinDt, contact });
     return NextResponse.json(employees);
   } catch (err) {
     return NextResponse.json({ message: "PUT Error", err }, { status: 500 });

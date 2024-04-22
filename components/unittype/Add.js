@@ -4,6 +4,7 @@ import { TextEn, BtnSubmit } from "@/components/Form";
 
 const Add = ({ message }) => {
     const [name, setName] = useState('');
+
     const [show, setShow] = useState(false);
 
 
