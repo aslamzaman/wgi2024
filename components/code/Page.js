@@ -63,7 +63,7 @@ const Page = (tbl, datas) => {
     
 
         useEffect(() => {
-            const fetchData = async () => {
+            const getData = async () => {
                 setWaitMsg('Please Wait...');
                 try {
 ${loadMongo}
@@ -72,7 +72,7 @@ ${loadMongo}
                     console.error("Error fetching data:", error);
                 }
             };
-            fetchData();
+            getData();
         }, [msg]);
     
     

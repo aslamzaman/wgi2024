@@ -19,37 +19,26 @@ const Delete = ({ message, id, data }) => {
 
 
     const softDeleteHandler = async () => {
-        const custoers = data.find(customer => customer._id === id) ;
         try {
-            const newObject = {
-                name: custoers.name,
-                address: custoers.address,
-                contact: custoers.contact,
-                isDeleted: true      
-            };
-            const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/customer/${id}`;
-            const requestOptions = {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(newObject)
-            };
-            const response = await fetch(apiUrl, requestOptions);
-            if (response.ok) {
-                message(`Deleted successfully completed. id: ${id}`);
-            } else {
-                throw new Error("Failed to create customer");
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/customer/${id}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" }
+            });
+            if (!response.ok) {
+                throw new Error("Failed to fetch data");
             }
+            const data = await response.json();
+           // console.log(data)
+            message(`Deleted successfully completed. id: ${id}`);
         } catch (error) {
-            console.error("Error saving customer data:", error);
-            message("Error saving customer data.");
-        } finally {
-            setShow(false);
+            console.error("Error fetching data:", error);
+        }finally{
+            setShow(false);          
         }
     }
 
-
-
-    const deleteYesClick = async () => {
+/*
+    const hardDeleteHandler = async () => {
         try {
             const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/customer/${id}`;
             const requestOptions = { method: "DELETE" };
@@ -65,10 +54,7 @@ const Delete = ({ message, id, data }) => {
         }
         setShow(false);
     }
-
-
-
-
+*/   
 
     return (
         <>

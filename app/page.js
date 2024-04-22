@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import { BtnSubmit, TextEn, TextPw } from "@/components/Form";
 import { useRouter } from "next/navigation";
-import { fetchInitialData } from "@/lib/utils/fetchInitialData";
 
 export default function Home() {
   const [user, setUser] = useState("");
@@ -12,29 +11,6 @@ export default function Home() {
   const [userData, setUserData] = useState([]);
 
   const router = useRouter();
-
-  const loadAllData = async () => {
-    try {
-      await Promise.all([
-        fetchInitialData('cashtype'),
-        fetchInitialData('customer'),
-        fetchInitialData('delivery'),
-        fetchInitialData('employee'),
-        fetchInitialData('item'),
-        fetchInitialData('lc'),
-        fetchInitialData('moneyreceipt'),
-        fetchInitialData('order'),
-        fetchInitialData('payment'),
-        fetchInitialData('post'),
-        fetchInitialData('salary'),
-        fetchInitialData('shipment'),
-        fetchInitialData('supplier'),
-        fetchInitialData('unittype')
-      ]);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  }
 
 
 
@@ -60,9 +36,8 @@ export default function Home() {
         setMsg("Failed to fetch data");
       }
     }
-
     loadUser();
-    loadAllData();
+
   }, [])
 
   const submitHandler = (e) => {

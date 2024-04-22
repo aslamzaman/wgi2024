@@ -5,7 +5,6 @@ import Edit from "@/components/employee/Edit";
 import Delete from "@/components/employee/Delete";
 const date_format = dt => new Date(dt).toISOString().split('T')[0];
 
-
 const Employee = () => {
     const [employees, setEmployees] = useState([]);
     const [msg, setMsg] = useState("Data ready");
@@ -13,7 +12,7 @@ const Employee = () => {
 
 
     useEffect(() => {
-        const fetchData = async () => {
+        const loadData = async () => {
             setWaitMsg('Please Wait...');
             try {
                 const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/employee`, {
@@ -24,14 +23,14 @@ const Employee = () => {
                     throw new Error("Failed to fetch data");
                 }
                 const data = await response.json();
-                localStorage.setItem("employee", JSON.stringify(data));
+                // console.log(data);
                 setEmployees(data);
             setWaitMsg('');
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
         };
-        fetchData();
+        loadData();
     }, [msg]);
 
 
@@ -54,10 +53,10 @@ const Employee = () => {
                             <tr className="w-full bg-gray-200">                           
                                   <th className="text-center border-b border-gray-200 px-4 py-2">Name</th>
                                   <th className="text-center border-b border-gray-200 px-4 py-2">Address</th>
-                                  <th className="text-center border-b border-gray-200 px-4 py-2">Post</th>
+                                  <th className="text-center border-b border-gray-200 px-4 py-2">Postid</th>
                                   <th className="text-center border-b border-gray-200 px-4 py-2">Salary</th>
                                   <th className="text-center border-b border-gray-200 px-4 py-2">Joindt</th>
-                                  <th className="text-center border-b border-gray-200 px-4 py-2">Contact</th>                                
+                                  <th className="text-center border-b border-gray-200 px-4 py-2">Contact</th>
                                 <th className="w-[100px] font-normal">
                                     <div className="w-full flex justify-end py-0.5 pr-4">
                                         <Add message={messageHandler} />
@@ -74,7 +73,7 @@ const Employee = () => {
                                           <td className="text-center py-2 px-4">{employee.postId.name}</td>
                                           <td className="text-center py-2 px-4">{employee.salary}</td>
                                           <td className="text-center py-2 px-4">{date_format(employee.joinDt)}</td>
-                                          <td className="text-center py-2 px-4">{employee.contact}</td>                                            
+                                          <td className="text-center py-2 px-4">{employee.contact}</td>
                                         <td className="h-8 flex justify-end items-center space-x-1 mt-1 mr-2">
                                             <Edit message={messageHandler} id={employee._id} data={employees} />
                                             <Delete message={messageHandler} id={employee._id} data={employees} />
@@ -83,7 +82,7 @@ const Employee = () => {
                                 ))
                             ): (
                                 <tr>
-                                    <td colSpan={7} className="text-center py-10 px-4">
+                                    <td colSpan={8} className="text-center py-10 px-4">
                                         Data not available.
                                     </td>
                                 </tr>

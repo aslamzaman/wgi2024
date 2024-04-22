@@ -7,14 +7,16 @@ const Delete = (tbl, datas) => {
             .map((word) => word[0].toUpperCase() + word.slice(1).toLowerCase())
             .join(' ');
     }
-    
+
     const FirstCap = (str) => {
-        const firstLetter = str.substr(0,1);
-        const restLetter = str.substr(1, str.length-1);
+        const firstLetter = str.substr(0, 1);
+        const restLetter = str.substr(1, str.length - 1);
         const firstLetterCap = firstLetter.toUpperCase();
         const joinToOne = firstLetterCap + restLetter;
         return joinToOne
     }
+
+
 
 
 
@@ -67,6 +69,8 @@ const Delete = (tbl, datas) => {
 
     let getValue = "";
     data.map((d, i) => {
+        let x = d === 'isDeleted' ? 'true' : 'false';
+
         if (i > 0) {
             i === (data.length - 1)
                 ? getValue = getValue + `              ${d}: ${d}`
@@ -74,7 +78,14 @@ const Delete = (tbl, datas) => {
         }
     }
     );
-
+    let gethardDelete = '';
+    for (let n = 0; n < data.length; n++) {
+        if (n > 0) {
+            let x = data[n] === 'isDeleted' ? true : false;
+            gethardDelete = gethardDelete + `                ${data[n]} : ${!x ? data[n] : x}` + `${n===data.length-1?'':',\n'}`
+        }
+    }
+  
 
     //------------------------------------------------------------------------
 
@@ -85,27 +96,48 @@ const Delete = (tbl, datas) => {
     //--------------------------
     let sowFormLocalData = '';
     sowFormLocalData += '               const response = getOne("' + tbl + '", id);' + '\n';
-    sowFormLocalData += '               set'+ titleCase(data[1]) + '(response.data.'+data[1]+');' + '\n';
+    sowFormLocalData += '               set' + titleCase(data[1]) + '(response.data.' + data[1] + ');' + '\n';
 
     //------------------------------------------------------------------------------
     let saveStr = '';
-    saveStr += '                const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/'+tbl+'/${id}`;' + '\n';
+    saveStr += '                const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/' + tbl + '/${id}`;' + '\n';
     saveStr += '                const requestOptions = { method: "DELETE" };' + '\n';
     saveStr += '                const response = await fetch(apiUrl, requestOptions);' + '\n';
     saveStr += '                if (response.ok) {' + '\n';
     saveStr += '                    message(`Deleted successfully completed. id: ${id}`);' + '\n';
     saveStr += '                } else {' + '\n';
-    saveStr += '                    throw new Error("Failed to delete '+tbl+'");' + '\n';
+    saveStr += '                    throw new Error("Failed to delete ' + tbl + '");' + '\n';
     saveStr += '                }';
-   
-   
+
+
     let localSave = '';
-    localSave += '              const response = deleteItem("'+tbl+'", id);' + '\n';
+    localSave += '              const response = deleteItem("' + tbl + '", id);' + '\n';
     localSave += '              message(response.message);';
-   
 
 
-//------------------------------------------------------------------------------
+
+    //------------------------------------------------------------------------------
+
+    let softStr = '';
+    softStr += 'const newObject = createObject();' + '\n';
+    softStr += '                const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/' + tbl + '/${id}`;' + '\n';
+    softStr += '                const requestOptions = {' + '\n';
+    softStr += '                    method: "PUT",' + '\n';
+    softStr += '                    headers: { "Content-Type": "application/json" },' + '\n';
+    softStr += '                    body: JSON.stringify(newObject)' + '\n';
+    softStr += '                };' + '\n';
+
+    softStr += '                const response = await fetch(apiUrl, requestOptions);' + '\n';
+    softStr += '                if (response.ok) {' + '\n';
+    softStr += '                    message(`Deleted successfully completed. id: ${id}`);' + '\n';
+    softStr += '                } else {' + '\n';
+    softStr += '                    throw new Error("Failed to create ' + tbl + '");' + '\n';
+    softStr += '                }';
+    //------------------------------------------
+
+    let urlll = '`${process.env.NEXT_PUBLIC_BASE_URL}/api/'+ tbl + '/${id}`';
+    let mss = '`Deleted successfully completed. id: ${id}`';
+
 
 
     const str = `    import React, { useState } from "react";
@@ -121,13 +153,33 @@ const Delete = (tbl, datas) => {
 ${sowFormMongoData} 
         }
     
-    
+
         const closeDeleteForm = () => {
             setShow(false);           
         }
     
+   
+        const softDeleteHandler = async () => {
+            try {
+                const response = await fetch(${urlll}, {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json" }
+                });
+                if (!response.ok) {
+                    throw new Error("Failed to fetch data");
+                }
+                const data = await response.json();
+               // console.log(data)
+                message(${mss});
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }finally{
+                setShow(false);          
+            }
+        }
     
-        const deleteYesClick = async () => {
+/*
+        const hardDeleteHandler = async () => {
             try {
 ${saveStr}         
             } catch (error) {
@@ -136,7 +188,7 @@ ${saveStr}
             }
             setShow(false);
         }
-    
+ */   
     
         return (
             <>
@@ -166,7 +218,7 @@ ${saveStr}
                                 </div>
                                 <div className="w-full flex justify-start">
                                     <BtnEn Title="Close" Click={closeDeleteForm} Class="bg-pink-700 hover:bg-pink-900 text-white mr-1" />
-                                    <BtnEn Title="Yes Delete" Click={deleteYesClick} Class="bg-blue-600 hover:bg-blue-800 text-white" />
+                                    <BtnEn Title="Yes Delete" Click={softDeleteHandler} Class="bg-blue-600 hover:bg-blue-800 text-white" />
                                 </div>
                             </div>
                         </div>

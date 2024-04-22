@@ -3,24 +3,26 @@ import { Connect } from '@/lib/utils/Db';
 import { SupplierModel } from '@/lib/Models';
 
 
-export const GET = async (Request, { params }) => {
+// Soft deleted
+export const PATCH = async (Request, { params }) => {
   try {
     await Connect();
     const { id } = params;
-    const suppliers = await PostModel.findById(id);
+    const suppliers = await SupplierModel.findOneAndUpdate({ _id: id, isDeleted: false }, { isDeleted: true }, { new: true });
     return NextResponse.json(suppliers);
   } catch (err) {
-    return NextResponse.json({ message: "PUT Error", err }, { status: 500 });
+    return NextResponse.json({ message: "GET Error", err }, { status: 500 });
   }
-}    
+}
 
 
-export const PUT = async (Request,{ params }) => {
+// Update data
+export const PUT = async (Request, { params }) => {
   try {
     await Connect();
-    const {id} = params;
-    const { name, address, contact } = await Request.json();
-    const suppliers = await SupplierModel.findOneAndUpdate({ _id: id }, { name, address, contact });
+    const { id } = params;
+    const { name, address, contact, isDeleted } = await Request.json();
+    const suppliers = await SupplierModel.findOneAndUpdate({ _id: id }, { name, address, contact, isDeleted });
     return NextResponse.json(suppliers);
   } catch (err) {
     return NextResponse.json({ message: "PUT Error", err }, { status: 500 });
@@ -28,11 +30,12 @@ export const PUT = async (Request,{ params }) => {
 }
 
 
-export const DELETE = async ( Request, { params }) => {
+// Hard deleted
+export const DELETE = async (Request, { params }) => {
   try {
     await Connect();
-    const {id} = params;
-    const suppliers = await SupplierModel.findOneAndDelete({_id: id});
+    const { id } = params;
+    const suppliers = await SupplierModel.findOneAndDelete({ _id: id });
     return NextResponse.json(suppliers);
   } catch (err) {
     return NextResponse.json({ message: "DELETE Error", err }, { status: 500 });

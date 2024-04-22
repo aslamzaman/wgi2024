@@ -18,7 +18,27 @@ const Delete = ({ message, id, data }) => {
     }
 
 
-    const deleteYesClick = async () => {
+    const softDeleteHandler = async () => {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/supplier/${id}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" }
+            });
+            if (!response.ok) {
+                throw new Error("Failed to fetch data");
+            }
+            const data = await response.json();
+           // console.log(data)
+            message(`Deleted successfully completed. id: ${id}`);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }finally{
+            setShow(false);          
+        }
+    }
+
+/*
+    const hardDeleteHandler = async () => {
         try {
             const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/supplier/${id}`;
             const requestOptions = { method: "DELETE" };
@@ -34,7 +54,7 @@ const Delete = ({ message, id, data }) => {
         }
         setShow(false);
     }
-
+*/   
 
     return (
         <>
@@ -64,7 +84,7 @@ const Delete = ({ message, id, data }) => {
                             </div>
                             <div className="w-full flex justify-start">
                                 <BtnEn Title="Close" Click={closeDeleteForm} Class="bg-pink-700 hover:bg-pink-900 text-white mr-1" />
-                                <BtnEn Title="Yes Delete" Click={deleteYesClick} Class="bg-blue-600 hover:bg-blue-800 text-white" />
+                                <BtnEn Title="Yes Delete" Click={softDeleteHandler} Class="bg-blue-600 hover:bg-blue-800 text-white" />
                             </div>
                         </div>
                     </div>

@@ -25,8 +25,8 @@ const titleCase = (str) => {
 }
 
 const FirstCap = (str) => {
-    const firstLetter = str.substr(0,1);
-    const restLetter = str.substr(1, str.length-1);
+    const firstLetter = str.substr(0, 1);
+    const restLetter = str.substr(1, str.length - 1);
     const firstLetterCap = firstLetter.toUpperCase();
     const joinToOne = firstLetterCap + restLetter;
     return joinToOne
@@ -203,25 +203,30 @@ const Code = () => {
         const tblName = prompt("Collection Name, Referance Id(say: post, postId)");
         if (tblName === null || tblName === '') return false;
 
-        const tbl = tblName.split(",").map(p=>p.trim());
-        console.log("a"+tbl[0]+' n'+tbl[1]);
+        const tbl = tblName.split(",").map(p => p.trim());
+        console.log("a" + tbl[0] + ' n' + tbl[1]);
         if (tbl.length < 2) return false;
         console.log(tbl.length);
 
 
         let str = 'import { TextEn, BtnSubmit, DropdownEn } from "@/components/Form";\n';
-        str = str + 'import { getItems } from "@/lib/utils/LocalDatabase";\n';
+        str = str + 'import { FetchData } from "@/lib/utils/FetchData";\n';
         str = str + "\n";
         str = str + "\n";
         str = str + `const [${tbl[0]}s, set${titleCase(tbl[0])}s] = useState([]);\n`;
         str = str + "\n";
         str = str + "\n";
-    
-        str = str + "set"+titleCase(tbl[0])+"s(getItems('"+tbl[0]+"'));\n";
 
+        str = str + "try {\n";
+        str = str + "    const response" + titleCase(tbl[0]) + " = await FetchData('" + tbl[0] + "');\n";
+        str = str + "   set" + titleCase(tbl[0]) + "s(response" + titleCase(tbl[0]) + ");\n";
+        str = str + "} catch (error) {\n";
+        str = str + "    console.error('Failed to fetch delivery data:', error);\n";
+        str = str + "}\n";
+     
         str = str + "\n";
         str = str + "\n";
-        
+
 
         str = str + `                                    <DropdownEn Title="${titleCase(tbl[0])}" Id="${tbl[1]}" Change={e=> set${FirstCap(tbl[1])}(e.target.value)} Value={${tbl[1]}}>\n`;
         str = str + `                                        {${tbl[0]}s.length?${tbl[0]}s.map(${tbl[0]}=><option value={${tbl[0]}._id} key={${tbl[0]}._id}>{${tbl[0]}._id}</option>):null}\n`;
