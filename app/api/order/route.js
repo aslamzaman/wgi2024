@@ -6,7 +6,7 @@ import { OrderModel } from '@/lib/Models';
 export const GET = async () => {
   try {
     await Connect();
-    const orders = await OrderModel.find({}).populate('customerId').sort({_id:'desc'});
+    const orders = await OrderModel.find({isDeleted: false}).populate('customerId').sort({_id:'desc'});
     return NextResponse.json( orders );
   } catch (error) {
     console.error('GET Error:', error);

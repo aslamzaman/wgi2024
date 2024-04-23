@@ -2,8 +2,8 @@
 import React, { useState, useEffect } from "react";
 import Add from "@/components/order/Add";
 import Delete from "@/components/order/Delete";
-const date_format = dt => new Date(dt).toISOString().split('T')[0];
 import { GetRemoteData } from "@/lib/utils/GetRemoteData";
+const date_format = dt => new Date(dt).toISOString().split('T')[0];
 
 
 
@@ -14,35 +14,34 @@ const Order = () => {
 
 
     useEffect(() => {
-        const loadData = async () => {
+        const getData = async () => {
             setWaitMsg('Please Wait...');
             try {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/order`, {
+                    method: "GET",
+                    headers: { "Content-Type": "application/json" }
+                });
+                if (!response.ok) {
+                    throw new Error("Failed to fetch data");
+                }
 
-                const [responseOrder, responseDelivery] = await Promise.all([
-                    GetRemoteData('order'),
-                    GetRemoteData('delivery')
-                ]);
-
-                //-----------------------------
-                const filterOrder = responseOrder
-                    .filter(order => order.customerId.isDeleted === false)
-                    .map(order => {
-                        const matchDelivery = responseDelivery.find(delivery => delivery.orderNo === order.orderNo);
-                        return {
-                            ...order,
-                            delivery: matchDelivery ? true : false
-                        }
-                    })
-
-                console.log(filterOrder)
-                setOrders(filterOrder);
+                const data = await response.json();
+                const responseDelivery = await GetRemoteData('delivery');
+                const result = data.map(order => {
+                    const matchDelivery = responseDelivery.find(delivery => delivery.orderId._id === order._id);
+                    return {
+                        ...order,
+                        matchDelivery: matchDelivery ? true : false
+                    }
+                })
+                console.log(data, responseDelivery, result);
+                setOrders(result);
                 setWaitMsg('');
             } catch (error) {
                 console.error("Error fetching data:", error);
-                setMsg("Failed to fetch data");
             }
         };
-        loadData();
+        getData();
     }, [msg]);
 
 
@@ -77,24 +76,21 @@ const Order = () => {
                         </thead>
                         <tbody>
                             {orders.length ? (
-                                orders.map(order => {
-                                    let tTaka = order.items.reduce((t, c) => t + (c.qty * c.taka), 0);
-                                    return (
-                                        <tr className={`border-b border-gray-200 hover:bg-gray-100 ${order.delivery === true ? 'line-through text-red-400' : 'no-underline text-black'}`} key={order._id}>
-                                            <td className="text-center py-2 px-4">{date_format(order.dt)}</td>
-                                            <td className="text-center py-2 px-4">{date_format(order.deliveryDt)}</td>
-                                            <td className="text-center py-2 px-4">{order.orderNo}</td>
-                                            <td className="text-center py-2 px-4">{order.customerId.name}</td>
-                                            <td className="text-center py-2 px-4">{tTaka}</td>
-                                            <td className="flex justify-end items-center space-x-1 mt-1 mr-2">
-                                                {order.delivery === false ? <Delete message={messageHandler} id={order._id} data={orders} /> : null}
-                                            </td>
-                                        </tr>
-                                    )
-                                })
+                                orders.map(order => (
+                                    <tr className={`border-b border-gray-200 hover:bg-gray-100 ${order.matchDelivery === true ? 'line-through text-red-400' : 'no-underline text-black'}`} key={order._id}>
+                                        <td className="text-center py-2 px-4">{date_format(order.dt)}</td>
+                                        <td className="text-center py-2 px-4">{date_format(order.deliveryDt)}</td>
+                                        <td className="text-center py-2 px-4">{order.orderNo}</td>
+                                        <td className="text-center py-2 px-4">{order.customerId.name}</td>
+                                        <td className="text-center py-2 px-4">{order.items.reduce((t, c) => t + (parseFloat(c.qty) * parseFloat(c.taka)), 0)}</td>
+                                        <td className="h-8 flex justify-end items-center space-x-1 mt-1 mr-2">
+                                            {order.matchDelivery === false ? <Delete message={messageHandler} id={order._id} data={orders} /> : null}
+                                        </td>
+                                    </tr>
+                                ))
                             ) : (
                                 <tr>
-                                    <td colSpan={6} className="text-center py-10 px-4">
+                                    <td colSpan={7} className="text-center py-10 px-4">
                                         Data not available.
                                     </td>
                                 </tr>

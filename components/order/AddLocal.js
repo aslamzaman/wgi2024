@@ -3,6 +3,7 @@ import { TextEn, BtnEn, BtnSubmit, DropdownEn, TextNum } from "../Form";
 import { Close } from "../Icons";
 import { addItem, getItems } from "@/lib/utils/LocalDatabase";
 
+import { GetRemoteData } from "@/lib/utils/GetRemoteData";
 
 
 const AddLocal = ({ Msg }) => {
@@ -14,7 +15,6 @@ const AddLocal = ({ Msg }) => {
     const [taka, setTaka] = useState("");
 
     const [show, setShow] = useState(false);
-
 
     const [items, setItems] = useState([]);
     const [unittypes, setUnittypes] = useState([]);
@@ -41,11 +41,17 @@ const AddLocal = ({ Msg }) => {
     }
 
 
-    const addtHandler = () => {
+    const addtHandler = async () => {
         setShow(true);
         resetStateVariables();
-        setItems(getItems('item'));
-        setUnittypes(getItems('unittype'));
+        try {
+            const responseItem = await GetRemoteData('item');
+            setItems(responseItem);
+            const responseUnittype = await GetRemoteData('unittype');
+            setUnittypes(responseUnittype);
+        } catch (error) {
+            console.error('Failed to fetch delivery data:', error);
+        }
     }
 
 
@@ -80,7 +86,6 @@ const AddLocal = ({ Msg }) => {
                                 <DropdownEn Title="Item" Id="name" Change={e => setName(e.target.value)} Value={name}>
                                     {items.length ? items.map(item => <option value={item.name} key={item._id}>{item.name}</option>) : null}
                                 </DropdownEn>
-
                                 <TextEn Title="Description" Id="description" Change={e => setDescription(e.target.value)} Value={description} Chr={100} />
                                 <TextNum Title="Quantity" Id="qty" Change={e => setQty(e.target.value)} Value={qty} />
                                 <DropdownEn Title="Unittype" Id="unit" Change={e => setUnit(e.target.value)} Value={unit}>

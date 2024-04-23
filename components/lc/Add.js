@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { TextEn, BtnSubmit, DropdownEn, TextDt, TextNum } from "@/components/Form";
-import { FetchData } from "@/lib/utils/GetRemoteData";
+import { GetRemoteData } from "@/lib/utils/GetRemoteData";
 const date_format = dt => new Date(dt).toISOString().split('T')[0];
 
 
@@ -27,7 +27,7 @@ const Add = ({ message }) => {
         setShow(true);
         resetVariables();
         try {
-            const responseUnittype = await FetchData('unittype');
+            const responseUnittype = await GetRemoteData('unittype');
            setUnittypes(responseUnittype);
         } catch (error) {
             console.error('Failed to fetch delivery data:', error);

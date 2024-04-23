@@ -1,38 +1,42 @@
 import React, { useState } from "react";
 import { TextEn, BtnSubmit, DropdownEn, TextDt, TextNum } from "@/components/Form";
-import { getItems } from "@/lib/utils/LocalDatabase";
+import { GetRemoteData } from "@/lib/utils/GetRemoteData";
+const date_format = dt => new Date(dt).toISOString().split('T')[0];
 
 
 const Add = ({ message }) => {
-    const [customerObject, setCustomerObject] = useState('');
+    const [customerId, setCustomerId] = useState('');
     const [dt, setDt] = useState('');
-    const [cashtypeObject, setCashtypeObject] = useState('');
+    const [cashtypeId, setCashtypeId] = useState('');
     const [bank, setBank] = useState('');
     const [taka, setTaka] = useState('');
+
     const [show, setShow] = useState(false);
-
-
     const [customers, setCustomers] = useState([]);
     const [cashtypes, setCashtypes] = useState([]);
 
-    const [customerFullObject, setCustomerFullObject] = useState({});
-    const [cashTypeFullObject, setCashTypeFullObject] = useState({});
 
 
     const resetVariables = () => {
-        setCustomerObject('');
-        setDt('');
-        setCashtypeObject('');
+        setCustomerId('');
+        setDt(date_format(new Date()));
+        setCashtypeId('');
         setBank('');
         setTaka('');
     }
 
 
-    const showAddForm = () => {
+    const showAddForm = async () => {
         setShow(true);
         resetVariables();
-        setCustomers(getItems('customer'));
-        setCashtypes(getItems('cashtype'));
+        try {
+            const responseCustomer = await GetRemoteData('customer');
+            setCustomers(responseCustomer);
+            const responseCashtype = await GetRemoteData('cashtype');
+            setCashtypes(responseCashtype);
+        } catch (error) {
+            console.error('Failed to fetch delivery data:', error);
+        }
 
     }
 
@@ -43,11 +47,10 @@ const Add = ({ message }) => {
 
 
     const createObject = () => {
-       
         return {
-            customerObject: {_id:customerFullObject._id, name: customerFullObject.name, contact: customerFullObject.contact},
+            customerId: customerId,
             dt: dt,
-            cashtypeObject:  {_id: cashTypeFullObject._id, name: cashTypeFullObject.name},
+            cashtypeId: cashtypeId,
             bank: bank,
             taka: taka
         }
@@ -79,25 +82,6 @@ const Add = ({ message }) => {
     }
 
 
-
-    const customerObjectChangeHandler = (e)=>{
-        setCustomerObject(e.target.value);
-        const customerObj = customers.find(customer=> customer._id ===  e.target.value);
-        setCustomerFullObject(customerObj);
-        //console.log(customerObj);
-    }
-
-
-
-    const cashtypeObjectChangeHandler = (e)=>{
-        setCashtypeObject(e.target.value);
-        const cashTypeObj = cashtypes.find(cashtype=> cashtype._id ===  e.target.value);
-       // console.log(cashTypeObj);
-        setCashTypeFullObject(cashTypeObj);
-    }
-
-
-
     return (
         <>
             {show && (
@@ -114,17 +98,15 @@ const Add = ({ message }) => {
                         <div className="px-6 pb-6 text-black">
                             <form onSubmit={saveHandler}>
                                 <div className="grid grid-cols-1 gap-4 my-4">
-                                    <DropdownEn Title="Customer" Id="customerObject" Change={customerObjectChangeHandler} Value={customerObject}>
+                                    <DropdownEn Title="Customer" Id="customerId" Change={e => setCustomerId(e.target.value)} Value={customerId}>
                                         {customers.length ? customers.map(customer => <option value={customer._id} key={customer._id}>{customer.name}</option>) : null}
                                     </DropdownEn>
-
                                     <TextDt Title="Date" Id="dt" Change={e => setDt(e.target.value)} Value={dt} />
 
-                                    <DropdownEn Title="Cashtype" Id="cashtypeObject" Change={cashtypeObjectChangeHandler} Value={cashtypeObject}>
+                                    <DropdownEn Title="Cashtype" Id="cashtypeId" Change={e => setCashtypeId(e.target.value)} Value={cashtypeId}>
                                         {cashtypes.length ? cashtypes.map(cashtype => <option value={cashtype._id} key={cashtype._id}>{cashtype.name}</option>) : null}
                                     </DropdownEn>
-
-                                    <TextEn Title="Bank" Id="bank" Change={e => setBank(e.target.value)} Value={bank} Chr={50} />
+                                    <TextEn Title="Bank" Id="bank" Change={e => setBank(e.target.value)} Value={bank} Chr={150} />
                                     <TextNum Title="Taka" Id="taka" Change={e => setTaka(e.target.value)} Value={taka} />
                                 </div>
                                 <div className="w-full flex justify-start">

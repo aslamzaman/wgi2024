@@ -8,30 +8,43 @@ const Delete = ({ message, id, data }) => {
 
     const showDeleteForm = () => {
         setShow(true);
-        try {
-           const { dt } = data.find(moneyreceipt => moneyreceipt._id === id) || { dt: "" };
-           setDt(dt);
-           message("Ready to delete"); 
-        }
-        catch (err) {
-            console.log(err);
-        }
+        const { receiveNo } = data.find(moneyreceipt => moneyreceipt._id === id) || { receiveNo: "" };
+        setDt(receiveNo); 
     }
 
 
     const closeDeleteForm = () => {
-        setShow(false);
-        message("Data ready");
+        setShow(false);           
     }
 
 
-    const deleteYesClick = async () => {
+    const softDeleteHandler = async () => {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/moneyreceipt/${id}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" }
+            });
+            if (!response.ok) {
+                throw new Error("Failed to fetch data");
+            }
+            const data = await response.json();
+           // console.log(data)
+            message(`Deleted successfully completed. id: ${id}`);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }finally{
+            setShow(false);          
+        }
+    }
+
+/*
+    const hardDeleteHandler = async () => {
         try {
             const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/moneyreceipt/${id}`;
             const requestOptions = { method: "DELETE" };
             const response = await fetch(apiUrl, requestOptions);
             if (response.ok) {
-                message("Deleted successfully completed");
+                message(`Deleted successfully completed. id: ${id}`);
             } else {
                 throw new Error("Failed to delete moneyreceipt");
             }         
@@ -41,7 +54,7 @@ const Delete = ({ message, id, data }) => {
         }
         setShow(false);
     }
-
+*/   
 
     return (
         <>
@@ -67,11 +80,11 @@ const Delete = ({ message, id, data }) => {
 
                                 <h1 className="text-sm text-center text-gray-600 mt-4">
                                     Are you sure to proceed with the deletion?</h1>
-                                <h1 className="text-center text-gray-600 font-bold">{dt}</h1>
+                                <h1 className="text-center text-gray-600 font-bold">Money Receive No: {receiveNo}</h1>
                             </div>
                             <div className="w-full flex justify-start">
                                 <BtnEn Title="Close" Click={closeDeleteForm} Class="bg-pink-700 hover:bg-pink-900 text-white mr-1" />
-                                <BtnEn Title="Yes Delete" Click={deleteYesClick} Class="bg-blue-600 hover:bg-blue-800 text-white" />
+                                <BtnEn Title="Yes Delete" Click={softDeleteHandler} Class="bg-blue-600 hover:bg-blue-800 text-white" />
                             </div>
                         </div>
                     </div>

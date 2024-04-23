@@ -210,7 +210,7 @@ const Code = () => {
 
 
         let str = 'import { TextEn, BtnSubmit, DropdownEn } from "@/components/Form";\n';
-        str = str + 'import { FetchData } from "@/lib/utils/FetchData";\n';
+        str = str + 'import { GetRemoteData } from "@/lib/utils/GetRemoteData";\n';
         str = str + "\n";
         str = str + "\n";
         str = str + `const [${tbl[0]}s, set${titleCase(tbl[0])}s] = useState([]);\n`;
@@ -218,7 +218,7 @@ const Code = () => {
         str = str + "\n";
 
         str = str + "try {\n";
-        str = str + "    const response" + titleCase(tbl[0]) + " = await FetchData('" + tbl[0] + "');\n";
+        str = str + "    const response" + titleCase(tbl[0]) + " = await GetRemoteData('" + tbl[0] + "');\n";
         str = str + "   set" + titleCase(tbl[0]) + "s(response" + titleCase(tbl[0]) + ");\n";
         str = str + "} catch (error) {\n";
         str = str + "    console.error('Failed to fetch delivery data:', error);\n";

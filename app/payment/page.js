@@ -6,6 +6,7 @@ import Delete from "@/components/payment/Delete";
 const date_format = dt => new Date(dt).toISOString().split('T')[0];
 
 
+
 const Payment = () => {
     const [payments, setPayments] = useState([]);
     const [msg, setMsg] = useState("Data ready");
@@ -13,7 +14,7 @@ const Payment = () => {
 
 
     useEffect(() => {
-        const fetchData = async () => {
+        const getData = async () => {
             setWaitMsg('Please Wait...');
             try {
                 const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/payment`, {
@@ -24,15 +25,14 @@ const Payment = () => {
                     throw new Error("Failed to fetch data");
                 }
                 const data = await response.json();
-                console.log(data)
-                localStorage.setItem("payment", JSON.stringify(data));
+                // console.log(data);
                 setPayments(data);
             setWaitMsg('');
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
         };
-        fetchData();
+        getData();
     }, [msg]);
 
 
@@ -57,7 +57,7 @@ const Payment = () => {
                                   <th className="text-center border-b border-gray-200 px-4 py-2">Date</th>
                                   <th className="text-center border-b border-gray-200 px-4 py-2">Cashtype</th>
                                   <th className="text-center border-b border-gray-200 px-4 py-2">Bank</th>
-                                  <th className="text-center border-b border-gray-200 px-4 py-2">Taka</th>                                
+                                  <th className="text-center border-b border-gray-200 px-4 py-2">Taka</th>
                                 <th className="w-[100px] font-normal">
                                     <div className="w-full flex justify-end py-0.5 pr-4">
                                         <Add message={messageHandler} />
@@ -69,11 +69,11 @@ const Payment = () => {
                             {payments.length ?(
                                 payments.map(payment => (
                                     <tr className="border-b border-gray-200 hover:bg-gray-100" key={payment._id}>                                           
-                                          <td className="text-center py-2 px-4">{payment.customerObject.name}</td>
+                                          <td className="text-center py-2 px-4">{payment.customerId.name}</td>
                                           <td className="text-center py-2 px-4">{date_format(payment.dt)}</td>
-                                          <td className="text-center py-2 px-4">{payment.cashtypeObject.name}</td>
+                                          <td className="text-center py-2 px-4">{payment.cashtypeId.name}</td>
                                           <td className="text-center py-2 px-4">{payment.bank}</td>
-                                          <td className="text-center py-2 px-4">{payment.taka}</td>                                            
+                                          <td className="text-center py-2 px-4">{payment.taka}</td>
                                         <td className="h-8 flex justify-end items-center space-x-1 mt-1 mr-2">
                                             <Edit message={messageHandler} id={payment._id} data={payments} />
                                             <Delete message={messageHandler} id={payment._id} data={payments} />
@@ -82,7 +82,7 @@ const Payment = () => {
                                 ))
                             ): (
                                 <tr>
-                                    <td colSpan={6} className="text-center py-10 px-4">
+                                    <td colSpan={7} className="text-center py-10 px-4">
                                         Data not available.
                                     </td>
                                 </tr>

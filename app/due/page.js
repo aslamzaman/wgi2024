@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 // import Details from "@/components/due/Details";
-import { fetchData } from "@/lib/utils/fetchInitialData";
+import { GetRemoteData } from "@/lib/utils/GetRemoteData";
 
 
 const Customer = () => {
@@ -17,9 +17,9 @@ const Customer = () => {
             try {
 
                 const [responseCustomer, responseDelivery, responsePayment] = await Promise.all([
-                    fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/customer`),
-                    fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/delivery`),
-                    fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/payment`)
+                    GetRemoteData('customer'),
+                    GetRemoteData('delivery'),
+                    GetRemoteData('payment')
                 ]);
 
 

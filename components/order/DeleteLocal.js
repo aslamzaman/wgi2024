@@ -10,7 +10,6 @@ const DeleteLocal = ({ Msg, Id }) => {
 
     const deleteHandler = () => {
         setShow(true);
-        Msg("Ready to delete.");
     }
 
 
@@ -19,7 +18,6 @@ const DeleteLocal = ({ Msg, Id }) => {
             let deletedItem = deleteItem("localitem", Id);
             Msg(deletedItem.message);
         } catch (error) {
-            Msg(deletedItem.message);
             console.log(`Error deleting data: ${error}`);
         }
         setShow(false);

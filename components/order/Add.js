@@ -7,12 +7,14 @@ import DeleteLocal from "./DeleteLocal";
 import { getItems } from "@/lib/utils/LocalDatabase";
 
 
+
 const Add = ({ message }) => {
     const [dt, setDt] = useState('');
     const [deliveryDt, setDeliveryDt] = useState('');
     const [orderNo, setOrderNo] = useState('');
     const [customerId, setCustomerId] = useState('');
-    // const [items, setItems] = useState([]);
+   // const [items, setItems] = useState('');
+
     const [show, setShow] = useState(false);
 
 
@@ -102,6 +104,8 @@ const Add = ({ message }) => {
         setLocalitems(localitem);
     }
 
+
+    
     return (
         <>
             {show && (
