@@ -88,13 +88,13 @@ const Delivery = () => {
             doc.setFontSize(10);
             doc.text(`Order No: ${invoice.orderId.orderNo}`, 105, 61, null, null, "center");
             doc.text(`Order Date: ${date_format(invoice.orderId.dt)}`, 105, 66, null, null, "center");
-            
+
             doc.setFont("Poppins-Regular", "normal");
             doc.setFontSize(10);
             doc.text(`Invoice No: ${invoice.invoiceNo}`, 190, 70, null, null, "right");
             doc.text(`Shipment No: ${invoice.shipment}`, 190, 75, null, null, "right");
             doc.text(`Invoice Date: ${date_format(invoice.dt)}`, 190, 80, null, null, "right");
-            
+
             doc.setFont("Poppins-Bold", "bold");
             doc.text(`${invoice.matchCustomer.name}`, 20, 85, null, null, "left");
             doc.setFont("Poppins-Regular", "normal");
@@ -103,7 +103,7 @@ const Delivery = () => {
             doc.setFontSize(7);
             doc.text(`Print Data: ${date_format(new Date())}`, 190, 98, null, null, "right");
             doc.setFontSize(10);
-            
+
             doc.line(20, 99.5, 190, 99.5);
             doc.line(20, 107, 190, 107);
             doc.setFont("Poppins-Bold", "bold");
@@ -127,46 +127,47 @@ const Delivery = () => {
                 doc.text(`${total.toLocaleString("en-IN")}`, 187, y, null, null, "right");
                 y = y + 12;
             }
-            
+
             doc.line(20, y - 5, 190, y - 5); // Horizontal line
             // Subtotal 
             doc.text("Subtotal", 23, y - 1, null, null, "left");
             doc.text(`${subTotal.toLocaleString("en-IN")}`, 187, y - 1, null, null, "right");
-            
+
             // Deduct
             doc.text("Deduct", 23, y + 5, null, null, "left");
             doc.text(`${parseInt(invoice.deduct).toLocaleString("en-IN")}`, 187, y + 5, null, null, "right");
-            
+
             // Advance
             doc.text("Advance", 23, y + 11, null, null, "left");
             doc.text(`${parseInt(invoice.advance).toLocaleString("en-IN")}`, 187, y + 11, null, null, "right");
-            
-            
+
+
             // Amount to be pay
             doc.setFont("Poppins-Bold", "bold");
             doc.text("Amount to pay", 23, y + 17, null, null, "left");
             const gt = subTotal - (parseInt(invoice.deduct) + parseInt(invoice.advance));
             doc.text(`${gt.toLocaleString("en-IN")}`, 187, y + 17, null, null, "right");
-            
+
             doc.line(20, y + 19, 190, y + 19); // Horizontal line
-            
+
             doc.setFont("Poppins-Regular", "normal");
-            doc.text(`INWORD: ${inword(gt).toUpperCase()}ONLY.`, 20, y + 24, null, null, "left");
-            
+            if (gt > 0) {
+                doc.text(`INWORD: ${inword(gt).toUpperCase()}ONLY.`, 20, y + 24, null, null, "left");
+            }
             doc.line(20, 99.5, 20, y + 19); // Vertical Line
             doc.line(94, 99.5, 94, y + 19); // Vertical Line
             doc.line(117, 99.5, 117, y + 19); // Vertical Line
             doc.line(140, 99.5, 140, y + 19); // Vertical Line
             doc.line(160, 99.5, 160, y + 19); // Vertical Line
             doc.line(190, 99.5, 190, y + 19); // Vertical Line
-            
+
             doc.setFontSize(10);
             doc.text("Thank you for your kind cooperation.", 20, y + 40, null, null, "left");
 
             doc.save(`WGI_Invoice_${invoice.invoiceNo}_Created_${date_format(invoice.dt)}.pdf`);
             setWaitMsg('');
         }, 0);
-       
+
     }
 
 
