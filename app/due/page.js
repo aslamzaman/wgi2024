@@ -9,56 +9,53 @@ const Customer = () => {
     const [msg, setMsg] = useState("Data ready");
     const [waitMsg, setWaitMsg] = useState("");
 
-    
+
 
     useEffect(() => {
         const loadData = async () => {
             setWaitMsg('Please Wait...');
             try {
 
-                const [responseCustomer, responseDelivery, responsePayment] = await Promise.all([
+                const [customers, deliveries, payments] = await Promise.all([
                     GetRemoteData('customer'),
                     GetRemoteData('delivery'),
                     GetRemoteData('payment')
                 ]);
 
-
-                const resultCustomer = responseCustomer.map(customer => {
-                    const matchDelivery = responseDelivery.filter(delivery => delivery.customer._id === customer._id);
-                    const deliverItems = matchDelivery.map(delivery => delivery.items);
-                    const flattenedArray = deliverItems.flat();
-
-                    const totalPrice = flattenedArray.reduce((total, current) => total + (current.qty * current.taka), 0);
-
-                    const deliverDeduct = matchDelivery.reduce((t, c) => t + c.deduct, 0);
-                    const deliverPayment = matchDelivery.reduce((t, c) => t + c.payment, 0);
+                const filteredCustomers = customers.filter(customer =>
+                    deliveries.some(delivery => delivery.orderId.customerId === customer._id)
+                );
 
 
-                    const matchPayment = responsePayment.filter(payment => payment.customer._id === customer._id);
-                    const paymentTaka = matchPayment.reduce((t, c) => t + c.taka, 0);
-                    const dues = totalPrice - deliverDeduct - deliverPayment - paymentTaka;
+                const customersWithDeliveries = filteredCustomers.map(customer => {
+                    const matchingDeliveries = deliveries.filter(delivery => delivery.orderId.customerId === customer._id);
+                    const matchingPayments = payments.filter(payment => payment.customerId._id === customer._id);
+
+                    const totalPayment = matchingPayments.reduce((t, c) => (t + parseFloat(c.taka)), 0);
+
+
+                    const resultDelivery = matchingDeliveries.map(delivery => {
+                        const invoiceNO = delivery.invoiceNo;
+                        const deductTaka = delivery.deduct;
+                        const advanceTaka = delivery.advance;
+                        const orderTaka = delivery.orderId.items.reduce((t, c) => (t + parseFloat(c.qty) * parseFloat(c.taka)), 0);
+                        return {
+                            invoiceNO, deductTaka, advanceTaka, orderTaka
+                        }
+
+                    })
+                    const totalTaka = resultDelivery.reduce((t, c) => (t + parseFloat(c.orderTaka) - parseFloat(c.deductTaka) - parseFloat(c.advanceTaka)), 0);
+
                     return {
                         ...customer,
-                        matchDelivery: matchDelivery,
-                        matchPayment: matchPayment,
-                        totalItemPrice: totalPrice,
-                        deliverDeduct: deliverDeduct,
-                        deliverPayment: deliverPayment,
-                        paymentTaka: paymentTaka,
-                        dues: dues
+                        resultDelivery,
+                        totalTaka,
+                        totalPayment,
+                        duesTaka: totalTaka - totalPayment
+                    };
+                });
 
-                    }
-                })
-
-                const SortResult = resultCustomer.sort((a, b) => {
-                    if (parseInt(a.totalItemPrice) < parseInt(b.totalItemPrice)) {
-                      return 1;
-                    } else {
-                      return -1;
-                    }
-                  });
-
-                setCustomers(SortResult);
+                setCustomers(customersWithDeliveries);
                 setWaitMsg('');
             } catch (error) {
                 console.error("Error fetching data:", error);
@@ -88,10 +85,6 @@ const Customer = () => {
                     <thead>
                         <tr className="w-full bg-gray-200">
                             <th className="text-start border-b border-gray-200 px-4 py-2">Name</th>
-                            <th className="text-center border-b border-gray-200 px-4 py-2">Delivery</th>
-                            <th className="text-center border-b border-gray-200 px-4 py-2">Deduct</th>
-                            <th className="text-center border-b border-gray-200 px-4 py-2">Advance</th>
-                            <th className="text-center border-b border-gray-200 px-4 py-2">Payment</th>
                             <th className="text-center border-b border-gray-200 px-4 py-2">Dues</th>
                         </tr>
                     </thead>
@@ -104,12 +97,8 @@ const Customer = () => {
                                         {customer.address}<br />
                                         {customer.contact}
                                     </td>
-                                    <td className="text-center py-2 px-4">{customer.totalItemPrice}</td>
-                                    <td className="text-center py-2 px-4">{customer.deliverDeduct}</td>
-                                    <td className="text-center py-2 px-4">{customer.deliverPayment}</td>
-                                    <td className="text-center py-2 px-4">{customer.paymentTaka}</td>
-                                    <td className="text-center py-2 px-4">{customer.dues}</td>
-                                   
+                                    <td className="text-center py-2 px-4">{customer.duesTaka}</td>
+
                                 </tr>
                             ))
                         ) : (
