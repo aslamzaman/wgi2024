@@ -3,13 +3,14 @@ import { BtnEn } from "@/components/Form";
 
 
 const Delete = ({ message, id, data }) => {
-    const [dt, setDt] = useState("");   
+    const [receiveNo, setReceiveNo] = useState("");   
     const [show, setShow] = useState(false);
 
     const showDeleteForm = () => {
         setShow(true);
         const { receiveNo } = data.find(moneyreceipt => moneyreceipt._id === id) || { receiveNo: "" };
-        setDt(receiveNo); 
+
+        setReceiveNo(receiveNo); 
     }
 
 
@@ -17,7 +18,7 @@ const Delete = ({ message, id, data }) => {
         setShow(false);           
     }
 
-
+/*
     const softDeleteHandler = async () => {
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/moneyreceipt/${id}`, {
@@ -36,8 +37,8 @@ const Delete = ({ message, id, data }) => {
             setShow(false);          
         }
     }
+*/
 
-/*
     const hardDeleteHandler = async () => {
         try {
             const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/moneyreceipt/${id}`;
@@ -54,8 +55,7 @@ const Delete = ({ message, id, data }) => {
         }
         setShow(false);
     }
-*/   
-
+   
     return (
         <>
             {show && (
@@ -84,7 +84,7 @@ const Delete = ({ message, id, data }) => {
                             </div>
                             <div className="w-full flex justify-start">
                                 <BtnEn Title="Close" Click={closeDeleteForm} Class="bg-pink-700 hover:bg-pink-900 text-white mr-1" />
-                                <BtnEn Title="Yes Delete" Click={softDeleteHandler} Class="bg-blue-600 hover:bg-blue-800 text-white" />
+                                <BtnEn Title="Yes Delete" Click={hardDeleteHandler} Class="bg-blue-600 hover:bg-blue-800 text-white" />
                             </div>
                         </div>
                     </div>

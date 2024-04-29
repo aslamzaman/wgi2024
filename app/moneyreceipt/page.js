@@ -30,7 +30,7 @@ const Moneyreceipt = () => {
                     throw new Error("Failed to fetch data");
                 }
                 const data = await response.json();
-                // console.log(data);
+                 console.log(data);
                 setMoneyreceipts(data);
                 setWaitMsg('');
             } catch (error) {

@@ -25,7 +25,7 @@ const Payment = () => {
                     throw new Error("Failed to fetch data");
                 }
                 const data = await response.json();
-                // console.log(data);
+                console.log(data);
                 setPayments(data);
             setWaitMsg('');
             } catch (error) {
