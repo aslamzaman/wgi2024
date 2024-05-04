@@ -3,13 +3,13 @@ import { BtnEn } from "@/components/Form";
 
 
 const Delete = ({ message, id, data }) => {
-    const [orderNo, setOrderNo] = useState("");   
+    const [customerId, setCustomerId] = useState("");   
     const [show, setShow] = useState(false);
 
     const showDeleteForm = () => {
         setShow(true);
-        const { orderNo } = data.find(order => order._id === id) || { orderNo: "" };
-        setOrderNo(orderNo); 
+        const { customerId } = data.find(sale => sale._id === id) || { customerId: "" };
+        setCustomerId(customerId.name); 
     }
 
 
@@ -20,7 +20,7 @@ const Delete = ({ message, id, data }) => {
 /*
     const softDeleteHandler = async () => {
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/order/${id}`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/sale/${id}`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" }
             });
@@ -40,13 +40,13 @@ const Delete = ({ message, id, data }) => {
 */
     const hardDeleteHandler = async () => {
         try {
-            const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/order/${id}`;
+            const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/sale/${id}`;
             const requestOptions = { method: "DELETE" };
             const response = await fetch(apiUrl, requestOptions);
             if (response.ok) {
                 message(`Deleted successfully completed. id: ${id}`);
             } else {
-                throw new Error("Failed to delete order");
+                throw new Error("Failed to delete sale");
             }         
         } catch (error) {
             console.log(error);
@@ -80,7 +80,7 @@ const Delete = ({ message, id, data }) => {
 
                                 <h1 className="text-sm text-center text-gray-600 mt-4">
                                     Are you sure to proceed with the deletion?</h1>
-                                <h1 className="text-center text-gray-600 font-bold">Order No: {orderNo}</h1>
+                                <h1 className="text-center text-gray-600 font-bold">{customerId}</h1>
                             </div>
                             <div className="w-full flex justify-start">
                                 <BtnEn Title="Close" Click={closeDeleteForm} Class="bg-pink-700 hover:bg-pink-900 text-white mr-1" />

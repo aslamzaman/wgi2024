@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { TextEn, BtnSubmit, DropdownEn, TextDt, TextNum } from "@/components/Form";
+import { TextEn, BtnSubmit, DropdownEn, TextNum, TextDt } from "@/components/Form";
 import { GetRemoteData } from "@/lib/utils/GetRemoteData";
 const date_format = dt => new Date(dt).toISOString().split('T')[0];
 
@@ -9,20 +9,27 @@ const Add = ({ message }) => {
     const [dt, setDt] = useState('');
     const [cashtypeId, setCashtypeId] = useState('');
     const [bank, setBank] = useState('');
+    const [chequeNo, setChequeNo] = useState('');
+    const [chequeDt, setChequeDt] = useState('');
     const [taka, setTaka] = useState('');
 
     const [show, setShow] = useState(false);
+
     const [customers, setCustomers] = useState([]);
     const [cashtypes, setCashtypes] = useState([]);
+    const [bankShow, setBankShow] = useState(false);
 
 
 
     const resetVariables = () => {
         setCustomerId('');
         setDt(date_format(new Date()));
-        setCashtypeId('');
-        setBank('');
+        setCashtypeId("65ede62b29c4f0b23474c11f");
+        setBank(' ');
+        setChequeNo(' ');
+        setChequeDt(date_format(new Date()));
         setTaka('');
+        setBankShow(false);
     }
 
 
@@ -37,7 +44,6 @@ const Add = ({ message }) => {
         } catch (error) {
             console.error('Failed to fetch delivery data:', error);
         }
-
     }
 
 
@@ -52,6 +58,8 @@ const Add = ({ message }) => {
             dt: dt,
             cashtypeId: cashtypeId,
             bank: bank,
+            chequeNo: chequeNo,
+            chequeDt: chequeDt,
             taka: taka
         }
     }
@@ -82,6 +90,24 @@ const Add = ({ message }) => {
     }
 
 
+    const cashTypeChangeHandler = (e) => {
+        let event = e.target.value;
+        setCashtypeId(event);
+        if (event === "65ede63629c4f0b23474c123") {
+            setBankShow(true);
+            setBank('');
+            setChequeNo('');
+            setChequeDt(date_format(new Date()));
+
+        } else {
+            setBankShow(false);
+            setBank(' ');
+            setChequeNo(' ');
+            setChequeDt(date_format(new Date()));
+        }
+    }
+
+
     return (
         <>
             {show && (
@@ -98,15 +124,20 @@ const Add = ({ message }) => {
                         <div className="px-6 pb-6 text-black">
                             <form onSubmit={saveHandler}>
                                 <div className="grid grid-cols-1 gap-4 my-4">
+
                                     <DropdownEn Title="Customer" Id="customerId" Change={e => setCustomerId(e.target.value)} Value={customerId}>
                                         {customers.length ? customers.map(customer => <option value={customer._id} key={customer._id}>{customer.name}</option>) : null}
                                     </DropdownEn>
-                                    <TextDt Title="Date" Id="dt" Change={e => setDt(e.target.value)} Value={dt} />
 
-                                    <DropdownEn Title="Cashtype" Id="cashtypeId" Change={e => setCashtypeId(e.target.value)} Value={cashtypeId}>
+                                    <TextDt Title="Date" Id="dt" Change={e => setDt(e.target.value)} Value={dt} />
+                                    <DropdownEn Title="Cash Type" Id="cashtypeId" Change={cashTypeChangeHandler} Value={cashtypeId}>
                                         {cashtypes.length ? cashtypes.map(cashtype => <option value={cashtype._id} key={cashtype._id}>{cashtype.name}</option>) : null}
                                     </DropdownEn>
-                                    <TextEn Title="Bank" Id="bank" Change={e => setBank(e.target.value)} Value={bank} Chr={150} />
+                                    {bankShow ? (<>
+                                        <TextEn Title="Bank" Id="bank" Change={e => setBank(e.target.value)} Value={bank} Chr={50} />
+                                        <TextEn Title="Cheque Number" Id="chequeNo" Change={e => setChequeNo(e.target.value)} Value={chequeNo} Chr={50} />
+                                        <TextDt Title="Cheque Date" Id="chequeDt" Change={e => setChequeDt(e.target.value)} Value={chequeDt} />
+                                    </>) : null}
                                     <TextNum Title="Taka" Id="taka" Change={e => setTaka(e.target.value)} Value={taka} />
                                 </div>
                                 <div className="w-full flex justify-start">

@@ -3,13 +3,13 @@ import { BtnEn } from "@/components/Form";
 
 
 const Delete = ({ message, id, data }) => {
-    const [customerId, setCustomerId] = useState("");   
+    const [invoiceNumber, setInvoiceNumber] = useState("");   
     const [show, setShow] = useState(false);
 
     const showDeleteForm = () => {
         setShow(true);
-        const { customerId } = data.find(payment => payment._id === id) || { customerId: "" };
-        setCustomerId(customerId.name); 
+        const { invoiceNumber } = data.find(invoice => invoice._id === id) || { invoiceNumber: "" };
+        setInvoiceNumber(invoiceNumber); 
     }
 
 
@@ -20,7 +20,7 @@ const Delete = ({ message, id, data }) => {
 /*
     const softDeleteHandler = async () => {
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/payment/${id}`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/invoice/${id}`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" }
             });
@@ -40,13 +40,13 @@ const Delete = ({ message, id, data }) => {
 */
     const hardDeleteHandler = async () => {
         try {
-            const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/payment/${id}`;
+            const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/invoice/${id}`;
             const requestOptions = { method: "DELETE" };
             const response = await fetch(apiUrl, requestOptions);
             if (response.ok) {
                 message(`Deleted successfully completed. id: ${id}`);
             } else {
-                throw new Error("Failed to delete payment");
+                throw new Error("Failed to delete invoice");
             }         
         } catch (error) {
             console.log(error);
@@ -54,7 +54,6 @@ const Delete = ({ message, id, data }) => {
         }
         setShow(false);
     }
-  
 
     return (
         <>
@@ -80,7 +79,7 @@ const Delete = ({ message, id, data }) => {
 
                                 <h1 className="text-sm text-center text-gray-600 mt-4">
                                     Are you sure to proceed with the deletion?</h1>
-                                <h1 className="text-center text-gray-600 font-bold">{customerId}</h1>
+                                <h1 className="text-center text-gray-600 font-bold">{invoiceNumber}</h1>
                             </div>
                             <div className="w-full flex justify-start">
                                 <BtnEn Title="Close" Click={closeDeleteForm} Class="bg-pink-700 hover:bg-pink-900 text-white mr-1" />

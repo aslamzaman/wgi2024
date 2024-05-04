@@ -19,8 +19,8 @@ export const GET = async () => {
 export const POST = async (Request) => {
   try {
     await Connect();
-    const { customerId, dt, cashtypeId, bank, taka } = await Request.json();
-    const payments = await PaymentModel.create({ customerId, dt, cashtypeId, bank, taka });
+    const { customerId, dt, cashtypeId, bank, chequeNo, chequeDt, taka } = await Request.json();
+    const payments = await PaymentModel.create({ customerId, dt, cashtypeId, bank, chequeNo, chequeDt, taka });
     return NextResponse.json(payments);
   } catch (err) {
     console.error(err);

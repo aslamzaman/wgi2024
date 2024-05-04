@@ -1,35 +1,36 @@
 import React, { useState } from "react";
-import { TextEn, BtnSubmit, DropdownEn, TextNum, TextDt } from "@/components/Form";
+import { BtnSubmit, DropdownEn, TextNum, TextDt } from "@/components/Form";
 import { GetRemoteData } from "@/lib/utils/GetRemoteData";
 const date_format = dt => new Date(dt).toISOString().split('T')[0];
 
 
 const Add = ({ message }) => {
     const [customerId, setCustomerId] = useState('');
+    const [shipment, setShipment] = useState('');
+    const [itemId, setItemId] = useState('');
     const [dt, setDt] = useState('');
-    const [cashtypeId, setCashtypeId] = useState('');
-    const [bank, setBank] = useState('');
-    const [chequeNo, setChequeNo] = useState('');
-    const [chequeDt, setChequeDt] = useState('');
-    const [taka, setTaka] = useState('');
+    const [bale, setBale] = useState('');
+    const [than, setThan] = useState('');
+    const [meter, setMeter] = useState('');
+    const [weight, setWeight] = useState('');
+    const [rate, setRate] = useState('');
 
     const [show, setShow] = useState(false);
 
     const [customers, setCustomers] = useState([]);
-    const [cashtypes, setCashtypes] = useState([]);
-    const [bankShow, setBankShow] = useState(false);
-
+    const [items, setItems] = useState([]);
 
 
     const resetVariables = () => {
         setCustomerId('');
+        setShipment('');
+        setItemId('');
         setDt(date_format(new Date()));
-        setCashtypeId("65ede62b29c4f0b23474c11f");
-        setBank(' ');
-        setChequeNo(' ');
-        setChequeDt(date_format(new Date()));
-        setTaka('');
-        setBankShow(false);
+        setBale('');
+        setThan('');
+        setMeter('');
+        setWeight('');
+        setRate('');
     }
 
 
@@ -39,8 +40,8 @@ const Add = ({ message }) => {
         try {
             const responseCustomer = await GetRemoteData('customer');
             setCustomers(responseCustomer);
-            const responseCashtype = await GetRemoteData('cashtype');
-            setCashtypes(responseCashtype);
+            const responseItem = await GetRemoteData('item');
+            setItems(responseItem);
         } catch (error) {
             console.error('Failed to fetch delivery data:', error);
         }
@@ -55,12 +56,14 @@ const Add = ({ message }) => {
     const createObject = () => {
         return {
             customerId: customerId,
+            shipment: shipment,
+            itemId: itemId,
             dt: dt,
-            cashtypeId: cashtypeId,
-            bank: bank,
-            chequeNo: chequeNo,
-            chequeDt: chequeDt,
-            taka: taka
+            bale: bale,
+            than: than,
+            meter: meter,
+            weight: weight,
+            rate: rate
         }
     }
 
@@ -69,7 +72,7 @@ const Add = ({ message }) => {
         e.preventDefault();
         try {
             const newObject = createObject();
-            const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/payment`;
+            const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/sale`;
             const requestOptions = {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -77,35 +80,19 @@ const Add = ({ message }) => {
             };
             const response = await fetch(apiUrl, requestOptions);
             if (response.ok) {
-                message(`Payment is created at ${new Date().toISOString()}`);
+                message(`Sale is created at ${new Date().toISOString()}`);
             } else {
-                throw new Error("Failed to create payment");
+                throw new Error("Failed to create sale");
             }
         } catch (error) {
-            console.error("Error saving payment data:", error);
-            message("Error saving payment data.");
+            console.error("Error saving sale data:", error);
+            message("Error saving sale data.");
         } finally {
             setShow(false);
         }
     }
 
 
-    const cashTypeChangeHandler = (e) => {
-        let event = e.target.value;
-        setCashtypeId(event);
-        if (event === "65ede63629c4f0b23474c123") {
-            setBankShow(true);
-            setBank('');
-            setChequeNo('');
-            setChequeDt(date_format(new Date()));
-
-        } else {
-            setBankShow(false);
-            setBank(' ');
-            setChequeNo(' ');
-            setChequeDt(date_format(new Date()));
-        }
-    }
 
 
     return (
@@ -124,21 +111,19 @@ const Add = ({ message }) => {
                         <div className="px-6 pb-6 text-black">
                             <form onSubmit={saveHandler}>
                                 <div className="grid grid-cols-1 gap-4 my-4">
-
                                     <DropdownEn Title="Customer" Id="customerId" Change={e => setCustomerId(e.target.value)} Value={customerId}>
                                         {customers.length ? customers.map(customer => <option value={customer._id} key={customer._id}>{customer.name}</option>) : null}
                                     </DropdownEn>
-
-                                    <TextDt Title="Date" Id="dt" Change={e => setDt(e.target.value)} Value={dt} />
-                                    <DropdownEn Title="Cash Type" Id="cashtypeId" Change={cashTypeChangeHandler} Value={cashtypeId}>
-                                        {cashtypes.length ? cashtypes.map(cashtype => <option value={cashtype._id} key={cashtype._id}>{cashtype.name}</option>) : null}
+                                    <TextNum Title="Shipment" Id="shipment" Change={e => setShipment(e.target.value)} Value={shipment} />
+                                    <DropdownEn Title="Item" Id="itemId" Change={e => setItemId(e.target.value)} Value={itemId}>
+                                        {items.length ? items.map(item => <option value={item._id} key={item._id}>{item.name}</option>) : null}
                                     </DropdownEn>
-                                    {bankShow ? (<>
-                                        <TextEn Title="Bank" Id="bank" Change={e => setBank(e.target.value)} Value={bank} Chr={50} />
-                                        <TextEn Title="Cheque Number" Id="chequeNo" Change={e => setChequeNo(e.target.value)} Value={chequeNo} Chr={50} />
-                                        <TextDt Title="Cheque Date" Id="chequeDt" Change={e => setChequeDt(e.target.value)} Value={chequeDt} />
-                                    </>) : null}
-                                    <TextNum Title="Taka" Id="taka" Change={e => setTaka(e.target.value)} Value={taka} />
+                                    <TextDt Title="Date" Id="dt" Change={e => setDt(e.target.value)} Value={dt} />
+                                    <TextNum Title="Bale" Id="bale" Change={e => setBale(e.target.value)} Value={bale} />
+                                    <TextNum Title="Than" Id="than" Change={e => setThan(e.target.value)} Value={than} />
+                                    <TextNum Title="Meter" Id="meter" Change={e => setMeter(e.target.value)} Value={meter} />
+                                    <TextNum Title="Weight" Id="weight" Change={e => setWeight(e.target.value)} Value={weight} />
+                                    <TextNum Title="Rate" Id="rate" Change={e => setRate(e.target.value)} Value={rate} />
                                 </div>
                                 <div className="w-full flex justify-start">
                                     <input type="button" onClick={closeAddForm} value="Close" className="bg-pink-600 hover:bg-pink-800 text-white text-center mt-3 mx-0.5 px-4 py-2 font-semibold rounded-md focus:ring-1 ring-blue-200 ring-offset-2 duration-300 cursor-pointer" />
@@ -149,11 +134,9 @@ const Add = ({ message }) => {
                     </div>
                 </div>
             )}
-            <button onClick={showAddForm} title="Payments" className="w-7 h-7 flex justify-center items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
-                    <circle cx="12" cy="12" r="10" strokeWidth="1.5" />
-                    <path d="M12 6V18" strokeWidth="1.5" strokeLinecap="round" />
-                    <path d="M15 9.5C15 8.11929 13.6569 7 12 7C10.3431 7 9 8.11929 9 9.5C9 10.8807 10.3431 12 12 12C13.6569 12 15 13.1193 15 14.5C15 15.8807 13.6569 17 12 17C10.3431 17 9 15.8807 9 14.5" strokeWidth="1.5" strokeLinecap="round" />
+            <button onClick={showAddForm} className="px-1 py-1 bg-blue-500 hover:bg-blue-700 rounded-md transition duration-500" title="Add New">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="3" stroke="currentColor" className="w-7 h-7 stroke-white hover:stroke-gray-100">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                 </svg>
             </button>
         </>

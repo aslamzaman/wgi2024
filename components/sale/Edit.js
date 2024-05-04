@@ -1,25 +1,26 @@
 import React, { useState } from "react";
-import { TextEn, BtnSubmit, DropdownEn, TextNum, TextDt } from "@/components/Form";
+import { BtnSubmit, DropdownEn, TextNum, TextDt } from "@/components/Form";
 import { GetRemoteData } from "@/lib/utils/GetRemoteData";
 const date_format = dt => new Date(dt).toISOString().split('T')[0];
 
 
 
-
 const Edit = ({ message, id, data }) => {
     const [customerId, setCustomerId] = useState('');
+    const [shipment, setShipment] = useState('');
+    const [itemId, setItemId] = useState('');
     const [dt, setDt] = useState('');
-    const [cashtypeId, setCashtypeId] = useState('');
-    const [bank, setBank] = useState('');
-    const [chequeNo, setChequeNo] = useState('');
-    const [chequeDt, setChequeDt] = useState('');
-    const [taka, setTaka] = useState('');
+    const [bale, setBale] = useState('');
+    const [than, setThan] = useState('');
+    const [meter, setMeter] = useState('');
+    const [weight, setWeight] = useState('');
+    const [rate, setRate] = useState('');
     const [show, setShow] = useState(false);
 
 
     const [customers, setCustomers] = useState([]);
-    const [cashtypes, setCashtypes] = useState([]);
-    const [bankShow, setBankShow] = useState(false);
+    const [items, setItems] = useState([]);
+
 
 
     const showEditForm = async () => {
@@ -28,25 +29,24 @@ const Edit = ({ message, id, data }) => {
         try {
             const responseCustomer = await GetRemoteData('customer');
             setCustomers(responseCustomer);
-            const responseCashtype = await GetRemoteData('cashtype');
-            setCashtypes(responseCashtype);
-            const { customerId, dt, cashtypeId, bank, chequeNo, chequeDt, taka } = data.find(payment => payment._id === id) || { customerId: '', dt: '', cashtypeId: '', bank: '', chequeNo: '', chequeDt: '', taka: '' };
+            const responseItem = await GetRemoteData('item');
+            setItems(responseItem);
+
+            const { customerId, shipment, itemId, dt, bale, than, meter, weight, rate } = data.find(sale => sale._id === id) || { customerId: '', shipment: '', itemId: '', dt: '', bale: '', than: '', meter: '', weight: '', rate: '' };
             setCustomerId(customerId._id);
+            setShipment(shipment);
+            setItemId(itemId._id);
             setDt(date_format(dt));
-            setCashtypeId(cashtypeId._id);
-            setBank(bank);
-            setChequeNo(chequeNo);
-            setChequeDt(date_format(chequeDt));
-            setTaka(taka);
-            if (cashtypeId._id === "65ede63629c4f0b23474c123") {
-                setBankShow(true);
-            } else {
-                setBankShow(false);
-            }
+            setBale(bale);
+            setThan(than);
+            setMeter(meter);
+            setWeight(weight);
+            setRate(rate);
 
         } catch (error) {
             console.error('Failed to fetch delivery data:', error);
         }
+
     };
 
 
@@ -58,12 +58,14 @@ const Edit = ({ message, id, data }) => {
     const createObject = () => {
         return {
             customerId: customerId,
+            shipment: shipment,
+            itemId: itemId,
             dt: dt,
-            cashtypeId: cashtypeId,
-            bank: bank,
-            chequeNo: chequeNo,
-            chequeDt: chequeDt,
-            taka: taka
+            bale: bale,
+            than: than,
+            meter: meter,
+            weight: weight,
+            rate: rate
         }
     }
 
@@ -72,7 +74,7 @@ const Edit = ({ message, id, data }) => {
         e.preventDefault();
         try {
             const newObject = createObject();
-            const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/payment/${id}`;
+            const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/sale/${id}`;
             const requestOptions = {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
@@ -82,34 +84,15 @@ const Edit = ({ message, id, data }) => {
             if (response.ok) {
                 message(`Updated successfully completed at ${new Date().toISOString()}`);
             } else {
-                throw new Error("Failed to create payment");
+                throw new Error("Failed to create sale");
             }
         } catch (error) {
-            console.error("Error saving payment data:", error);
-            message("Error saving payment data.");
+            console.error("Error saving sale data:", error);
+            message("Error saving sale data.");
         } finally {
             setShow(false);
         }
     }
-
-
-    const cashTypeChangeHandler = (e) => {
-        let event = e.target.value;
-        setCashtypeId(event);
-        if (event === "65ede63629c4f0b23474c123") {
-            setBankShow(true);
-            setBank('');
-            setChequeNo('');
-            setChequeDt(date_format(new Date()));
-
-        } else {
-            setBankShow(false);
-            setBank(' ');
-            setChequeNo(' ');
-            setChequeDt(date_format(new Date()));
-        }
-    }
-
 
 
     return (
@@ -133,17 +116,16 @@ const Edit = ({ message, id, data }) => {
                                     <DropdownEn Title="Customer" Id="customerId" Change={e => setCustomerId(e.target.value)} Value={customerId}>
                                         {customers.length ? customers.map(customer => <option value={customer._id} key={customer._id}>{customer.name}</option>) : null}
                                     </DropdownEn>
-
-                                    <TextDt Title="Date" Id="dt" Change={e => setDt(e.target.value)} Value={dt} />
-                                    <DropdownEn Title="Cash Type" Id="cashtypeId" Change={cashTypeChangeHandler} Value={cashtypeId}>
-                                        {cashtypes.length ? cashtypes.map(cashtype => <option value={cashtype._id} key={cashtype._id}>{cashtype.name}</option>) : null}
+                                    <TextNum Title="Shipment" Id="shipment" Change={e => setShipment(e.target.value)} Value={shipment} />
+                                    <DropdownEn Title="Item" Id="itemId" Change={e => setItemId(e.target.value)} Value={itemId}>
+                                        {items.length ? items.map(item => <option value={item._id} key={item._id}>{item.name}</option>) : null}
                                     </DropdownEn>
-                                    {bankShow ? (<>
-                                        <TextEn Title="Bank" Id="bank" Change={e => setBank(e.target.value)} Value={bank} Chr={50} />
-                                        <TextEn Title="Cheque Number" Id="chequeNo" Change={e => setChequeNo(e.target.value)} Value={chequeNo} Chr={50} />
-                                        <TextDt Title="Cheque Date" Id="chequeDt" Change={e => setChequeDt(e.target.value)} Value={chequeDt} />
-                                    </>) : null}
-                                    <TextNum Title="Taka" Id="taka" Change={e => setTaka(e.target.value)} Value={taka} />
+                                    <TextDt Title="Date" Id="dt" Change={e => setDt(e.target.value)} Value={dt} />
+                                    <TextNum Title="Bale" Id="bale" Change={e => setBale(e.target.value)} Value={bale} />
+                                    <TextNum Title="Than" Id="than" Change={e => setThan(e.target.value)} Value={than} />
+                                    <TextNum Title="Meter" Id="meter" Change={e => setMeter(e.target.value)} Value={meter} />
+                                    <TextNum Title="Weight" Id="weight" Change={e => setWeight(e.target.value)} Value={weight} />
+                                    <TextNum Title="Rate" Id="rate" Change={e => setRate(e.target.value)} Value={rate} />
                                 </div>
                                 <div className="w-full flex justify-start">
                                     <input type="button" onClick={closeEditForm} value="Close" className="bg-pink-600 hover:bg-pink-800 text-white text-center mt-3 mx-0.5 px-4 py-2 font-semibold rounded-md focus:ring-1 ring-blue-200 ring-offset-2 duration-300 cursor-pointer" />
