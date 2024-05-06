@@ -135,7 +135,8 @@ const Invoice = () => {
             
             doc.setFont("Poppins-Regular", "normal");
             if (gt > 0) {
-                doc.text(`INWORD: ${inword(gt).toUpperCase()}ONLY.`, 20, y + 22, null, null, "left");
+                const tkString = parseInt(gt).toString();
+                doc.text(`INWORD: ${inword(tkString).toUpperCase()}ONLY.`, 20, y + 22, null, null, "left");
             }
 
             doc.setFontSize(8);
