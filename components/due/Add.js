@@ -4,7 +4,7 @@ import { GetRemoteData } from "@/lib/utils/GetRemoteData";
 const date_format = dt => new Date(dt).toISOString().split('T')[0];
 
 
-const Add = ({ message }) => {
+const Add = ({ message, id }) => {
     const [customerId, setCustomerId] = useState('');
     const [dt, setDt] = useState('');
     const [cashtypeId, setCashtypeId] = useState('');
@@ -41,6 +41,8 @@ const Add = ({ message }) => {
             setCustomers(responseCustomer);
             const responseCashtype = await GetRemoteData('cashtype');
             setCashtypes(responseCashtype);
+            //console.log(id);
+            setCustomerId(id);
         } catch (error) {
             console.error('Failed to fetch delivery data:', error);
         }
