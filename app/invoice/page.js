@@ -152,12 +152,7 @@ const Invoice = () => {
             doc.line(132, 95, 132, y - 3.5); // Vertical Line
             doc.line(150, 95, 150, y - 3.5); // Vertical Line
             doc.line(168, 95, 168, y - 3.5); // Vertical Line
-            /*
-            doc.line(94, 99.5, 94, y + 19); // Vertical Line
-            doc.line(117, 99.5, 117, y + 19); // Vertical Line
-            doc.line(140, 99.5, 140, y + 19); // Vertical Line
 
-*/
             doc.save(`WGI_Invoice_${invoice.invoiceNo}_Created_${date_format(invoice.dt)}.pdf`);
             setWaitMsg('');
         }, 0);

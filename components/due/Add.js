@@ -15,7 +15,6 @@ const Add = ({ message, id }) => {
 
     const [show, setShow] = useState(false);
 
-    const [customers, setCustomers] = useState([]);
     const [cashtypes, setCashtypes] = useState([]);
     const [bankShow, setBankShow] = useState(false);
 
@@ -37,8 +36,6 @@ const Add = ({ message, id }) => {
         setShow(true);
         resetVariables();
         try {
-            const responseCustomer = await GetRemoteData('customer');
-            setCustomers(responseCustomer);
             const responseCashtype = await GetRemoteData('cashtype');
             setCashtypes(responseCashtype);
             //console.log(id);

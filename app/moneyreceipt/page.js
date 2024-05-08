@@ -79,7 +79,8 @@ const Moneyreceipt = () => {
             doc.text(`${date_format(receipt.dt)}`, 165, 70, null, null, "left");
             doc.text(`${receipt.receiveNo}`, 45, 70, null, null, "left");
             doc.text(`${receipt.receivedFrom}`, 130, 79, null, null, "center");
-            doc.text(`${(inword(receipt.taka)).toUpperCase()}TAKA ONLY`, 105, 89, null, null, "center");
+            const takaString = parseInt(receipt.taka).toString();
+            doc.text(`${inword(takaString).toUpperCase()}TAKA ONLY`, 105, 89, null, null, "center");
             doc.text(`${receipt.purpose}`, 95, 119, null, null, "center");
             doc.text(`${receipt.contact}`, 172, 119, null, null, "center");
             doc.text(`${parseInt(receipt.taka).toLocaleString('en-IN')}/-`, 70, 131, null, null, "right");
