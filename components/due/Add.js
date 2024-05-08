@@ -126,11 +126,6 @@ const Add = ({ message, id }) => {
                         <div className="px-6 pb-6 text-black">
                             <form onSubmit={saveHandler}>
                                 <div className="grid grid-cols-1 gap-4 my-4">
-
-                                    <DropdownEn Title="Customer" Id="customerId" Change={e => setCustomerId(e.target.value)} Value={customerId}>
-                                        {customers.length ? customers.map(customer => <option value={customer._id} key={customer._id}>{customer.name}</option>) : null}
-                                    </DropdownEn>
-
                                     <TextDt Title="Date" Id="dt" Change={e => setDt(e.target.value)} Value={dt} />
                                     <DropdownEn Title="Cash Type" Id="cashtypeId" Change={cashTypeChangeHandler} Value={cashtypeId}>
                                         {cashtypes.length ? cashtypes.map(cashtype => <option value={cashtype._id} key={cashtype._id}>{cashtype.name}</option>) : null}
