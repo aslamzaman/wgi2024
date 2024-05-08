@@ -18,7 +18,12 @@ const Customer = () => {
     const [msg, setMsg] = useState("Data ready");
     const [waitMsg, setWaitMsg] = useState("");
 
+    const [dt1, setDt1] = useState("");
+    const [dt2, setDt2] = useState("");
 
+    const [sales, setSales] = useState([]);
+    const [newDues, setNewDues] = useState([]);
+    const [totalDue, setTotalDue] = useState('0');
 
     useEffect(() => {
         const loadData = async () => {
@@ -32,7 +37,7 @@ const Customer = () => {
                 ]);
 
                 //    console.log(customers, sales, payments);
-
+                setSales(sales);
 
                 const result = customers.map(customer => {
                     const matchingSale = sales.filter(sale => sale.customerId._id === customer._id);
@@ -52,16 +57,25 @@ const Customer = () => {
                     };
                 });
                 const sortResult = result.sort((a, b) => parseInt(a.balance) < parseInt(b.balance) ? 1 : -1);
-                console.log(sortResult);
+              //  console.log(sortResult);
                 setCustomers(sortResult);
-
                 setWaitMsg('');
+
+                //---------------------------------------------------
+
+                setNewDues(sortResult);
+                const total = sortResult.reduce((t, c) => t + parseFloat(c.balance), 0);
+                setTotalDue(total);
+
+
             } catch (error) {
                 console.error("Error fetching data:", error);
                 setMsg("Failed to fetch data");
             }
         };
         loadData();
+        setDt1('2024-05-01');
+        setDt2(date_format(new Date()));
     }, [msg]);
 
 
@@ -73,13 +87,13 @@ const Customer = () => {
 
 
     const printHandler = (id) => {
-       // console.log(customers, id)
+        // console.log(customers, id)
 
         setWaitMsg('Please Wait...');
         setTimeout(() => {
             const customer = customers.find(customer => customer._id === id);
 
-           // console.log(customer);
+            // console.log(customer);
 
             const doc = new jsPDF({
                 orientation: "p",
@@ -173,7 +187,7 @@ const Customer = () => {
             doc.line(12, n + 10, 198, n + 10);
             doc.setFont("Poppins-Bold", "bold");
             doc.text(`Total Payable: (${gt} - ${paymentTotal}) = `, 14, n + 14, null, null, "left");
-            
+
             doc.text(`${numberWithComma(parseFloat(customer.balance))}`, 196, n + 14, null, null, "right");
             doc.line(12, n + 16, 198, n + 16);
 
@@ -234,15 +248,50 @@ const Customer = () => {
     }
 
 
+
+    const searchClickHandler = () => {
+        const d1 = new Date(dt1);
+        const d2 = new Date(dt2);
+
+        // search customer in date ranges
+        const searchSale = sales.filter(sale => {
+            const dataDate = new Date(sale.dt);
+            return dataDate >= d1 && dataDate <= d2;
+        })
+
+        const result = newDues.filter(due => searchSale.some(sale => sale.customerId._id === due._id));
+       // console.log(result);
+        setCustomers(result);
+        const total = result.reduce((t, c) => t + parseFloat(c.balance), 0);
+        setTotalDue(total);
+
+    }
+
+    const refreshClickHandler = () => {
+        setCustomers(newDues);
+        const total = newDues.reduce((t, c) => t + parseFloat(c.balance), 0);
+        setTotalDue(total);
+    }
+
+
+
     return (
         <>
             <div className="w-full mb-3 mt-8">
                 <h1 className="w-full text-xl lg:text-3xl font-bold text-center text-blue-700">Customer Dues</h1>
+                <h1 className="w-full text-xl lg:text-2xl font-bold text-center text-gray-400">Total = {numberWithComma(parseFloat(totalDue))}/-</h1>
                 <p className="w-full text-center text-blue-300">&nbsp;{waitMsg}&nbsp;</p>
             </div>
 
             <div className="px-4 lg:px-6 overflow-auto">
                 <p className="w-full text-sm text-red-700">{msg}</p>
+                <div className="flex justify-end items-center space-x-2 mb-2">
+                    <input onChange={e => setDt1(e.target.value)} value={dt1} type="date" id='dt1' name="dt1" required className="w-[155px] px-4 py-1.5 text-gray-600 ring-1 focus:ring-4 ring-blue-300 outline-none rounded duration-300" />
+                    <span>To</span>
+                    <input onChange={e => setDt2(e.target.value)} value={dt2} type="date" id='dt2' name="dt2" required className="w-[155px] px-4 py-1.5 text-gray-600 ring-1 focus:ring-4 ring-blue-300 outline-none rounded duration-300" />
+                    <button onClick={searchClickHandler} className="text-center mx-0.5 px-4 py-2 bg-green-600 hover:bg-green-800 text-white font-semibold rounded-md focus:ring-1 ring-blue-200 ring-offset-2 duration-300  cursor-pointer">Search</button>
+                    <button onClick={refreshClickHandler} className="text-center mx-0.5 px-4 py-2 bg-violet-600 hover:bg-violet-800 text-white font-semibold rounded-md focus:ring-1 ring-blue-200 ring-offset-2 duration-300  cursor-pointer">Refresh</button>
+                </div>
                 <table className="w-full border border-gray-200">
                     <thead>
                         <tr className="w-full bg-gray-200">
