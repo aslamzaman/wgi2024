@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { TextEn, BtnSubmit, DropdownEn, TextDt, TextNum } from "@/components/Form";
 import { GetRemoteData } from "@/lib/utils/GetRemoteData";
 import Borrower from "@/app/borrower/page";
+import { numberWithComma } from "@/lib/NumberWithComma";
 const date_format = dt => new Date(dt).toISOString().split('T')[0];
 
 
@@ -76,7 +77,7 @@ const Detail = ({ message, id, data }) => {
         <>
             {show && (
                 <div className="fixed inset-0 py-16 bg-black bg-opacity-30 backdrop-blur-sm z-10 overflow-auto">
-                    <div className="w-11/12 md:w-3/4 mx-auto mb-10 bg-white border-2 border-gray-300 rounded-md shadow-md duration-300">
+                    <div className="w-11/12 mx-auto mb-10 bg-white border-2 border-gray-300 rounded-md shadow-md duration-300">
                         <div className="px-6 md:px-6 py-2 flex justify-between items-center border-b border-gray-300">
                             <h1 className="text-xl font-bold text-blue-600">Outstanding Reposts</h1>
                             <button onClick={closeDetailForm} className="w-8 h-8 p-0.5 bg-gray-50 hover:bg-gray-300 rounded-md transition duration-500">
@@ -98,7 +99,7 @@ const Detail = ({ message, id, data }) => {
                                                 <tr className="w-full bg-gray-200">
                                                     <th className="text-center border-b border-gray-200 px-4 py-2">SL</th>
                                                     <th className="text-center border-b border-gray-200 px-4 py-2">Date</th>
-                                                    <th className="text-center border-b border-gray-200 px-4 py-2">Taka</th>
+                                                    <th className="text-end border-b border-gray-200 px-4 py-2">Taka</th>
                                                     <th className="text-center border-b border-gray-200 px-4 py-2">Remarks</th>
                                                 </tr>
                                             </thead>
@@ -109,7 +110,7 @@ const Detail = ({ message, id, data }) => {
                                                             <tr className="border-b border-gray-200 hover:bg-gray-100" key={loan._id}>
                                                                 <td className="text-center py-2 px-4">{i + 1}</td>
                                                                 <td className="text-center py-2 px-4">{date_format(loan.dt)}</td>
-                                                                <td className="text-center py-2 px-4">{loan.taka}</td>
+                                                                <td className="text-end py-2 px-4">{numberWithComma(parseFloat(loan.taka))}/-</td>
                                                                 <td className="text-center py-2 px-4">{loan.remarks}</td>
                                                             </tr>
                                                         )
@@ -117,9 +118,8 @@ const Detail = ({ message, id, data }) => {
                                                         : null
                                                 }
                                                 <tr className="font-bold border-b border-gray-200 hover:bg-gray-100">
-                                                    <td className="text-center py-2 px-4"></td>
-                                                    <td className="text-center py-2 px-4">Total</td>
-                                                    <td className="text-center py-2 px-4">{borrower.totalLoan}</td>
+                                                    <td colSpan="2" className="text-start py-2 px-4">Total</td>
+                                                    <td className="text-end py-2 px-4">{numberWithComma(parseFloat(borrower.totalLoan))}/-</td>
                                                     <td className="text-center py-2 px-4"></td>
                                                 </tr>
                                             </tbody>
@@ -134,7 +134,7 @@ const Detail = ({ message, id, data }) => {
                                                 <tr className="w-full bg-gray-200">
                                                     <th className="text-center border-b border-gray-200 px-4 py-2">SL</th>
                                                     <th className="text-center border-b border-gray-200 px-4 py-2">Date</th>
-                                                    <th className="text-center border-b border-gray-200 px-4 py-2">Taka</th>
+                                                    <th className="text-end border-b border-gray-200 px-4 py-2">Taka</th>
                                                     <th className="text-center border-b border-gray-200 px-4 py-2">Remarks</th>
                                                 </tr>
                                             </thead>
@@ -145,7 +145,7 @@ const Detail = ({ message, id, data }) => {
                                                             <tr className="border-b border-gray-200 hover:bg-gray-100" key={payment._id}>
                                                                 <td className="text-center py-2 px-4">{i + 1}</td>
                                                                 <td className="text-center py-2 px-4">{date_format(payment.dt)}</td>
-                                                                <td className="text-center py-2 px-4">{payment.taka}</td>
+                                                                <td className="text-end py-2 px-4">{numberWithComma(parseFloat(payment.taka))}/-</td>
                                                                 <td className="text-center py-2 px-4">{payment.remarks}</td>
                                                             </tr>
                                                         )
@@ -153,16 +153,20 @@ const Detail = ({ message, id, data }) => {
                                                         : null
                                                 }
                                                 <tr className="font-bold border-b border-gray-200 hover:bg-gray-100">
-                                                    <td className="text-center py-2 px-4"></td>
-                                                    <td className="text-center py-2 px-4">Total</td>
-                                                    <td className="text-center py-2 px-4">{borrower.totalPayment}</td>
+                                                    <td colSpan="2" className="text-start py-2 px-4">Total</td>
+                                                    <td className="text-end py-2 px-4">{numberWithComma(parseFloat(borrower.totalPayment))}/-</td>
                                                     <td className="text-center py-2 px-4"></td>
                                                 </tr>
                                             </tbody>
                                         </table>
                                     </div>
-                                </div>
+                                </div>                               
                             </div>
+
+                            <div className="w-full border-2 mt-4 p-4 shadow-md rounded-md">
+                                    <h1 className="font-bold text-blue-600">Balance/Outstanding: ({numberWithComma(parseFloat(borrower.totalLoan))}-{numberWithComma(parseFloat(borrower.totalPayment))}) = {numberWithComma(parseFloat(borrower.balance))}/-</h1>
+                                </div> 
+
                         </div>
 
 

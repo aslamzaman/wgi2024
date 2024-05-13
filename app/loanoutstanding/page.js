@@ -3,12 +3,16 @@ import React, { useState, useEffect } from "react";
 import Payment from "@/components/loanoutstanding/Payment";
 import Detail from "@/components/loanoutstanding/Detail";
 import { GetRemoteData } from "@/lib/utils/GetRemoteData";
+import { numberWithComma } from "@/lib/NumberWithComma";
 
 
 const Borrower = () => {
     const [borrowers, setBorrowers] = useState([]);
     const [msg, setMsg] = useState("Data ready");
     const [waitMsg, setWaitMsg] = useState("");
+    const [totalOutstanding, setTotalOutstanding] = useState('0');
+
+
 
 
     useEffect(() => {
@@ -41,6 +45,9 @@ const Borrower = () => {
                 const sortBorrower = borrowerFilter.sort((a, b) => a.name.toUpperCase() < b.name.toUpperCase() ? -1 : 1);
                 console.log(sortBorrower);
                 setBorrowers(sortBorrower);
+                const OutstandingTaka = sortBorrower.reduce((t,c)=>t + parseFloat(c.balance),0);
+                setTotalOutstanding(OutstandingTaka); 
+                //-------------------------------------------------------------------------
                 setWaitMsg('');
             } catch (error) {
                 console.error("Error fetching data:", error);
@@ -58,7 +65,7 @@ const Borrower = () => {
     return (
         <>
             <div className="w-full mb-3 mt-8">
-                <h1 className="w-full text-xl lg:text-3xl font-bold text-center text-blue-700">Borrower Loan Outstanding</h1>
+                <h1 className="w-full text-xl lg:text-3xl font-bold text-center text-blue-700">Total Outstanding: {numberWithComma(parseFloat(totalOutstanding))}/-</h1>
                 <p className="w-full text-center text-blue-300">&nbsp;{waitMsg}&nbsp;</p>
             </div>
             <div className="px-4 lg:px-6">
@@ -83,7 +90,7 @@ const Borrower = () => {
                                     <tr className="border-b border-gray-200 hover:bg-gray-100" key={borrower._id}>
                                         <td className="text-center py-2 px-4">{borrower.name}</td>
                                         <td className="text-center py-2 px-4">{borrower.contact}</td>
-                                        <td className="text-center py-2 px-4">{borrower.balance}</td>
+                                        <td className="text-center py-2 px-4">{numberWithComma(parseFloat(borrower.balance))}</td>
                                         <td className="h-8 flex justify-end items-center space-x-1 mt-1 mr-2">
                                             <Payment message={messageHandler} id={borrower._id} />
                                             <Detail message={messageHandler} id={borrower._id} data={borrowers} />

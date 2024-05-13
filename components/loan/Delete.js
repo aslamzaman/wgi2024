@@ -9,7 +9,7 @@ const Delete = ({ message, id, data }) => {
     const showDeleteForm = () => {
         setShow(true);
         const { borrowerId } = data.find(loan => loan._id === id) || { borrowerId: "" };
-        setBorrowerId(borrowerId); 
+        setBorrowerId(borrowerId.name); 
     }
 
 
@@ -17,7 +17,7 @@ const Delete = ({ message, id, data }) => {
         setShow(false);           
     }
 
-
+/*
     const softDeleteHandler = async () => {
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/loan/${id}`, {
@@ -37,7 +37,7 @@ const Delete = ({ message, id, data }) => {
         }
     }
 
-/*
+*/
     const hardDeleteHandler = async () => {
         try {
             const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/loan/${id}`;
@@ -54,7 +54,7 @@ const Delete = ({ message, id, data }) => {
         }
         setShow(false);
     }
-*/   
+  
 
     return (
         <>
@@ -84,7 +84,7 @@ const Delete = ({ message, id, data }) => {
                             </div>
                             <div className="w-full flex justify-start">
                                 <BtnEn Title="Close" Click={closeDeleteForm} Class="bg-pink-700 hover:bg-pink-900 text-white mr-1" />
-                                <BtnEn Title="Yes Delete" Click={softDeleteHandler} Class="bg-blue-600 hover:bg-blue-800 text-white" />
+                                <BtnEn Title="Yes Delete" Click={hardDeleteHandler} Class="bg-blue-600 hover:bg-blue-800 text-white" />
                             </div>
                         </div>
                     </div>
