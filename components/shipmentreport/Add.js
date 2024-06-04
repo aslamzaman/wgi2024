@@ -7,6 +7,7 @@ import { numberWithComma } from "@/lib/NumberWithComma";
 const Add = ({ message, sales, saleSummery, shipment }) => {
     const [show, setShow] = useState(false);
     const [searchSales, setSearchSales] = useState([]);
+    const [saleDatas, setSaleDatas] = useState([]);
   
     //-----------------------------------------------------
 
@@ -14,10 +15,10 @@ const Add = ({ message, sales, saleSummery, shipment }) => {
         setShow(true);
         try {
             console.log(sales, saleSummery, shipment)
-            const data = sales.filter(sale => sale.shipment === shipment);
+            const data = sales.filter(sale => parseInt(sale.shipment) === parseInt(shipment));
             const summery = saleSummery.find(summery => summery.shipment === shipment);
             console.log({ "sales": sales, "data": data, "summery": summery });
-            setSearchSales(data);
+            setSaleDatas(data);
             setSearchSales(summery);
         } catch (error) {
             console.error('Failed to fetch delivery data:', error);
@@ -57,8 +58,8 @@ const Add = ({ message, sales, saleSummery, shipment }) => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {sales.length ? (
-                                        sales.map((sale, i) => (
+                                    {saleDatas.length ? (
+                                        saleDatas.map((sale, i) => (
                                             <tr className={`border-b border-gray-200 hover:bg-gray-100`} key={sale._id}>
                                                 <td className="text-start py-2 px-4">{(i + 1)}</td>
                                                 <td className="text-start py-2 px-4">{date_format(sale.dt)}</td>

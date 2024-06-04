@@ -279,27 +279,21 @@ const Shipmentreport = () => {
                 <table className="w-full border border-gray-200">
                     <thead>
                         <tr className="w-full bg-gray-200">
-                            <th className="text-start border-b border-gray-200 px-4 py-2">Date</th>
-                            <th className="text-start border-b border-gray-200 px-4 py-2">Name</th>
+                            <th className="text-center border-b border-gray-200 px-4 py-2">SL</th>
                             <th className="text-center border-b border-gray-200 px-4 py-2">Shipment</th>
                             <th className="text-center border-b border-gray-200 px-4 py-2">Bale</th>
                             <th className="text-center border-b border-gray-200 px-4 py-2">Thaan</th>
                             <th className="text-center border-b border-gray-200 px-4 py-2">Meter</th>
                             <th className="text-center border-b border-gray-200 px-4 py-2">weight</th>
                             <th className="text-center border-b border-gray-200 px-4 py-2">Taka(Wgt)</th>
-                            <th>Details</th>
+                            <th className="text-end border-b border-gray-200 px-4 py-2">Details</th>
                         </tr>
                     </thead>
                     <tbody>
                         {saleSummery.length ? (
-                            saleSummery.map(customer => (
+                            saleSummery.map((customer,i) => (
                                 <tr className={`border-b border-gray-200 hover:bg-gray-100 ${customer.isDues ? 'text-black' : 'text-blue-500'}`} key={customer.shipment}>
-
-                  
-
-
-                                    <td className="text-start py-2 px-4">{date_format(customer.saleDate)}</td>
-                                    <td className="text-start py-2 px-4">{customer.customerName}</td>
+                                    <td className="text-center py-2 px-4">{i+1}</td>
                                     <td className="text-center py-2 px-4">{customer.shipment}</td>
                                     <td className="text-center py-2 px-4">{numberWithComma(customer.totalBale)}</td>
                                     <td className="text-center py-2 px-4">{numberWithComma(customer.totalThan)}</td>
