@@ -4,7 +4,7 @@ import { GetRemoteData } from "@/lib/utils/GetRemoteData";
 const date_format = dt => new Date(dt).toISOString().split('T')[0];
 import { numberWithComma } from "@/lib/NumberWithComma";
 
-const Add = ({ message, sales, saleSummery, shipment }) => {
+const Add = ({ sales, saleSummery, shipment }) => {
     const [show, setShow] = useState(false);
     const [searchSales, setSearchSales] = useState([]);
     const [saleDatas, setSaleDatas] = useState([]);
