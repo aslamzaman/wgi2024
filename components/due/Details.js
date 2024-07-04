@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 const date_format = dt => new Date(dt).toISOString().split('T')[0];
-import { numberWithComma } from "@/lib/NumberWithComma";
+import { numberWithCommaWithTwoDigit } from "@/lib/NumberWithComma";
 
 
 
@@ -97,11 +97,12 @@ const Details = ({ message, id, data }) => {
                                                 <th className="text-start border-b border-gray-200 px-4 py-2">SL</th>
                                                 <th className="text-start border-b border-gray-200 px-4 py-2">Date</th>
                                                 <th className="text-center border-b border-gray-200 px-4 py-2">Shipment</th>
-                                                <th className="text-center border-b border-gray-200 px-4 py-2">Bale</th>
-                                                <th className="text-center border-b border-gray-200 px-4 py-2">Meter</th>
-                                                <th className="text-center border-b border-gray-200 px-4 py-2">Thaan</th>
-                                                <th className="text-center border-b border-gray-200 px-4 py-2">weight</th>
-                                                <th className="text-end border-b border-gray-200 px-4 py-2">Amount(wgt.)</th>
+                                                <th className="text-end border-b border-gray-200 px-4 py-2">Bale</th>
+                                                <th className="text-end border-b border-gray-200 px-4 py-2">Meter</th>
+                                                <th className="text-end border-b border-gray-200 px-4 py-2">Than</th>
+                                                <th className="text-end border-b border-gray-200 px-4 py-2">Weight</th>
+                                                <th className="text-end border-b border-gray-200 px-4 py-2">Rate</th>
+                                                <th className="text-end border-b border-gray-200 px-4 py-2">Amount(Taka)</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -111,11 +112,12 @@ const Details = ({ message, id, data }) => {
                                                         <td className="text-start py-2 px-4">{i + 1}</td>
                                                         <td className="text-start py-2 px-4">{date_format(sale.dt)}</td>
                                                         <td className="text-center py-2 px-4">{sale.shipment}</td>
-                                                        <td className="text-center py-2 px-4">{sale.bale}</td>
-                                                        <td className="text-center py-2 px-4">{sale.meter}</td>
-                                                        <td className="text-center py-2 px-4">{sale.than}</td>
-                                                        <td className="text-center py-2 px-4">{sale.weight}</td>
-                                                        <td className="text-end py-2 px-4">{numberWithComma(parseFloat(sale.weight) * parseFloat(sale.rate))}</td>
+                                                        <td className="text-end py-2 px-4">{numberWithCommaWithTwoDigit(sale.bale)}</td>
+                                                        <td className="text-end py-2 px-4">{numberWithCommaWithTwoDigit(sale.meter)}</td>
+                                                        <td className="text-end py-2 px-4">{numberWithCommaWithTwoDigit(sale.than)}</td>
+                                                        <td className="text-end py-2 px-4">{numberWithCommaWithTwoDigit(sale.weight)}</td>
+                                                        <td className="text-end py-2 px-4">{numberWithCommaWithTwoDigit(sale.rate)}</td>
+                                                        <td className="text-end py-2 px-4">{numberWithCommaWithTwoDigit(parseFloat(sale.weight) * parseFloat(sale.rate))}</td>
                                                     </tr>
                                                 ))
                                             ) : (
@@ -129,11 +131,12 @@ const Details = ({ message, id, data }) => {
                                                 <td className="text-start py-2 px-4"></td>
                                                 <td className="text-start py-2 px-4">Total</td>
                                                 <td className="text-center py-2 px-4"></td>
-                                                <td className="text-center py-2 px-4">{totalBale}</td>
-                                                <td className="text-center py-2 px-4">{totalMeter}</td>
-                                                <td className="text-center py-2 px-4">{totalThaan}</td>
-                                                <td className="text-center py-2 px-4">{totalWight}</td>
-                                                <td className="text-end py-2 px-4">{totalAmount}</td>
+                                                <td className="text-end py-2 px-4">{numberWithCommaWithTwoDigit(totalBale)}</td>
+                                                <td className="text-end py-2 px-4">{numberWithCommaWithTwoDigit(totalMeter)}</td>
+                                                <td className="text-end py-2 px-4">{numberWithCommaWithTwoDigit(totalThaan)}</td>
+                                                <td className="text-end py-2 px-4">{numberWithCommaWithTwoDigit(totalWight)}</td>
+                                                <td className="text-end py-2 px-4"></td>
+                                                <td className="text-end py-2 px-4">{numberWithCommaWithTwoDigit(totalAmount)}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -150,7 +153,7 @@ const Details = ({ message, id, data }) => {
                                                 <th className="text-start border-b border-gray-200 px-4 py-2">SL</th>
                                                 <th className="text-start border-b border-gray-200 px-4 py-2">Date</th>
                                                 <th className="text-center border-b border-gray-200 px-4 py-2">Cash Type</th>
-                                                <th className="text-end border-b border-gray-200 px-4 py-2">Amount</th>
+                                                <th className="text-end border-b border-gray-200 px-4 py-2">Amount(Taka)</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -160,7 +163,7 @@ const Details = ({ message, id, data }) => {
                                                         <td className="text-start py-2 px-4">{i + 1}</td>
                                                         <td className="text-start py-2 px-4">{date_format(payment.dt)}</td>
                                                         <td className="text-center py-2 px-4">{payment.cashtypeId.name}</td>
-                                                        <td className="text-end py-2 px-4">{numberWithComma(parseFloat(payment.taka))}</td>
+                                                        <td className="text-end py-2 px-4">{parseFloat(payment.taka).toFixed(2)}</td>
                                                     </tr>
                                                 ))
                                             ) : (
@@ -174,7 +177,7 @@ const Details = ({ message, id, data }) => {
                                                 <td className="text-start py-2 px-4"></td>
                                                 <td className="text-start py-2 px-4">Total</td>
                                                 <td className="text-center py-2 px-4"></td>
-                                                <td className="text-end py-2 px-4">{numberWithComma(parseFloat(totalTaka))}</td>
+                                                <td className="text-end py-2 px-4">{numberWithCommaWithTwoDigit(totalTaka)}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -194,8 +197,8 @@ const Details = ({ message, id, data }) => {
                                         <tbody>
 
                                             <tr className={`border-b border-gray-200 hover:bg-gray-100 font-bold`}>
-                                                <td className="text-start py-2 px-4">Total Payable: ({totalAmount} - {totalTaka}) = </td>
-                                                <td className="text-end py-2 px-4">{numberWithComma(parseFloat(customers.balance))}</td>
+                                                <td className="text-start py-2 px-4">Total Payable: ({numberWithCommaWithTwoDigit(totalAmount)} - {numberWithCommaWithTwoDigit(totalTaka)}) = </td>
+                                                <td className="text-end py-2 px-4">{numberWithCommaWithTwoDigit(customers.balance)}</td>
                                             </tr>
                                         </tbody>
                                     </table>
