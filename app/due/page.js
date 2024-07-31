@@ -130,7 +130,7 @@ const Customer = () => {
                 let subTotal = parseFloat(sale[i].weight) * parseFloat(sale[i].rate);
                 doc.text(`${formatedDateDot(sale[i].dt)}`, 25, y, null, null, "center");
                 doc.text(`${sale[i].shipment}`, 50, y, null, null, "center");
-                doc.text(`${sale[i].bale}bale;${sale[i].meter}mtr.`, 89, y, null, null, "center");
+                doc.text(`${sale[i].bale} Bale;${sale[i].meter} Mtr.`, 89, y, null, null, "center");
                 doc.text(`${numberWithCommaWithTwoDigit(sale[i].weight)} @ ${numberWithCommaWithTwoDigit(sale[i].rate)}`, 146, y, null, null, "center");
                 doc.text(`${numberWithCommaWithTwoDigit(subTotal)}`, 196, y, null, null, "right");
                 gt = gt + subTotal;
