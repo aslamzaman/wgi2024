@@ -4,6 +4,8 @@ import Add from "@/components/sale/Add";
 import Edit from "@/components/sale/Edit";
 import Delete from "@/components/sale/Delete";
 import { numberWithComma } from "@/lib/NumberWithComma";
+import { DropdownEn } from "@/components/Form";
+import { sortArray } from "@/lib/utils";
 const date_format = dt => new Date(dt).toISOString().split('T')[0];
 
 
@@ -16,6 +18,9 @@ const Sale = () => {
 
     const [newSales, setNewSales] = useState([]);
     const [totalSale, setTotalSale] = useState('0');
+
+    const [searchDropdownData, setSearchDropdownData] = useState([]);
+    const [searchDropdown, setSearchDropdown] = useState("");
 
 
     useEffect(() => {
@@ -30,14 +35,26 @@ const Sale = () => {
                     throw new Error("Failed to fetch data");
                 }
                 const data = await response.json();
-                // console.log(data);               
+                // console.log(data);
                 setSales(data);
                 setWaitMsg('');
 
                 //---------------------------------------------------
                 setNewSales(data)
-                const total = data.reduce((t,c)=>t+ (parseFloat(c.weight) * parseFloat(c.rate)),0);
+                const total = data.reduce((t, c) => t + (parseFloat(c.weight) * parseFloat(c.rate)), 0);
                 setTotalSale(total);
+
+                //--------- For searcing data by customer for dropdown  -------------------
+                const normailzeData = data.map(d => {
+                    return {
+                        ...d,
+                        customer: d.customerId.name
+                    }
+                })
+
+                const sortByCustomer = normailzeData.sort((a, b) => sortArray(a.customer, b.customer));
+                // console.log(sortByCustomer);
+                setSearchDropdownData(sortByCustomer);
 
             } catch (error) {
                 console.error("Error fetching data:", error);
@@ -54,23 +71,33 @@ const Sale = () => {
     }
 
     const searchClickHandler = () => {
+        /*
         const d1 = new Date(dt1);
         const d2 = new Date(dt2);
-      //  console.log("dfsdf", newSales);
+        //  console.log("dfsdf", newSales);
         const searchSale = newSales.filter(sale => {
             const dataDate = new Date(sale.dt);
             return dataDate >= d1 && dataDate <= d2;
         })
-      //  console.log(searchSale);
+        //  console.log(searchSale);
         setSales(searchSale);
-        const total = searchSale.reduce((t,c)=>t+ (parseFloat(c.weight) * parseFloat(c.rate)),0);
+        const total = searchSale.reduce((t, c) => t + (parseFloat(c.weight) * parseFloat(c.rate)), 0);
         setTotalSale(total);
+        */
+        if (searchDropdown === "") return;
+        const searchSale = newSales.filter(sale => sale.customerId._id === searchDropdown);
+        // console.log(newSales, searchSale, searchDropdown);
+
+        setSales(searchSale);
+        const total = searchSale.reduce((t, c) => t + (parseFloat(c.weight) * parseFloat(c.rate)), 0);
+        setTotalSale(total);
+
 
     }
 
     const refreshClickHandler = () => {
         setSales(newSales);
-        const total = newSales.reduce((t,c)=>t+ (parseFloat(c.weight) * parseFloat(c.rate)),0);
+        const total = newSales.reduce((t, c) => t + (parseFloat(c.weight) * parseFloat(c.rate)), 0);
         setTotalSale(total);
     }
 
@@ -87,10 +114,18 @@ const Sale = () => {
                 <p className="w-full text-sm text-red-700">{msg}</p>
                 <div className="p-2 overflow-auto">
                     <div className="flex justify-end items-center space-x-2 mb-2">
+                        <div className="w-[350px]">
+                        <DropdownEn Title="" Id="searchDropdown" Change={e => setSearchDropdown(e.target.value)} Value={searchDropdown}>
+                            {searchDropdownData.length ? searchDropdownData.map(sale => <option value={sale.customerId._id} key={sale._id}>{sale.customerId.name}</option>) : null}
+                        </DropdownEn>
+                        </div>
+                        {/*
                         <input onChange={e => setDt1(e.target.value)} value={dt1} type="date" id='dt1' name="dt1" required className="w-[155px] px-4 py-1.5 text-gray-600 ring-1 focus:ring-4 ring-blue-300 outline-none rounded duration-300" />
                         <span>To</span>
                         <input onChange={e => setDt2(e.target.value)} value={dt2} type="date" id='dt2' name="dt2" required className="w-[155px] px-4 py-1.5 text-gray-600 ring-1 focus:ring-4 ring-blue-300 outline-none rounded duration-300" />
+                        */}
                         <button onClick={searchClickHandler} className="text-center mx-0.5 px-4 py-2 bg-green-600 hover:bg-green-800 text-white font-semibold rounded-md focus:ring-1 ring-blue-200 ring-offset-2 duration-300  cursor-pointer">Search</button>
+
                         <button onClick={refreshClickHandler} className="text-center mx-0.5 px-4 py-2 bg-violet-600 hover:bg-violet-800 text-white font-semibold rounded-md focus:ring-1 ring-blue-200 ring-offset-2 duration-300  cursor-pointer">Refresh</button>
                     </div>
                     <table className="w-full border border-gray-200">
